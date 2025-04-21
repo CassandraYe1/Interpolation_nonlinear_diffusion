@@ -39,8 +39,8 @@ def pde_res(E, D, E_, X, dt):
         E  : E^n     current solution
         D_ : D^n     current coefficient
         E_ : E^{n-1} previous coefficient
-        X  : grid points on X-axis
-        dt : time step
+        X  : Grid points on X-axis
+        dt : Time step
 
     Returns:
         PDE residual according to target nonlinear radiation diffusion
