@@ -6,13 +6,14 @@ import config as cfg
 
 def load_data():
     """
-    Load the known fine grid data
+    Load the fine-grid reference solution.
 
-    D_ref  : D^n     current coefficient
-    E_prev : E^{n-1} previous coefficient
-    E_ref  : E^n     current solution
-    X      : grid points on X-axis
-    Y      : grid points on Y-axis
+    Returns:
+        D_ref  : D^n     current coefficient
+        E_prev : E^{n-1} previous coefficient
+        E_ref  : E^n     current solution
+        X      : Grid points on X-axis
+        Y      : Grid points on Y-axis
     """
     sol = np.load('./' + cfg.model_name + '/data/sol.npy')
     kappa = np.load('./' + cfg.model_name + '/data/kappa.npy')
@@ -30,7 +31,14 @@ def load_data():
 
 def z_const(X, Y):
     """
-    Set continuous z-bool-function
+    Generate the continuous ionization function that converts to Boolean values with 2 as the threshold.
+
+    Args:
+        X: Grid points on X-axis
+        Y: Grid points on Y-axis
+
+    Returns:
+        Z: Boolean values of the ionization function type "zconst"
     """
     Z = torch.ones(cfg.Nx, cfg.Ny)
     Z = (Z>2).cuda()
@@ -40,7 +48,14 @@ def z_const(X, Y):
 
 def z_line(X, Y):
     """
-    Set intermittent z-bool-function
+    Generate the intermittent ionization function that converts to Boolean values with 2 as the threshold.
+
+    Args:
+        X: Grid points on X-axis
+        Y: Grid points on Y-axis
+
+    Returns:
+        Z: Boolean values of the ionization function type "zline"
     """
     Z = torch.zeros(cfg.Nx, cfg.Ny)
     for i in range(cfg.Nx):
@@ -53,7 +68,14 @@ def z_line(X, Y):
 
 def z_square(X, Y):
     """
-    Set z-bool-function with two squares
+    Generate the two-squares ionization function that converts to Boolean values with 2 as the threshold.
+
+    Args:
+        X: Grid points on X-axis
+        Y: Grid points on Y-axis
+
+    Returns:
+        Z: Boolean values of the ionization function type "zsquare"
     """
     ax, ay, bx, by = 3., 9., 9., 3.
     Z = torch.zeros(cfg.Nx, cfg.Ny)
