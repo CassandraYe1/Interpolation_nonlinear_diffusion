@@ -11,8 +11,8 @@ def train_model_pde(model_cur, Nfit=200, lr=1e-1):
     
     Args:
         model_cur: Current model instance to train
-        Nfit: Number of training iterations
-        lr: Learning rate for LBFGS optimizer
+        Nfit     : Number of training iterations
+        lr       : Learning rate for LBFGS optimizer
         
     Returns:
         model_cur: The trained model
