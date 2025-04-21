@@ -6,10 +6,15 @@ import config as cfg
 
 def train_model_reg(model, Nfit=300, lr=1e-2):
     """
-    Model trained only by coarse grid known data
+    Train the model using only coarse-grid reference data.
 
-    Nfit : training steps
-    lr   : learning rate
+    Args:
+        model: The neural network model to train
+        Nfit : Number of training iterations
+        lr   : Learning rate for LBFGS optimizer
+
+    Returns:
+        model: The trained model
     """
 
     opt_lbfgs = torch.optim.LBFGS(model.parameters(), lr=lr)
