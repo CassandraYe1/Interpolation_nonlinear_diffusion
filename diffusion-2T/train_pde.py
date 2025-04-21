@@ -7,11 +7,18 @@ import config as cfg
 
 def train_model_pde(model_E_cur, model_T_cur, Nfit=200, lr_E=1e-1, lr_T=1e-1):
     """
-    Model trained by coarse grid known data and PDE residual
-
-    Nfit : training steps
-    lr_E : learning rate of E-model
-    lr_T : learning rate of T-model
+    Train model using both coarse-grid reference data and PDE residuals.
+    
+    Args:
+        model_E_cur: Current model instance of E to train
+        model_T_cur: Current model instance of T to train
+        Nfit       : Number of training iterations
+        lr_E       : Learning rate for LBFGS optimizer of E
+        lr_T       : Learning rate for LBFGS optimizer of T
+        
+    Returns:
+        model_E_cur: The trained model of E
+        model_T_cur: The trained model of T
     """
     
     opt_lbfgs_E = torch.optim.LBFGS(model_E_cur.parameters(), lr=lr_E)
