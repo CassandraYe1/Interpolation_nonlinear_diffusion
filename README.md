@@ -24,9 +24,7 @@
 
 3. 运行主程序python main.py，
 
-   输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；
-
-            (2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
+   输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
 5. 运行可视化脚本interp_plot.ipynb。
 
@@ -60,8 +58,6 @@ Usage Instructions:
 
 3. Run the main program "python main.py",
 
-   with output results: (1) sol_reg.npy - Results from coarse-grid data-driven training.
-
-                        (2) sol_pinn.npy - Results from PDE physics-constrained training.
+   with output results: (1) sol_reg.npy - Results from coarse-grid data-driven training; (2) sol_pinn.npy - Results from PDE physics-constrained training.
 
 4. Execute the visualization script "interp_plot.ipynb".
