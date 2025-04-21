@@ -6,7 +6,7 @@ import random
 
 def set_seed(seed=42):
     """
-    Set all relevant random number seeds
+    Set all relevant random number seeds.
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -19,7 +19,7 @@ def set_seed(seed=42):
 
 def relative_l2(Eref, Epred):
     """
-    Set relative_l2 error
+    Set relative_l2 error.
 
     Args:
         Eref:  Reference solution
@@ -33,7 +33,7 @@ def relative_l2(Eref, Epred):
 
 def pde_res(E, D, E_, X, dt):
     """
-    Set the PDE residual
+    Set the PDE residual.
 
     Args:
         E  : E^n     current solution
