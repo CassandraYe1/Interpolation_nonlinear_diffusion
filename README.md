@@ -1,4 +1,4 @@
-\textbf{项目标题：}
+项目标题：
 
 非线性辐射扩散问题的神经网络算法研究
 
@@ -20,17 +20,17 @@
 
    (3)定义路径：该模型对应哪一种电离度函数，就将哪一种电离度函数(zconst/zline/zsquare)设置为True，其他两种设置为False。
 
-2. 运行可视化脚本interp_plot.ipynb
+2. 根据main.py中的注释，修改神经网络的训练步数(Nfit)和学习率(lr, lr_E and lr_T)。
 
-3. 输出结果：
+3. 运行主程序python main.py，
 
-   (1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；
+   输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；
 
-   (2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy；
+            (2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
-   (3)上述两种结果与参考解之间的可视化图像对比。
+5. 运行可视化脚本interp_plot.ipynb。
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------
 
 Project Title:
 
@@ -56,12 +56,12 @@ Usage Instructions:
 
    (3) Path configuration: Set "True" for the corresponding ionization function (zconst/zline/zsquare) being used, and "False" for the other two.
 
-2. Run Visualization Script "interp_plot.ipynb".
+2. Adjust training iterations (Nfit) and learning rates (lr, lr_E and lr_T) in the neural network according to the comments in main.py.
 
-3. Output Results:
+3. Run the main program "python main.py",
 
-   (1) sol_reg.npy - Results from coarse-grid data-driven training.
+   with output results: (1) sol_reg.npy - Results from coarse-grid data-driven training.
 
-   (2) sol_pinn.npy - Results from PDE physics-constrained training.
+                        (2) sol_pinn.npy - Results from PDE physics-constrained training.
 
-   (3) Comparative visualizations between both results and reference solutions.
+4. Execute the visualization script "interp_plot.ipynb".
