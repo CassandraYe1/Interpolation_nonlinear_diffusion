@@ -4,14 +4,14 @@ torch.set_default_dtype(torch.float64)
 from data_loader import load_data, z_const, z_line, z_square
 
 
-# model_name = "z function" - "initial condition"
-model_name = "zline-gauss"
+# model_name = "ionization function type - initial condition type"
+model_name = "zsquare-gauss"
+# device_name = "cpu" or "cuda"
 device_name = "cuda"
-
-# case of z function
+# type of ionization function
 zconst = False
-zline = True
-zsquare = False
+zline = False
+zsquare = True
 
 Nx = 257 # number of grid point on x-axis
 Ny = 257 # number of grid point on y-axis
