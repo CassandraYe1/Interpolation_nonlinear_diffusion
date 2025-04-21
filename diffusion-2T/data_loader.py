@@ -6,14 +6,15 @@ import config as cfg
 
 def load_data():
     """
-    Load the known fine grid data
+    Load the fine-grid reference solution.
 
-    D_ref, K_ref   : D^n, K^n         current coefficient
-    E_prev, T_prev : E^{n-1}, T^{n-1} previous coefficient
-    E_ref, T_ref   : E^n, T^n         current solution
-    sigma_ref      : sigma^n * ((T^n)**4 - (E^n))
-    X              : grid points on X-axis
-    Y              : grid points on Y-axis
+    Returns:
+        D_ref, K_ref   : D^n, K^n         current coefficient
+        E_prev, T_prev : E^{n-1}, T^{n-1} previous coefficient
+        E_ref, T_ref   : E^n, T^n         current solution
+        sigma_ref      : sigma^n * ((T^n)**4 - (E^n))
+        X              : Grid points on X-axis
+        Y              : Grid points on Y-axis
     """
     sol_E = np.load('./' + cfg.model_name + '/data/sol-E.npy')
     sol_T = np.load('./' + cfg.model_name + '/data/sol-T.npy')
@@ -38,7 +39,14 @@ def load_data():
 
 def z_const(X, Y):
     """
-    Set continuous z-bool-function
+    Generate the continuous ionization function that converts to Boolean values with 2 as the threshold.
+
+    Args:
+        X: Grid points on X-axis
+        Y: Grid points on Y-axis
+
+    Returns:
+        Z: Boolean values of the ionization function type "zconst"
     """
     Z = torch.ones(cfg.Nx, cfg.Ny)
     Z = (Z>2).cuda()
@@ -48,7 +56,14 @@ def z_const(X, Y):
 
 def z_line(X, Y):
     """
-    Set intermittent z-bool-function
+    Generate the intermittent ionization function that converts to Boolean values with 2 as the threshold.
+
+    Args:
+        X: Grid points on X-axis
+        Y: Grid points on Y-axis
+
+    Returns:
+        Z: Boolean values of the ionization function type "zline"
     """
     Z = torch.zeros(cfg.Nx, cfg.Ny)
     for i in range(cfg.Nx):
@@ -61,7 +76,14 @@ def z_line(X, Y):
 
 def z_square(X, Y):
     """
-    Set z-bool-function with two squares
+    Generate the two-squares ionization function that converts to Boolean values with 2 as the threshold.
+
+    Args:
+        X: Grid points on X-axis
+        Y: Grid points on Y-axis
+
+    Returns:
+        Z: Boolean values of the ionization function type "zsquare"
     """
     ax, ay, bx, by = 3., 9., 9., 3.
     Z = torch.zeros(cfg.Nx, cfg.Ny)
