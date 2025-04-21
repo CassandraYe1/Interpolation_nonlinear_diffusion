@@ -21,8 +21,12 @@ def relative_l2(Eref, Epred):
     """
     Set relative_l2 error
 
-    Eref:  reference solution
-    Epred: predictive solution
+    Args:
+        Eref:  Reference solution
+        Epred: Predictive solution
+
+    Returns:
+        Relative_l2 error between predictive solution and reference solution
     """
     return ((Eref - Epred)**2).mean() / (Eref**2).mean()
 
@@ -31,11 +35,15 @@ def pde_res(E, D, E_, X, dt):
     """
     Set the PDE residual
 
-    E  : E^n     current solution
-    D_ : D^n     current coefficient
-    E_ : E^{n-1} previous coefficient
-    X  : grid points on X-axis
-    dt : time step
+    Args:
+        E  : E^n     current solution
+        D_ : D^n     current coefficient
+        E_ : E^{n-1} previous coefficient
+        X  : grid points on X-axis
+        dt : time step
+
+    Returns:
+        PDE residual according to target nonlinear radiation diffusion
     """
     ones = torch.ones_like(E)
     Egrad = torch.autograd.grad(E, X, grad_outputs=ones, create_graph=True)[0]
