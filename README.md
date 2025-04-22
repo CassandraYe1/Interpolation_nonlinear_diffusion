@@ -7,14 +7,12 @@
 单温非线性辐射扩散问题的具体模型如下：
 
 $$
-\left\{
-   \begin{aligned}
-      & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
-      & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\{x=0\}\times[0,1] \\
-      & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\{x=0\}\times[0,1] \\
-      & E|_{t=0} = g(x,y,0)
-   \end{aligned}
-\right.
+\begin{aligned}
+   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+   & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\{x=0\}\times[0,1] \\
+   & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\{x=0\}\times[0,1] \\
+   & E|_{t=0} = g(x,y,0)
+\end{aligned}
 $$
 
 其中辐射扩散系数 $D_L$ 选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ 。
