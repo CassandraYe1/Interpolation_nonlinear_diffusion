@@ -7,12 +7,14 @@
 单温非线性辐射扩散问题的具体模型如下：
 
 $$
-\begin{aligned}
-   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
-   & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\{x=0\}\times[0,1] \\
-   & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\\{x=0\}\times[0,1] \\
-   & E|_{t=0} = g(x,y,0)
-\end{aligned}
+\left\{
+   \begin{aligned}
+      & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+      & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\{x=0\}\times[0,1] \\
+      & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\{x=0\}\times[0,1] \\
+      & E|_{t=0} = g(x,y,0)
+   \end{aligned}
+\right.
 $$
 
 其中辐射扩散系数 $D_L$ 选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ 。
@@ -24,7 +26,7 @@ $$
    & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = \sigma_{\alpha}(T^4-E) \\
    & \frac{\partial T}{\partial t}-\nabla\cdot(K_L\nabla T) = \sigma_{\alpha}(E-T^4) \\
    & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\{x=0\}\times[0,1] \\
-   & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\\{x=0\}\times[0,1] \\
+   & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\{x=0\}\times[0,1] \\
    & K_L\nabla T\cdot n = 0, \quad(x,y,t)\in\partial\Omega\times[0,1] \\
    & E|_{t=0} = T^4|_{t=0} = g(x,y,0)
 \end{aligned}
@@ -34,17 +36,17 @@ $$
 
 对于上述单温、双温问题，电离度函数 $z$ 可以分为以下三种情况：
 
-   (1)zconst(连续)： $z=1$ 。
+   (1)zconst(连续)： $z=1$
 
-   (2)zline(左右突变)：当 $x\leq0.5$ 时， $z=1$ ；当 $x\textgreater0.5$ 时， $z=10$ 。
+   (2)zline(左右突变)：当 $x\leq0.5$ 时， $z=1$ ；当 $x\textgreater0.5$ 时， $z=10$
 
-   (3)zsquare(两块突变)：当 $\frac{3}{16}\textless x \textless\frac{7}{16}, \frac{9}{16}\textless y \textless\frac{13}{16}$ 或 $\frac{9}{16}\textless x \textless\frac{13}{16}, \frac{3}{16}\textless y \textless\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$ 。
+   (3)zsquare(两块突变)：当 $\frac{3}{16}\textless x \textless\frac{7}{16}, \frac{9}{16}\textless y \textless\frac{13}{16}$ 或 $\frac{9}{16}\textless x \textless\frac{13}{16}, \frac{3}{16}\textless y \textless\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
 初边值条件 $\beta(x,y,t), g(x,y,t)$ 可以分为以下两种情况：
 
-   (1)const(常数初值+线性边值)： $\beta(x,y,t) = \max{20t, 10}, g(x,y,t) = 0.01$ 。
+   (1)const(常数初值+线性边值)： $\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
 
-   (2)gauss(高斯初值+零边值)： $\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$ 。
+   (2)gauss(高斯初值+零边值)： $\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 功能特性：
 
