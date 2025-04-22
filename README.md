@@ -17,7 +17,7 @@ $$
 \end{aligned}
 $$
 
-其中辐射扩散系数$D_L$选用限流形式，即$D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$。
+其中辐射扩散系数 $D_L$ 选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ 。
 
 功能特性：
 
