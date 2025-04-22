@@ -1,11 +1,9 @@
 import torch
-import torch.optim as optim
-from model import DeepNN
 from utils import relative_l2, pde_res
 import config as cfg
 
 
-def train_model_pde(model_cur, Nfit=200, lr=1e-1):
+def train_model_pde(model_cur, Nfit=cfg.Nfit_pde, lr=cfg.lr_pde, epo=cfg.epoch_pde):
     """
     Train model using both coarse-grid reference data and PDE residuals.
     
@@ -13,13 +11,13 @@ def train_model_pde(model_cur, Nfit=200, lr=1e-1):
         model_cur: Current model instance to train
         Nfit     : Number of training iterations
         lr       : Learning rate for LBFGS optimizer
+        epo      : Number of training epoch
         
     Returns:
         model_cur: The trained model
     """
 
     opt_lbfgs = torch.optim.LBFGS(model_cur.parameters(), lr=lr)
-    # opt_adam = torch.optim.Adam(model_cur.parameters(), lr=1e-8)
 
     for i in range(Nfit):
         model_cur.train()
@@ -34,19 +32,11 @@ def train_model_pde(model_cur, Nfit=200, lr=1e-1):
             loss.backward()
 
             return loss
-        # ref_loss = relative_l2(E_ref[1:-1,1:-1].reshape(-1,1), Ed_pred)
 
-        # opt_adam.step()
         loss = closure()
         opt_lbfgs.step(closure)
-
-        # pde_logs.append(pde_loss.item())
-        # lbc_logs.append(lbc_loss.item())
-        # rbc_logs.append(rbc_loss.item())
-        # tbc_logs.append(tbc_loss.item())
-        # bbc_logs.append(bbc_loss.item())
             
-        if i % 10 == 0:
+        if i % epo == 0:
             model_cur.eval()
 
             Ed_pred = model_cur(cfg.inp_d, cfg.Zd)
@@ -60,11 +50,10 @@ def train_model_pde(model_cur, Nfit=200, lr=1e-1):
             rbc_loss = (Er_pred ** 2).mean()
             tbc_loss = relative_l2(cfg.Et, Et_pred)
             bbc_loss = relative_l2(cfg.Eb, Eb_pred)
-            ref_loss = relative_l2(cfg.E_ref[1:-1,1:-1].reshape(-1,1), Ed_pred)
 
             Epred = model_cur(cfg.inp_fine, cfg.Z_fine).cpu().detach().numpy().reshape(257,257)
             ref_rl2 = relative_l2(cfg.E_ref.cpu().numpy().reshape(-1), Epred.reshape(-1))
-            print("adam : {:d} - ref_rl2 {:.4e} - pde {:.4e} - lbc {:.4e} - rbc {:.4e} - tbc {:.4e} - bbc {:.4e}".format(
+            print("lbfgs : {:d} - ref_rl2 {:.4e} - pde {:.4e} - lbc {:.4e} - rbc {:.4e} - tbc {:.4e} - bbc {:.4e}".format(
                 i, ref_rl2, pde_loss, lbc_loss, rbc_loss, tbc_loss, bbc_loss))
             
     return model_cur

@@ -1,23 +1,34 @@
 import numpy as np
 import torch
 torch.set_default_dtype(torch.float64)
-from data_loader import load_data, z_const, z_line, z_square
+from data_loader import *
 
 
+## Global parameters (defaults).
 # model_name = "ionization function type - initial condition type"
 model_name = "zsquare-gauss"
 # device_name = "cpu" or "cuda"
 device_name = "cuda"
-# type of ionization function
+# Type of ionization function
 zconst = False
 zline = False
-zsquare = True
+zsquare = False
 
-Nx = 257 # number of grid point on x-axis
-Ny = 257 # number of grid point on y-axis
+Nx = 257 # Number of grid point on x-axis
+Ny = 257 # Number of grid point on y-axis
+
+# Model trained by coarse-grid reference data
+Nfit_reg = 300 # Number of training iterations
+lr_reg = 1e-2 # Learning rate for LBFGS optimizer
+epoch_reg = 50 # Epoch
+# Model trained by coarse-grid reference data and PDE residual
+Nfit_pde = 200 # Number of training iterations
+lr_pde = 1e-1 # Learning rate for LBFGS optimizer
+epoch_pde = 10 # Epoch
 
 
-# load the known fine grid data
+## Code execution follows these global parameters.
+# Load the known fine-grid data
 D_ref, E_prev, E_ref, X, Y = load_data()
 if zconst:
     Z = z_const(X, Y)
@@ -31,7 +42,7 @@ inp_fine = torch.concat(
     axis=1).requires_grad_().cuda()
 Z_fine = Z.reshape(-1,1)
 
-# coarse grid data
+# coarse-grid data
 X_coarse = X[::4,::4]
 Y_coarse = Y[::4,::4]
 Z_coarse = Z[::4,::4]
