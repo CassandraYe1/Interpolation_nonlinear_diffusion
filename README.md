@@ -1,11 +1,23 @@
-$\alpha$
-\textbf{项目标题：}
+项目标题：
 
 非线性辐射扩散问题的神经网络算法研究
 
 项目描述：
 
 针对单温、双温非线性辐射扩散问题，发展融合方程及数据驱动的高精度神经网络求解算法。
+
+单温问题的具体模型如下：
+
+$$
+\left\{
+\begin{aligned}
+& \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+& 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), (x,y,t)\in\{x=0\}\times[0,1] \\
+& 0.5E+D_L\nabla E\cdot n = 0, (x,y,t)\in\partial\Omega\\{x=0\}\times[0,1] \\
+& E|_{t=0} = g(x,y,0)
+\end{aligned}
+\right
+$$
 
 功能特性：
 
@@ -28,7 +40,7 @@ $\alpha$
    输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
 5. 运行可视化脚本interp_plot.ipynb。
-$$
+
 -----------------------------------------------------------------------------------------------------------------------------
 
 Project Title:
