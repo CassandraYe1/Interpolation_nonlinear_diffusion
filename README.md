@@ -16,7 +16,7 @@ $$
 & 0.5E+D_L\nabla E\cdot n = 0, (x,y,t)\in\partial\Omega\\{x=0\}\times[0,1] \\
 & E|_{t=0} = g(x,y,0)
 \end{aligned}
-\right
+\right.
 $$
 
 功能特性：
