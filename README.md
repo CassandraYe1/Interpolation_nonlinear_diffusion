@@ -4,7 +4,7 @@
 
 项目描述：
 
-单温非线性辐射扩散问题的具体模型如下：
+给定 $\Omega = [0,1]\times[0,1]$ ，单温非线性辐射扩散问题的具体模型如下：
 
 $$
 \begin{aligned}
@@ -48,11 +48,11 @@ $$
 
 考虑到经典数值方法(如有限体积、有限元)存在如下问题：
    
-   (1)大变形网格上节点量插值计算量大且精度\保正难以保证；
+   (1)大变形网格上插值计算量大且精度难以保证；
 
-   (2)保正格式为非线性，是否存在更好地到局部数值流的映射关系；
+   (2)非线性方程难以保持正性；
 
-   (3)格式对网格变形和系数分布有限制，且推广至时空高阶比较困难，
+   (3)格式对网格变形和系数分布有限制，推广至时空高阶比较困难。
    
 因此，本项目希望借助神经网络，发展融合方程及数据驱动的高精度神经网络求解算法，在提升单温、双温非线性辐射扩散问题求解精度的同时提升求解效率。
 
@@ -89,21 +89,11 @@ $$
 
 使用说明：
 
-1. 修改config.py配置：
-   
-   (1)定义模型名称：模型名称的构成为"电离度函数类别-初值条件类别"，其中电离度函数分为zconst(连续)、zline(左右突变)和zsquare(两块突变)三类，初值条件分为const(常数)和gauss(高斯函数)两类；
+更改
 
-   (2)设置计算设备：cpu或cuda；
+输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
-   (3)定义路径：该模型对应哪一种电离度函数，就将哪一种电离度函数(zconst/zline/zsquare)设置为True，其他两种设置为False。
-
-2. 根据main.py中的注释，修改神经网络的训练步数(Nfit)和学习率(lr, lr_E and lr_T)。
-
-3. 运行主程序python main.py，
-
-   输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
-
-5. 运行可视化脚本interp_plot.ipynb。
+运行可视化脚本interp_plot.ipynb。
 
 -----------------------------------------------------------------------------------------------------------------------------
 
@@ -113,13 +103,94 @@ Neural Network Algorithm Research for Nonlinear Radiation Diffusion Problems
 
 Project Description:
 
-This project develops high-precision neural network that integrate equation-driven and data-driven approaches for both single-temperature and two-temperature nonlinear radiation diffusion problems.
+With $\Omega = [0,1]\times[0,1]$ , the specific model for the single-temperature nonlinear radiation diffusion problem is as follows:
+
+$$
+\begin{aligned}
+   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+   & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\lbrace x=0\rbrace\times[0,1] \\
+   & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\lbrace x=0\rbrace\times[0,1] \\
+   & E|_{t=0} = g(x,y,0)
+\end{aligned}
+$$
+
+where the radiation diffusion coefficient $D_L$ adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ .
+
+The specific model for the two-temperature nonlinear radiation diffusion problem is as follows:
+
+$$
+\begin{aligned}
+   & \frac{\partial E}{\partial t} - \nabla \cdot (D_L \nabla E) = \sigma_{\alpha}(T^4 - E) \\
+   & \frac{\partial T}{\partial t} - \nabla \cdot (K_L \nabla T) = \sigma_{\alpha}(E - T^4) \\
+   & 0.5E + D_L \nabla E \cdot n = \beta(x,y,t), \quad (x,y,t) \in \lbrace x=0 \rbrace \times [0,1] \\
+   & 0.5E + D_L \nabla E \cdot n = 0, \quad (x,y,t) \in \partial\Omega \setminus \lbrace x=0 \rbrace \times [0,1] \\
+   & K_L \nabla T \cdot n = 0, \quad (x,y,t) \in \partial\Omega \times [0,1] \\
+   & E\vert_{t=0} = T^4\vert_{t=0} = g(x,y,0)
+\end{aligned}
+$$
+
+where the radiation diffusion coefficient $D_L, K_L$ also adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ .
+
+For the single-temperature and two-temperature problems mentioned above, the ionization degree function $z$ can be classified into the following three cases:
+
+   (1)zconst: Always $z=1$
+
+   (2)zline: When $x\leq0.5$, $z=1$; when $x\textgreater0.5$, $z=10$
+
+   (3)zsquare: When $\frac{3}{16}\textless x \textless\frac{7}{16}, \frac{9}{16}\textless y \textless\frac{13}{16}$ or $\frac{9}{16}\textless x \textless\frac{13}{16}, \frac{3}{16}\textless y \textless\frac{7}{16}$, $z=10$; otherwise $z=1$
+
+Initial and boundary conditions $\beta(x,y,t), g(x,y,t)$ can be classified into the following two cases:
+
+   (1)const: $\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+
+   (2)gauss: $\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+Classical numerical methods (e.g., finite volume/element) face three key challenges:
+
+   (1) computational cost and accuracy loss on highly deformed meshes;
+
+   (2) positivity preservation in nonlinear equations;
+
+   (3) mesh/coefficient sensitivity and high-order limitations.
+
+To address these, we propose a hybrid equation-data-driven neural solver to enhance accuracy and efficiency for single-/two-temperature nonlinear radiation diffusion problems.
 
 Key Features:
 
-Firstly, utilize coarse-grid reference solution to construct data-driven loss function, which can enhance the training efficiency of our neural network model.
+We propose a novel neural network-based solver for a single equation by combining low-resolution numerical solutions $E_{coarse}$ with the governing equation itself.
 
-Then, design physics-informed loss function, incorporating target nonlinear radiation diffusion equations, in order to improve solution accuracy.
+Taking the single-temperature problem as an example, we discretize the temporal derivative in the equation using backward differencing and employ a neural network to compute the results at each time step. The loss function $L_{reg+pde}$ of the network incorporates both data-driven loss $L_{reg}$ and physics-informed loss $L_{pde}$ as constraints. The specific formulation is as follows:
+
+$$
+\begin{aligned}
+   & L_{reg+pde} = L_{reg}+10L_{pde} \\
+   & L_{reg} = \Vert E^n-E^n_{coarse} \Vert \\
+   & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
+\end{aligned}
+$$
+
+Using the same methodology, we also derive the specific formulation of the loss function for the two-temperature problem as follows:
+
+$$
+\begin{aligned}
+   L_{reg+pde} &= L_{reg} + 10L_{pde} \\
+   L_{reg} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
+   L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
+   &\quad + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
+\end{aligned}
+$$
+
+To generate the required data for both single-temperature and two-temperature target problems, we implemented the following numerical procedure:
+
+   (1) Employed a fine-grid of 256×256 spatial points, with the time step size 0.001 and the tolerance of Picard iteration convergence criterion 0.001, to setup high-resolution simulation;
+
+   (2) Computed high-fidelity reference solutions using the finite element method, which serve as the fine-grid reference solution;
+
+   (3) Generated corresponding coarse-grid data $E_{coarse}$ by downsampling the FEM results as 65×65.
+
+Construct a fully connected neural network that contains two hidden layers. Each layer contains 512 neurons with ReLU as the activation function. Take the spatial coordinate values of the target points as input data and set a two-dimensional output layer. Configure Boolean values in the output layer based on the magnitude of the ionization function $z$ at different target points, so that the model will select the output results for each target point.
+
+To ensure solving efficiency, we first utilize the low-resolution reference solution to construct a data-driven loss function $L_{reg}$ for training. Then, incorporating the equations of the target radiation diffusion problem, we design a physics-constrained loss function $L_{reg+pde}$ to further improve the solving accuracy of the neural network model.
 
 Usage Instructions:
 
