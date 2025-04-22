@@ -65,8 +65,8 @@ $$
 $$
 \begin{aligned}
    & L_{data+pinn} = \omega_{ref}L_{ref}+\omega_{pde}L_{pde} \\
-   & L_{ref} = \| E^n-E^n_{coarse} \| \\
-   & L_{pde} = \| E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \|
+   & L_{ref} = \Vert E^n-E^n_{coarse} \Vert \\
+   & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
 \end{aligned}
 $$
 
@@ -74,9 +74,10 @@ $$
 
 $$
 \begin{aligned}
-   & L_{data+pinn} = \omega_{ref}L_{ref}+\omega_{pde}L_{pde} \\
-   & L_{ref} = \| E^n-E^n_{coarse} \| + \| T^n-T^n_{coarse} \| \\
-   & L_{pde} = \| E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-\sigma_{\alpha}(T^4 - E)\Delta t-E^{n-1}_{coarse} \| + \| T^n-K^n_{coarse}\nabla\cdot(\nabla T^n)\Delta t-\sigma_{\alpha}(E - T^4)\Delta t-T^{n-1}_{coarse} \|
+   L_{\text{data+pinn}} &= \omega_{\text{ref}} L_{\text{ref}} + \omega_{\text{pde}} L_{\text{pde}} \\
+   L_{\text{ref}} &= \left\| E^n - E^n_{\text{coarse}} \right\| + \left\| T^n - T^n_{\text{coarse}} \right\| \\
+   L_{\text{pde}} &= \left\| E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \right\| \\
+   &\quad + \left\| T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \right\|
 \end{aligned}
 $$
 
