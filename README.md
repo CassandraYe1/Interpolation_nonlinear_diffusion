@@ -21,12 +21,12 @@ $$
 
 $$
 \begin{aligned}
-   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = \sigma_{\alpha}(T^4-E) \\
-   & \frac{\partial T}{\partial t}-\nabla\cdot(K_L\nabla T) = \sigma_{\alpha}(E-T^4) \\
-   & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\lbrace x=0\rbrace\times[0,1] \\
-   & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\lbrace x=0\rbrace\times[0,1] \\
-   & K_L\nabla T\cdot n = 0, \quad(x,y,t)\in\partial\Omega\times[0,1] \\
-   & E|_{t=0} = T^4|_{t=0} = g(x,y,0)
+   & \frac{\partial E}{\partial t} - \nabla \cdot (D_L \nabla E) = \sigma_{\alpha}(T^4 - E) \\
+   & \frac{\partial T}{\partial t} - \nabla \cdot (K_L \nabla T) = \sigma_{\alpha}(E - T^4) \\
+   & 0.5E + D_L \nabla E \cdot n = \beta(x,y,t), \quad (x,y,t) \in \lbrace x=0 \rbrace \times [0,1] \\
+   & 0.5E + D_L \nabla E \cdot n = 0, \quad (x,y,t) \in \partial\Omega \setminus \lbrace x=0 \rbrace \times [0,1] \\
+   & K_L \nabla T \cdot n = 0, \quad (x,y,t) \in \partial\Omega \times [0,1] \\
+   & E\vert_{t=0} = T^4\vert_{t=0} = g(x,y,0)
 \end{aligned}
 $$
 
