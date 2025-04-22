@@ -60,12 +60,12 @@ $$
 
 结合低分辨率数值解 $E_{coarse}$ 以及方程本身，我们设计了针对单一方程的新型神经网络解法。
 
-以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{data+pinn}$ 的设计部分考虑添加数据驱动损失 $L_{ref}$和物理信息损失 $L_{pde}$ 的约束，具体公式如下：
+以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{reg+pde}$ 的设计部分考虑添加数据驱动损失 $L_{reg}$和物理信息损失 $L_{pde}$ 的约束，具体公式如下：
 
 $$
 \begin{aligned}
-   & L_{data+pinn} = \omega_{ref}L_{ref}+\omega_{pde}L_{pde} \\
-   & L_{ref} = \Vert E^n-E^n_{coarse} \Vert \\
+   & L_{reg+pde} = L_{reg}+10L_{pde} \\
+   & L_{reg} = \Vert E^n-E^n_{coarse} \Vert \\
    & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
 \end{aligned}
 $$
@@ -73,27 +73,19 @@ $$
 用同样的方法，我们也给出了双温问题的损失函数具体公式：
 
 $$
-\begin{align*}
-   L_{data+pinn} &= \omega_{ref} L_{ref} + \omega_{pde} L_{pde} \\
-   L_{ref} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
+\begin{aligned}
+   L_{reg+pde} &= L_{reg} + 10L_{pde} \\
+   L_{reg} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
    L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
    &\quad + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
-\end{align*}
-$$
-
-$$
-\begin{aligned}
-L_{\text{data+pinn}} &= \omega_{\text{ref}} L_{\text{ref}} + \omega_{\text{pde}} L_{\text{pde}} \\
-L_{\text{ref}} &= \left\| E^n - E^n_{\text{coarse}} \right\| + \left\| T^n - T^n_{\text{coarse}} \right\| \\
-L_{\text{pde}} &= \left\| E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \right\| \\
-&\quad + \left\| T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \right\|
 \end{aligned}
 $$
 
-具体来说，对于单温和双温问题，我们分别取128×128和256×256的细网格点，设时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并利用下采样得到65×65的粗网格解，也就是E_coarse。我们选择构建一个全连接神经网络，包含两个隐藏层，激活函数选用relu函数，有效确保了结果的正性。将目标点的空间坐标值作为输入数据进行训练，这使得结果跳出了传统数值解法只能求解网格点值的局限，保证了解在空间上的连续性。另外，考虑到由于电离度函数可能发生由1到10的突变，从而导致结果在不同空间发生剧烈变化，我们设置了一个二维的输出层，并按电离度函数在不同目标点的大小设置了布尔值，从而对各目标点的输出结果进行选择。
-为了保证求解效率，我们先在仅有低分辨率参考解约束损失函数的情况下进行训练，学习率设为0.01，训练300步。然后再向损失函数中加入目标方程的物理约束，继续训练，此时学习率设为0.1，训练200步。如果还想再次提升网络学习效率，也可以考虑将初边值条件强制嵌入神经网络，进一步缩小解的函数空间。
+为了获取目标单温和双温问题的数据，取256×256的细网格点，设时间步长为0.001，设皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并利用下采样得到65×65的粗网格解 $E_{coarse}$ 。
 
-首先，利用低分辨率数值解，构建数据驱动损失函数，提升神经网络模型的训练效率；然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数，进一步提升神经网络模型的求解精度。
+构建一个全连接神经网络，该网络包含两个隐藏层，每一层包含512个神经元，激活函数选用relu函数。将目标点的空间坐标值作为输入数据，输出层设置为二维的，按电离度函数 $z$ 在不同目标点的大小设置布尔值，从而对各目标点的输出结果进行选择。
+
+为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{reg}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{reg+pde}$，进一步提升神经网络模型的求解精度。
 
 使用说明：
 
