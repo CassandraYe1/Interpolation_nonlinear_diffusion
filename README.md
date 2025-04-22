@@ -73,12 +73,12 @@ $$
 用同样的方法，我们也给出了双温问题的损失函数具体公式：
 
 $$
-\begin{aligned}
+\begin{align*}
    L_{data+pinn} &= \omega_{ref} L_{ref} + \omega_{pde} L_{pde} \\
    L_{ref} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
    L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
    &\quad + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
-\end{aligned}
+\end{align*}
 $$
 
 具体来说，对于单温和双温问题，我们分别取128×128和256×256的细网格点，设时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并利用下采样得到65×65的粗网格解，也就是E_coarse。我们选择构建一个全连接神经网络，包含两个隐藏层，激活函数选用relu函数，有效确保了结果的正性。将目标点的空间坐标值作为输入数据进行训练，这使得结果跳出了传统数值解法只能求解网格点值的局限，保证了解在空间上的连续性。另外，考虑到由于电离度函数可能发生由1到10的突变，从而导致结果在不同空间发生剧烈变化，我们设置了一个二维的输出层，并按电离度函数在不同目标点的大小设置了布尔值，从而对各目标点的输出结果进行选择。
