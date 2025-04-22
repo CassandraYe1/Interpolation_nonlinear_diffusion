@@ -7,6 +7,7 @@
 针对单温、双温非线性辐射扩散问题，发展融合方程及数据驱动的高精度神经网络求解算法。
 
 单温问题的具体模型如下：
+
 $$
 \begin{aligned}
    & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
@@ -15,6 +16,7 @@ $$
    & E|_{t=0} = g(x,y,0)
 \end{aligned}
 $$
+
 其中辐射扩散系数$D_L$选用限流形式，即$D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$。
 
 功能特性：
