@@ -9,16 +9,12 @@
 单温问题的具体模型如下：
 
 $$
-'''math
-\left\{
-   \begin{aligned}
-      & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
-      & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), (x,y,t)\in{x=0}\times[0,1] \\
-      & 0.5E+D_L\nabla E\cdot n = 0, (x,y,t)\in\partial\Omega{x=0}\times[0,1] \\
-      & E|_{t=0} = g(x,y,0)
-   \end{aligned}
-\right.
-'''
+\begin{aligned}
+   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+   & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), (x,y,t)\in{x=0}\times[0,1] \\
+   & 0.5E+D_L\nabla E\cdot n = 0, (x,y,t)\in\partial\Omega{x=0}\times[0,1] \\
+   & E|_{t=0} = g(x,y,0)
+\end{aligned}
 $$
 
 功能特性：
