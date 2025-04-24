@@ -2,11 +2,9 @@ import numpy as np
 import torch 
 torch.set_default_dtype(torch.float64)
 import argparse
-import numpy as np
-import torch 
-torch.set_default_dtype(torch.float64)
 import os
 import copy
+import time
 
 # Parameter parsing and configuration update.
 def parse_args():
@@ -75,21 +73,32 @@ if not os.path.exists(data_path):
 set_seed(0)
 print('Train by coarse-grid data:')
 model = DeepNN().to(cfg.device_name)
+start_time = time.time()
 model = train_model_reg(model, Nfit=cfg.Nfit_reg, lr=cfg.lr_reg, epo=cfg.epoch_reg)
+end_time = time.time()
+training_time_reg = end_time - start_time
+print(f"Regression training time: {training_time_reg:.6e} seconds")
+
 E_reg = model(cfg.inp_fine, cfg.Z_fine).detach().cpu().reshape(cfg.Nx, cfg.Ny)
 np.save(os.path.join(data_path, 'sol_reg'), E_reg)
+torch.save(model.state_dict(), os.path.join(data_path, 'model_reg.pt'))
 
 # Second-stage training: Uses both coarse-grid reference data and PDE physical constraints.
 set_seed(50)
 print('Train by both coarse-grid data and PDE residual:')
 model_cur = DeepNN().to(cfg.device_name)
 model_cur.load_state_dict(copy.deepcopy(model.state_dict()))
+start_time = time.time()
 model_cur = train_model_pde(model_cur, Nfit=cfg.Nfit_pde, lr=cfg.lr_pde, epo=cfg.epoch_pde)
+end_time = time.time()
+training_time_pinn = end_time - start_time
+print(f"PINN training time: {training_time_pinn:.6e} seconds")
+
 E_pinn = model_cur(cfg.inp_fine, cfg.Z_fine).detach().cpu().reshape(cfg.Nx, cfg.Ny)
 np.save(os.path.join(data_path, 'sol_pinn'), E_pinn)
+torch.save(model_cur.state_dict(), os.path.join(data_path, 'model_pinn.pt'))
 
-X = cfg.X.detach().cpu()
-Y = cfg.Y.detach().cpu()
+# L2 error
 E_ref = cfg.E_ref.cpu()
 print('Regression Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_reg)))
 print('PINN Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_pinn)))
