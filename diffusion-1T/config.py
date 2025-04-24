@@ -6,7 +6,7 @@ from data_loader import *
 
 ## Phase 1: Declare all configuration parameters.
 # model_name = "ionization function type - initial condition type"
-model_name = "zsquare-gauss"
+model_name = "zconst-const"
 # device_name = "cpu" or "cuda"
 device_name = "cuda"
 # Type of ionization function
@@ -16,6 +16,7 @@ zsquare = False
 
 Nx = 257 # Number of grid point on x-axis
 Ny = 257 # Number of grid point on y-axis
+n = 4 # Downsampling factor
 
 # Model trained by coarse-grid reference data
 Nfit_reg = 300 # Number of training iterations
@@ -35,6 +36,7 @@ Y = None
 Z = None
 inp_fine = None
 Z_fine = None
+
 X_coarse = None
 Y_coarse = None
 Z_coarse = None
@@ -43,6 +45,7 @@ Z_coarse = None
 D_coarse = None
 E_coarse_prev = None
 E_coarse_ref = None
+
 Xd = None
 Yd = None
 Zd = None
@@ -50,24 +53,28 @@ inp_d = None
 Ed = None
 Ed_ = None
 Dd = None
+
 Xl = None
 Yl = None
 Zl = None
 inp_l = None
 El = None
 Dl = None
+
 Xr = None
 Yr = None
 Zr = None
 inp_r = None
 Er = None
 Dr = None
+
 Xb = None
 Yb = None
 Zb = None
 inp_b = None
 Eb = None
 Db = None
+
 Xt = None
 Yt = None
 Zt = None
@@ -114,16 +121,16 @@ def init_config():
     Z_fine = Z.reshape(-1,1)
 
     # coarse-grid data
-    X_coarse = X[::4,::4]
-    Y_coarse = Y[::4,::4]
-    Z_coarse = Z[::4,::4]
+    X_coarse = X[::n,::n]
+    Y_coarse = Y[::n,::n]
+    Z_coarse = Z[::n,::n]
     inp_coarse = torch.concat(
         [X_coarse.reshape(-1,1), Y_coarse.reshape(-1,1)], 
         axis=1).requires_grad_().cuda()
     Z_coarse = Z_coarse.reshape(-1,1)
-    D_coarse = D_ref[::4,::4]
-    E_coarse_prev = E_prev[::4,::4]
-    E_coarse_ref = E_ref[::4,::4]
+    D_coarse = D_ref[::n,::n]
+    E_coarse_prev = E_prev[::n,::n]
+    E_coarse_ref = E_ref[::n,::n]
 
     # internal data
     Xd = X[1:-1,1:-1]

@@ -10,7 +10,7 @@ import time
 def parse_args():
     parser = argparse.ArgumentParser(description="Train the model with flexible parameters")
 
-    parser.add_argument('--model_name', type=str, default='zsquare-gauss', help='Model name (e.g., zsquare-gauss)')
+    parser.add_argument('--model_name', type=str, default='zconst-const', help='Model name (e.g., zconst-const)')
     parser.add_argument('--device_name', type=str, default='cuda', choices=['cuda', 'cpu'], help='Device for training (cuda/cpu)')
 
     parser.add_argument('--zconst', action='store_true', help='Use z_const function')
@@ -19,6 +19,7 @@ def parse_args():
 
     parser.add_argument('--Nx', type=int, default=257, help='Number of grid points on x-axis')
     parser.add_argument('--Ny', type=int, default=257, help='Number of grid points on y-axis')
+    parser.add_argument('--n', type=int, default=4, help='Downsampling factor')
 
     parser.add_argument('--Nfit_reg', type=int, default=300, help='Number of training iterations for regularization phase')
     parser.add_argument('--lr_reg', type=float, default=1e-2, help='Learning rate for LBFGS optimizer in regularization phase')
@@ -47,6 +48,7 @@ cfg.zline = args.zline
 cfg.zsquare = args.zsquare
 cfg.Nx = args.Nx
 cfg.Ny = args.Ny
+cfg.n = args.n
 cfg.Nfit_reg = args.Nfit_reg
 cfg.lr_reg = args.lr_reg
 cfg.epoch_reg = args.epoch_reg
@@ -75,6 +77,7 @@ print('Train by coarse-grid data:')
 model = DeepNN().to(cfg.device_name)
 start_time = time.time()
 model = train_model_reg(model, Nfit=cfg.Nfit_reg, lr=cfg.lr_reg, epo=cfg.epoch_reg)
+#model.load_state_dict(torch.load('/root/interpolation_nonlinear/diffusion-1T/zline-gauss/results/model_reg.pt'))
 end_time = time.time()
 training_time_reg = end_time - start_time
 print(f"Regression training time: {training_time_reg:.6e} seconds")
