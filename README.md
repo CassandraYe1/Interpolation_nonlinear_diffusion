@@ -93,10 +93,10 @@ $$
 
 (1)系统参数：
 
-|参数      |说明      |示例      |说明      |
-|:--------:|:--------:|:--------:|:-------:|
-|model_name    |目标模型    |"zconst-const"  |"电离度函数类型-初边值函数类型"|
-|device_name   |计算设备    |"cuda"          |"cuda"或"cpu"               |  
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:--------:|
+|model_name    |目标模型（"电离度函数类型-初边值函数类型"）    |"zconst-const"  |
+|device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
 
 (2)必选参数：
 
@@ -131,7 +131,7 @@ $$
 
 (5)第二阶段训练参数：
 
-单温：
+单温问题：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -139,7 +139,7 @@ $$
 |lr_pde   |LBFGS优化器学习率    |1e-1    |
 |epoch_pde    |训练轮次     |10      |
 
-双温：
+双温问题：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -182,9 +182,35 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 
 python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
 ```
 
-输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
+3. 输出说明
 
-运行可视化脚本interp_plot.ipynb。
+对于单温问题，训练完成后会在 ./diffusion-1T/<model_name>/results/ 目录下生成：
+
+(1) model_reg.pt : 第一阶段训练模型
+
+(2) model_pinn.pt : 第二阶段训练模型
+
+(3) sol_reg.npy : 第一阶段预测结果
+
+(4) sol_pinn.npy : 最终预测结果
+
+对于单温问题，训练完成后会在 ./diffusion-2T/<model_name>/results/ 目录下生成：
+
+(1) model_reg_E.pt : 第一阶段关于E的训练模型
+
+(2) model_reg_T.pt : 第一阶段关于T的训练模型
+
+(3) model_pinn_E.pt : 第二阶段关于E的训练模型
+
+(4) model_pinn_T.pt : 第二阶段关于T的训练模型
+
+(5) sol_reg_E.npy : 第一阶段对E的预测结果
+
+(6) sol_reg_T.npy : 第一阶段对T的预测结果
+
+(7) sol_pinn_E.npy : 最终对E的预测结果
+
+(8) sol_pinn_T.npy : 最终对T的预测结果
 
 -----------------------------------------------------------------------------------------------------------------------------
 
@@ -222,7 +248,7 @@ $$
 
 where the radiation diffusion coefficient $D_L, K_L$ also adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ .
 
-For the single-temperature and two-temperature problems mentioned above, the ionization degree function $z$ can be classified into the following three cases:
+For the single-temperature and two-temperature problems mentioned above, the ionization function $z$ can be classified into the following three cases:
 
    (1)zconst: Always $z=1$
 
@@ -285,49 +311,72 @@ To ensure solving efficiency, we first utilize the low-resolution reference solu
 
 Usage Instructions:
 
-1. 参数说明
+1. Parameter specification
 
-(1)系统参数：
+(1) System parameters:
 
-|参数      |说明      |示例      |说明      |
-|:--------:|:--------:|:--------:|:-------:|
-|model_name    |目标模型    |"zconst-const"  |"电离度函数类型-初边值函数类型"|
-|device_name   |计算设备    |"cuda"          |"cuda"或"cpu"               |  
+|Parameter      |Description      |Default      |
+|:--------:|:--------:|:--------:|
+|model_name    |target model ("ionization function type-initial&boundary condition type")   |"zconst-const"  |
+|device_name   |computation device ("cuda"或"cpu")    |"cuda"          |
 
-(2)必选参数：
+(2) Required parameters:
 
 参数zconst、zline和zsquare中，有且仅有一个值为True，其余两个值为False
 
-(3)网格配置参数：
+(3) Grid configuration:
 
-|参数      |说明      |默认值      |
+|Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
-|Nx   |x轴网格点数    |257    |
-|Ny   |y轴网格点数    |257    |
-|n    |下采样倍数     |4      |
+|Nx   |grid points on x-axis    |257    |
+|Ny   |grid points on x-axis    |257    |
+|n    |downsampling factor      |4      |
 
-(4)第一阶段训练参数：
+(4) Training parameters (Phase 1):
 
-|参数      |说明      |默认值      |
+Single-temperature problem:
+
+|Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
-|Nfit_reg   |训练步数    |300    |
-|lr_reg   |LBFGS优化器学习率    |1e-2    |
-|epoch_reg    |训练轮次     |50      |
+|Nfit_reg   |training iterations    |300    |
+|lr_reg   |LBFGS optimizer learning rate    |1e-2    |
+|epoch_reg    |training epochs     |50      |
 
-(5)第二阶段训练参数：
+Two-temperature problem:
 
-|参数      |说明      |默认值      |
+|Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
-|Nfit_pde   |训练步数    |200    |
-|lr_pde   |LBFGS优化器学习率    |1e-1    |
-|epoch_pde    |训练轮次     |10      |
+|Nfit_reg   |training iterations    |300    |
+|lr_E_reg   |LBFGS optimizer learning rate of E   |1e-2    |
+|lr_T_reg   |LBFGS optimizer learning rate of T    |1e-2    |
+|epoch_reg    |training epochs     |50      |
 
-2. 使用场景
+(5) Training parameters (Phase 2):
+
+Single-temperature problem:
+
+|Parameter      |Description      |Default      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |training iterations    |200    |
+|lr_pde   |LBFGS optimizer learning rate    |1e-1    |
+|epoch_pde    |training epochs     |10      |
+
+Two-temperature problem:
+
+|Parameter      |Description      |Default      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |training iterations    |200    |
+|lr_E_pde   |LBFGS optimizer learning rate of E    |1e-1    |
+|lr_T_pde   |LBFGS optimizer learning rate of T    |1e-1    |
+|epoch_pde    |training epochs     |10      |
+
+
+2. Use cases
 
 这里给出每种情况对应的命令行语句。
 
 ```bash
-## 单温问题：
+## Single-temperature problem:
 # zconst-const
 python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
 # zconst-gauss
@@ -341,7 +390,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 
 # zsquare-gauss
 python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
 
-## 双温问题：
+## Two-temperature problem:
 # zconst-const
 python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
 # zconst-gauss
@@ -355,3 +404,33 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 
 # zsquare-gauss
 python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
 ```
+
+3. Output specification
+
+For single-temperature problem, results will be saved in "./diffusion-1T/<model_name>/results/":
+
+(1) model_reg.pt : Phase 1 regression trained model
+
+(2) model_pinn.pt : Phase 2 physics-informed model
+
+(3) sol_reg.npy : Phase 1 predictions
+
+(4) sol_pinn.npy : Phase 2 predictions
+
+For two-temperature problem, results will be saved in "./diffusion-2T/<model_name>/results/":
+
+(1) model_reg_E.pt : Phase 1 regression trained model of E
+
+(2) model_reg_T.pt : Phase 1 regression trained model of T
+
+(3) model_pinn_E.pt : Phase 2 physics-informed model of E
+
+(4) model_pinn_T.pt : Phase 2 physics-informed model of T
+
+(5) sol_reg_E.npy : Phase 1 E-predictions
+
+(6) sol_reg_T.npy : Phase 1 T-predictions
+
+(7) sol_pinn_E.npy : Phase 2 E-predictions
+
+(8) sol_pinn_T.npy : Phase 2 T-predictions
