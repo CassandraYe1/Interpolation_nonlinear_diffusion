@@ -322,7 +322,7 @@ Usage Instructions:
 
 (2) Required parameters:
 
-参数zconst、zline和zsquare中，有且仅有一个值为True，其余两个值为False
+The parameters "zconst", "zline" and "zsquare" must satisfy the condition that exactly one of them is set to True, while the other two must be False.
 
 (3) Grid configuration:
 
@@ -373,7 +373,7 @@ Two-temperature problem:
 
 2. Use cases
 
-这里给出每种情况对应的命令行语句。
+Here are the corresponding command-line statements for each case:
 
 ```bash
 ## Single-temperature problem:
