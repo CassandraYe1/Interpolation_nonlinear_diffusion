@@ -81,7 +81,7 @@ $$
 \end{aligned}
 $$
 
-为了获取目标单温和双温问题的数据，取256×256的细网格点，设时间步长为0.001，设皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并通过4倍下采样得到65×65的粗网格解 $E_{coarse}$ 。
+为了获取目标单温和双温问题的数据，取257×257的细网格点，设时间步长为0.001，设皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并通过4倍下采样得到65×65的粗网格解 $E_{coarse}$ 。
 
 构建一个全连接神经网络，该网络包含两个隐藏层，每一层包含512个神经元，激活函数选用relu函数。将目标点的空间坐标值作为输入数据，输出层设置为二维的，按电离度函数 $z$ 在不同目标点的大小设置布尔值，从而对各目标点的输出结果进行选择。
 
@@ -89,7 +89,46 @@ $$
 
 使用说明：
 
-更改
+1. 参数说明
+
+(1)系统参数：
+
+|参数      |说明      |示例      |说明      |
+|:--------:|:--------:|:--------:|:-------:|
+|model_name    |目标模型    |"zconst-const"  |"电离度函数类型-初边值函数类型"|
+|device_name   |计算设备    |"cuda"          |"cuda"或"cpu"               |  
+
+(2)必选参数：
+
+参数zconst、zline和zsquare中，有且仅有一个值为True，其余两个值为False
+
+(3)网格配置参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nx   |x轴网格点数    |257    |
+|Ny   |y轴网格点数    |257    |
+|n    |下采样倍数     |4      |
+
+(4)第一阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_reg   |训练步数    |300    |
+|lr_reg   |LBFGS优化器学习率    |1e-2    |
+|epoch_reg    |训练轮次     |50      |
+
+(5)第二阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |训练步数    |200    |
+|lr_pde   |LBFGS优化器学习率    |1e-1    |
+|epoch_pde    |训练轮次     |10      |
+
+2. 使用场景
+
+
 
 输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
@@ -194,18 +233,39 @@ To ensure solving efficiency, we first utilize the low-resolution reference solu
 
 Usage Instructions:
 
-1. Configure config.py:
+1. 参数说明
 
-   (1) Model naming convention: Model name format is like "ionization function type - initial condition type". There are three types of ionization function (zconst, zline and zsquare) and two types of initial condition (const and gauss) in total.
+(1)系统参数：
 
-   (2) Compute device: Set to either "cpu" or "cuda".
+|参数      |说明      |示例      |说明      |
+|:--------:|:--------:|:--------:|:-------:|
+|model_name    |目标模型    |"zconst-const"  |"电离度函数类型-初边值函数类型"|
+|device_name   |计算设备    |"cuda"          |"cuda"或"cpu"               |  
 
-   (3) Path configuration: Set "True" for the corresponding ionization function (zconst/zline/zsquare) being used, and "False" for the other two.
+(2)必选参数：
 
-2. Adjust training iterations (Nfit) and learning rates (lr, lr_E and lr_T) in the neural network according to the comments in main.py.
+参数zconst、zline和zsquare中，有且仅有一个值为True，其余两个值为False
 
-3. Run the main program "python main.py",
+(3)网格配置参数：
 
-   with output results: (1) sol_reg.npy - Results from coarse-grid data-driven training; (2) sol_pinn.npy - Results from PDE physics-constrained training.
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nx   |x轴网格点数    |257    |
+|Ny   |y轴网格点数    |257    |
+|n    |下采样倍数     |4      |
 
-4. Execute the visualization script "interp_plot.ipynb".
+(4)第一阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_reg   |训练步数    |300    |
+|lr_reg   |LBFGS优化器学习率    |1e-2    |
+|epoch_reg    |训练轮次     |50      |
+
+(5)第二阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |训练步数    |200    |
+|lr_pde   |LBFGS优化器学习率    |1e-1    |
+|epoch_pde    |训练轮次     |10      |
