@@ -16,6 +16,7 @@ zsquare = False
 
 Nx = 257 # Number of grid point on x-axis
 Ny = 257 # Number of grid point on y-axis
+n = 4 # Downsampling factor
 
 # Model trained by coarse-grid reference data
 Nfit_reg = 300 # Number of training iterations
@@ -146,19 +147,19 @@ def init_config():
     Z_fine = Z.reshape(-1,1)
 
     # coarse grid data
-    X_coarse = X[::4,::4]
-    Y_coarse = Y[::4,::4]
-    Z_coarse = Z[::4,::4].reshape(-1,1)
+    X_coarse = X[::n,::n]
+    Y_coarse = Y[::n,::n]
+    Z_coarse = Z[::n,::n].reshape(-1,1)
     inp_coarse = torch.concat(
         [X_coarse.reshape(-1,1), Y_coarse.reshape(-1,1)], 
         axis=1).requires_grad_().cuda()
-    D_coarse = D_ref[::4,::4]
-    K_coarse = K_ref[::4,::4]
-    E_coarse_prev = E_prev[::4,::4]
-    E_coarse_ref = E_ref[::4,::4]
-    T_coarse_prev = T_prev[::4,::4]
-    T_coarse_ref = T_ref[::4,::4]
-    sigma_coarse_ref = sigma_ref[::4,::4]
+    D_coarse = D_ref[::n,::n]
+    K_coarse = K_ref[::n,::n]
+    E_coarse_prev = E_prev[::n,::n]
+    E_coarse_ref = E_ref[::n,::n]
+    T_coarse_prev = T_prev[::n,::n]
+    T_coarse_ref = T_ref[::n,::n]
+    sigma_coarse_ref = sigma_ref[::n,::n]
 
     # internal data
     Xd = X[1:-1,1:-1]
