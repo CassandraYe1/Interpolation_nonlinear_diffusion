@@ -1,10 +1,9 @@
 import torch
-import torch.optim as optim
 from utils import relative_l2
 import config as cfg
 
 
-def train_model_reg(model_E, model_T, Nfit=300, lr_E=1e-2, lr_T=1e-2):
+def train_model_reg(model_E, model_T, Nfit=cfg.Nfit_reg, lr_E=cfg.lr_E_reg, lr_T=cfg.lr_T_reg, epo=cfg.epoch_reg):
     """
     Train the model using only coarse-grid reference data.
 
@@ -13,16 +12,14 @@ def train_model_reg(model_E, model_T, Nfit=300, lr_E=1e-2, lr_T=1e-2):
         model_T: The neural network model of T to train
         Nfit   : Number of training iterations
         lr     : Learning rate for LBFGS optimizer
+        epo    : Number of training epoch
 
     Returns:
-        model_E: The trained model of E
-        model_T: The trained model of T
+        [model_E, model_T]: The trained model of E and T
     """
     
     opt_lbfgs_E = torch.optim.LBFGS(model_E.parameters(), lr=lr_E)
-    #sch_adam = torch.optim.lr_scheduler.StepLR(opt_adam_E, 5000, gamma=0.9)
     opt_lbfgs_T = torch.optim.LBFGS(model_T.parameters(), lr=lr_T)
-    #sch_adam = torch.optim.lr_scheduler.StepLR(opt_adam_T, 5000, gamma=0.9)
 
     for i in range(Nfit):
         model_E.train()
@@ -47,7 +44,7 @@ def train_model_reg(model_E, model_T, Nfit=300, lr_E=1e-2, lr_T=1e-2):
         opt_lbfgs_E.step(closure_E)
         opt_lbfgs_T.step(closure_T)
 
-        if i % 50 == 0:
+        if i % epo == 0:
             model_E.eval()
             Epred = model_E(cfg.inp_fine, cfg.Z_fine).cpu().detach().numpy().reshape(257,257)
             ref_rl2_E = relative_l2(cfg.E_ref.cpu().numpy().reshape(-1), Epred.reshape(-1))

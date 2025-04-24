@@ -1,11 +1,9 @@
 import torch
-import torch.optim as optim
-from model import DeepNN
 from utils import relative_l2, pde_res
 import config as cfg
 
 
-def train_model_pde(model_E_cur, model_T_cur, Nfit=200, lr_E=1e-1, lr_T=1e-1):
+def train_model_pde(model_E_cur, model_T_cur, Nfit=cfg.Nfit_pde, lr_E=cfg.lr_E_pde, lr_T=cfg.lr_T_pde, epo=cfg.epoch_pde):
     """
     Train model using both coarse-grid reference data and PDE residuals.
     
@@ -15,16 +13,14 @@ def train_model_pde(model_E_cur, model_T_cur, Nfit=200, lr_E=1e-1, lr_T=1e-1):
         Nfit       : Number of training iterations
         lr_E       : Learning rate for LBFGS optimizer of E
         lr_T       : Learning rate for LBFGS optimizer of T
+        epo        : Number of training epoch
         
     Returns:
-        model_E_cur: The trained model of E
-        model_T_cur: The trained model of T
+        [model_E_cur, model_T_cur]: The trained model of E and T
     """
     
     opt_lbfgs_E = torch.optim.LBFGS(model_E_cur.parameters(), lr=lr_E)
-    # opt_adam_E = torch.optim.Adam(model_E_cur.parameters(), lr=1e-8)
     opt_lbfgs_T = torch.optim.LBFGS(model_T_cur.parameters(), lr=lr_T)
-    # opt_adam_T = torch.optim.Adam(model_T_cur.parameters(), lr=1e-8)
 
     for i in range(Nfit):
         model_E_cur.train()
@@ -46,12 +42,11 @@ def train_model_pde(model_E_cur, model_T_cur, Nfit=200, lr_E=1e-1, lr_T=1e-1):
             loss.backward()
             return loss
 
-        # opt_adam.step()
         loss = closure()
         opt_lbfgs_E.step(closure)
         opt_lbfgs_T.step(closure)
             
-        if i % 10 == 0:
+        if i % epo == 0:
             model_E_cur.eval()
             Ed_pred = model_E_cur(cfg.inp_d, cfg.Zd)
             El_pred = model_E_cur(cfg.inp_l, cfg.Zl)
@@ -80,14 +75,12 @@ def train_model_pde(model_E_cur, model_T_cur, Nfit=200, lr_E=1e-1, lr_T=1e-1):
 
             Epred = model_E_cur(cfg.inp_fine, cfg.Z_fine).cpu().detach().numpy().reshape(257,257)
             ref_rl2_E = relative_l2(cfg.E_ref.cpu().numpy().reshape(-1), Epred.reshape(-1))
-            print("E: adam : {:d} - ref_rl2 {:.4e} - pde {:.4e} - lbc {:.4e} - rbc {:.4e} - tbc {:.4e} - bbc {:.4e}".format(
+            print("E: lbfgs : {:d} - ref_rl2 {:.4e} - pde {:.4e} - lbc {:.4e} - rbc {:.4e} - tbc {:.4e} - bbc {:.4e}".format(
                 i, ref_rl2_E, pde_loss[0], lbc_loss_E, rbc_loss_E, tbc_loss_E, bbc_loss_E))
-            # print("E: lbfgs : {:d} - ref_rl2 {:.4e}".format(i, ref_rl2_E))
 
             Tpred = model_T_cur(cfg.inp_fine, cfg.Z_fine).cpu().detach().numpy().reshape(257,257)
             ref_rl2_T = relative_l2(cfg.T_ref.cpu().numpy().reshape(-1), Tpred.reshape(-1))
-            print("T: adam : {:d} - ref_rl2 {:.4e} - pde {:.4e} - lbc {:.4e} - rbc {:.4e} - tbc {:.4e} - bbc {:.4e}".format(
+            print("T: lbfgs : {:d} - ref_rl2 {:.4e} - pde {:.4e} - lbc {:.4e} - rbc {:.4e} - tbc {:.4e} - bbc {:.4e}".format(
                 i, ref_rl2_T, pde_loss[1], lbc_loss_T, rbc_loss_T, tbc_loss_T, bbc_loss_T))
-            # print("T: lbfgs : {:d} - ref_rl2 {:.4e}".format(i, ref_rl2_T))
             
     return [model_E_cur, model_T_cur]

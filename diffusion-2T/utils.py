@@ -6,7 +6,7 @@ import random
 
 def set_seed(seed=42):
     """
-    Set all relevant random number seeds
+    Set all relevant random number seeds.
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -19,32 +19,32 @@ def set_seed(seed=42):
 
 def relative_l2(Eref, Epred):
     """
-    Set relative_l2 error
+    Set relative_l2 error.
 
     Args:
-        Eref:  Reference solution
-        Epred: Predictive solution
+        Eref:  [cfg.Nx, cfg.Ny] Reference solution
+        Epred: [cfg.Nx, cfg.Ny] Predictive solution
 
     Returns:
-        Relative_l2 error between predictive solution and reference solution
+        [cfg.Nx, cfg.Ny] Relative_l2 error between predictive solution and reference solution
     """
     return ((Eref - Epred)**2).mean() / (Eref**2).mean()
 
 
 def pde_res(E, T, D, K, E_, T_, sigma, X, dt):
     """
-    Set the PDE residual
+    Set the PDE residual.
 
     Args:
-        E, T   : E^n, T^n         current solution
-        D_, K_ : D^n, K^n         current coefficient
-        E_, T_ : E^{n-1}, T^{n-1} previous coefficient
-        sigma  : sigma^n * ((T^n)**4 - (E^n))
-        X      : Grid points on X-axis
-        dt     : Time step
+        E, T   : E^n, T^n         [cfg.Nx, cfg.Ny] current solution
+        D_, K_ : D^n, K^n         [cfg.Nx, cfg.Ny] current coefficient
+        E_, T_ : E^{n-1}, T^{n-1} [cfg.Nx, cfg.Ny] previous coefficient
+        sigma  : sigma^n * ((T^n)**4 - (E^n)) [cfg.Nx, cfg.Ny]
+        X      : [cfg.Nx, cfg.Ny] Grid points on X-axis
+        dt     : [cfg.Nx, cfg.Ny] Time step
 
     Returns:
-        [PDE residual E, PDE residual T]: According to target nonlinear radiation diffusion
+        [PDE residual E, PDE residual T]: [2, cfg.Nx, cfg.Ny] According to target nonlinear radiation diffusion
     """
     ones = torch.ones_like(E)
     Egrad = torch.autograd.grad(E, X, grad_outputs=ones, create_graph=True)[0]
