@@ -81,7 +81,7 @@ $$
 \end{aligned}
 $$
 
-为了获取目标单温和双温问题的数据，取256×256的细网格点，设时间步长为0.001，设皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并利用下采样得到65×65的粗网格解 $E_{coarse}$ 。
+为了获取目标单温和双温问题的数据，取256×256的细网格点，设时间步长为0.001，设皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并通过4倍下采样得到65×65的粗网格解 $E_{coarse}$ 。
 
 构建一个全连接神经网络，该网络包含两个隐藏层，每一层包含512个神经元，激活函数选用relu函数。将目标点的空间坐标值作为输入数据，输出层设置为二维的，按电离度函数 $z$ 在不同目标点的大小设置布尔值，从而对各目标点的输出结果进行选择。
 
@@ -186,7 +186,7 @@ To generate the required data for both single-temperature and two-temperature ta
 
    (2) Computed high-fidelity reference solutions using the finite element method, which serve as the fine-grid reference solution;
 
-   (3) Generated corresponding coarse-grid data $E_{coarse}$ by downsampling the FEM results as 65×65.
+   (3) Generated corresponding coarse-grid data $E_{coarse}$ through 4x downsampling the FEM results as 65×65.
 
 Construct a fully connected neural network that contains two hidden layers. Each layer contains 512 neurons with ReLU as the activation function. Take the spatial coordinate values of the target points as input data and set a two-dimensional output layer. Configure Boolean values in the output layer based on the magnitude of the ionization function $z$ at different target points, so that the model will select the output results for each target point.
 
