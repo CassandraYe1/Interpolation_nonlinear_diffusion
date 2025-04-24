@@ -1,6 +1,7 @@
 import numpy as np
 import torch
 torch.set_default_dtype(torch.float64)
+import os
 import config as cfg
 
 
@@ -15,10 +16,14 @@ def load_data():
         X      : [cfg.Nx, cfg.Ny] Grid points on X-axis
         Y      : [cfg.Nx, cfg.Ny] Grid points on Y-axis
     """
-    sol = np.load('./' + cfg.model_name + '/data/sol.npy')
-    kappa = np.load('./' + cfg.model_name + '/data/kappa.npy')
-    X = np.load('./' + cfg.model_name + '/data/X.npy')
-    Y = np.load('./' + cfg.model_name + '/data/Y.npy')
+    # The file "data_loader.py" must be located in the project root directory.
+    project_root = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(project_root, cfg.model_name, 'data')
+
+    sol = np.load(os.path.join(data_path, 'sol.npy'))
+    kappa = np.load(os.path.join(data_path, 'kappa.npy'))
+    X = np.load(os.path.join(data_path, 'X.npy'))
+    Y = np.load(os.path.join(data_path, 'Y.npy'))
 
     D_ref = torch.tensor(kappa[-1]).cuda()
     E_prev = torch.tensor(sol[-2]).cuda()
