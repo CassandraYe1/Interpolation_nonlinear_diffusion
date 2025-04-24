@@ -150,10 +150,10 @@ $$
 
 2. 使用场景
 
-单温问题：
+这里给出每种情况对应的命令行语句。
 
 ```bash
-#这里给出每种情况对应的命令行语句
+## 单温问题：
 # zconst-const
 python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
 # zconst-gauss
@@ -167,10 +167,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 
 # zsquare-gauss
 python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
 
-双温问题：
-
-```bash
-#这里给出每种情况对应的命令行语句
+## 双温问题：
 # zconst-const
 python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
 # zconst-gauss
@@ -183,6 +180,7 @@ python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 
 python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
 # zsquare-gauss
 python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+```
 
 输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
@@ -326,10 +324,10 @@ Usage Instructions:
 
 2. 使用场景
 
-单温问题：
+这里给出每种情况对应的命令行语句。
 
 ```bash
-#这里给出每种情况对应的命令行语句
+## 单温问题：
 # zconst-const
 python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
 # zconst-gauss
@@ -343,10 +341,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 
 # zsquare-gauss
 python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
 
-双温问题：
-
-```bash
-#这里给出每种情况对应的命令行语句
+## 双温问题：
 # zconst-const
 python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
 # zconst-gauss
@@ -359,4 +354,4 @@ python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 
 python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
 # zsquare-gauss
 python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
-
+```
