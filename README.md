@@ -112,13 +112,26 @@ $$
 
 (4)第一阶段训练参数：
 
+单温问题：
+
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
 |Nfit_reg   |训练步数    |300    |
 |lr_reg   |LBFGS优化器学习率    |1e-2    |
 |epoch_reg    |训练轮次     |50      |
 
+双温问题：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_reg   |训练步数    |300    |
+|lr_E_reg   |关于E的LBFGS优化器学习率    |1e-2    |
+|lr_T_reg   |关于T的LBFGS优化器学习率    |1e-2    |
+|epoch_reg    |训练轮次     |50      |
+
 (5)第二阶段训练参数：
+
+单温：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -126,9 +139,50 @@ $$
 |lr_pde   |LBFGS优化器学习率    |1e-1    |
 |epoch_pde    |训练轮次     |10      |
 
+双温：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |训练步数    |200    |
+|lr_E_pde   |关于E的LBFGS优化器学习率    |1e-1    |
+|lr_T_pde   |关于T的LBFGS优化器学习率    |1e-1    |
+|epoch_pde    |训练轮次     |10      |
+
 2. 使用场景
 
+单温问题：
 
+```bash
+#这里给出每种情况对应的命令行语句
+# zconst-const
+python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
+# zconst-gauss
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 100 --lr_pde 1e-1
+# zline-const
+python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1
+# zline-gauss
+python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1
+# zsquare-const
+python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1
+# zsquare-gauss
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
+
+双温问题：
+
+```bash
+#这里给出每种情况对应的命令行语句
+# zconst-const
+python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
+# zconst-gauss
+python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zline-const
+python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zline-gauss
+python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zsquare-const
+python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zsquare-gauss
+python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
 
 输出结果为(1)低分辨率数据驱动损失函数训练的结果sol_reg.npy；(2)PDE方程物理约束驱动损失函数训练的结果sol_pinn.npy。
 
@@ -269,3 +323,40 @@ Usage Instructions:
 |Nfit_pde   |训练步数    |200    |
 |lr_pde   |LBFGS优化器学习率    |1e-1    |
 |epoch_pde    |训练轮次     |10      |
+
+2. 使用场景
+
+单温问题：
+
+```bash
+#这里给出每种情况对应的命令行语句
+# zconst-const
+python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
+# zconst-gauss
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 100 --lr_pde 1e-1
+# zline-const
+python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1
+# zline-gauss
+python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1
+# zsquare-const
+python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1
+# zsquare-gauss
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
+
+双温问题：
+
+```bash
+#这里给出每种情况对应的命令行语句
+# zconst-const
+python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
+# zconst-gauss
+python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zline-const
+python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zline-gauss
+python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zsquare-const
+python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+# zsquare-gauss
+python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+
