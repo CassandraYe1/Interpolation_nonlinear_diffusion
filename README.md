@@ -170,9 +170,9 @@ $$
 ```bash
 ## 单温问题：
 # zconst-const
-python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
+python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
 # zconst-gauss
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.2
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
 # zline-const
 python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 # zline-gauss
@@ -413,9 +413,9 @@ Here are the corresponding command-line statements for each case:
 ```bash
 ## Single-temperature problem:
 # zconst-const
-python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
+python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
 # zconst-gauss
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.2
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
 # zline-const
 python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 # zline-gauss
