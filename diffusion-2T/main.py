@@ -5,9 +5,14 @@ import argparse
 import os
 import copy
 import time
+import matplotlib.pyplot as plt
+import matplotlib as mpl
 
-# Parameter parsing and configuration update.
+
 def parse_args():
+    """
+    Parameter parsing and configuration update.
+    """
     parser = argparse.ArgumentParser(description="Train the model with flexible parameters")
 
     parser.add_argument('--model_name', type=str, default='zconst-const', help='Model name (e.g., zconst-const)')
@@ -30,6 +35,9 @@ def parse_args():
     parser.add_argument('--lr_E_pde', type=float, default=1e-1, help='Learning rate for LBFGS optimizer of E in PDE phase')
     parser.add_argument('--lr_T_pde', type=float, default=1e-1, help='Learning rate for LBFGS optimizer of T in PDE phase')
     parser.add_argument('--epoch_pde', type=int, default=10, help='Epochs for PDE training')
+
+    parser.add_argument('--vmax_E', type=float, default=0.25, help='Maximum value of error colorbar E')
+    parser.add_argument('--vmax_T', type=float, default=0.25, help='Maximum value of error colorbar T')
     args = parser.parse_args()
 
     # Verify that the three parameters are mutually exclusive.
@@ -42,7 +50,6 @@ def parse_args():
 # Update global parameters in config.py
 args = parse_args()
 import config as cfg
-
 cfg.model_name = args.model_name
 cfg.device_name = args.device_name
 cfg.zconst = args.zconst
@@ -59,7 +66,8 @@ cfg.Nfit_pde = args.Nfit_pde
 cfg.lr_E_pde = args.lr_E_pde
 cfg.lr_T_pde = args.lr_T_pde
 cfg.epoch_pde = args.epoch_pde
-
+cfg.vmax_E = args.vmax_E
+cfg.vmax_T = args.vmax_T
 cfg.init_config()
 
 
@@ -113,10 +121,119 @@ np.save(os.path.join(data_path, 'sol_pinn_T'), T_pinn)
 torch.save(model_E_cur.state_dict(), os.path.join(data_path, 'model_pinn_E.pt'))
 torch.save(model_T_cur.state_dict(), os.path.join(data_path, 'model_pinn_T.pt'))
 
+
 # L2 error
+X = cfg.X.detach().cpu()
+Y = cfg.Y.detach().cpu()
 E_ref = cfg.E_ref.cpu()
 T_ref = cfg.T_ref.cpu()
 print('E: Regression Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_reg)))
 print('E: PINN Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_pinn)))
 print('T: Regression Solution rl2: {:.4e}'.format(relative_l2(T_ref, T_reg)))
 print('T: PINN Solution rl2: {:.4e}'.format(relative_l2(T_ref, T_pinn)))
+
+
+# Plot the comparison of regression and PINN E-solutions.
+mpl.rcParams['font.size'] = 10
+mpl.rcParams['axes.titlesize'] = 12
+mpl.rcParams['axes.labelsize'] = 11
+mpl.rcParams['xtick.labelsize'] = 9
+mpl.rcParams['ytick.labelsize'] = 9
+
+fig, axs = plt.subplots(2, 2, figsize=(8, 7), layout='constrained', 
+                        sharex=True, sharey=True)
+
+vmin = E_ref.min()
+vmax = E_ref.max()
+cbar_kw = {'fraction': 0.046, 'pad': 0.04}
+
+# Plot 1: Regression Solution
+pcm1 = axs[0,0].pcolormesh(X, Y, E_reg, vmin=vmin, vmax=vmax, cmap='jet', shading='auto')
+axs[0,0].set_title("(a) Regression Solution", pad=12)
+axs[0,0].set_xlabel("x")
+axs[0,0].set_ylabel("y")
+axs[0,0].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm1, ax=axs[0,0], **cbar_kw)
+
+# Plot 2: Regression Error
+pcm2 = axs[0,1].pcolormesh(X, Y, np.abs(E_ref - E_reg), vmin=0, vmax=cfg.vmax_E, cmap='jet', shading='auto')
+axs[0,1].set_title("(b) Regression Error", pad=12)
+axs[0,1].set_xlabel("x")
+axs[0,1].set_ylabel("y")
+axs[0,1].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm2, ax=axs[0,1], **cbar_kw)
+
+# Plot 3: PINN Solution
+pcm3 = axs[1,0].pcolormesh(X, Y, E_pinn, vmin=vmin, vmax=vmax, cmap='jet', shading='auto')
+axs[1,0].set_title("(c) PINN Solution", pad=12)
+axs[1,0].set_xlabel("x")
+axs[1,0].set_ylabel("y")
+axs[1,0].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm3, ax=axs[1,0], **cbar_kw)
+
+# Plot 4: PINN Error
+pcm4 = axs[1,1].pcolormesh(X, Y, np.abs(E_ref - E_pinn), vmin=0, vmax=cfg.vmax_E, cmap='jet', shading='auto')
+axs[1,1].set_title("(d) PINN Error", pad=12)
+axs[1,1].set_xlabel("x")
+axs[1,1].set_ylabel("y")
+axs[1,1].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm4, ax=axs[1,1], **cbar_kw)
+
+# Add overall title and adjust layout
+fig.suptitle("Comparison of Regression and PINN E-Solutions", y=1.04, fontsize=15)
+plt.subplots_adjust(wspace=0.3, hspace=0.3)
+
+plt.savefig(os.path.join(data_path, 'fig_E.png'), dpi=300, bbox_inches='tight')
+
+
+# Plot the comparison of regression and PINN T-solutions.
+mpl.rcParams['font.size'] = 10
+mpl.rcParams['axes.titlesize'] = 12
+mpl.rcParams['axes.labelsize'] = 11
+mpl.rcParams['xtick.labelsize'] = 9
+mpl.rcParams['ytick.labelsize'] = 9
+
+fig, axs = plt.subplots(2, 2, figsize=(8, 7), layout='constrained', 
+                        sharex=True, sharey=True)
+
+vmin = T_ref.min()
+vmax = T_ref.max()
+cbar_kw = {'fraction': 0.046, 'pad': 0.04}
+
+# Plot 1: Regression Solution
+pcm1 = axs[0,0].pcolormesh(X, Y, T_reg, vmin=vmin, vmax=vmax, cmap='jet', shading='auto')
+axs[0,0].set_title("(a) Regression Solution", pad=12)
+axs[0,0].set_xlabel("x")
+axs[0,0].set_ylabel("y")
+axs[0,0].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm1, ax=axs[0,0], **cbar_kw)
+
+# Plot 2: Regression Error
+pcm2 = axs[0,1].pcolormesh(X, Y, np.abs(T_ref - T_reg), vmin=0, vmax=cfg.vmax_T, cmap='jet', shading='auto')
+axs[0,1].set_title("(b) Regression Error", pad=12)
+axs[0,1].set_xlabel("x")
+axs[0,1].set_ylabel("y")
+axs[0,1].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm2, ax=axs[0,1], **cbar_kw)
+
+# Plot 3: PINN Solution
+pcm3 = axs[1,0].pcolormesh(X, Y, T_pinn, vmin=vmin, vmax=vmax, cmap='jet', shading='auto')
+axs[1,0].set_title("(c) PINN Solution", pad=12)
+axs[1,0].set_xlabel("x")
+axs[1,0].set_ylabel("y")
+axs[1,0].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm3, ax=axs[1,0], **cbar_kw)
+
+# Plot 4: PINN Error
+pcm4 = axs[1,1].pcolormesh(X, Y, np.abs(T_ref - T_pinn), vmin=0, vmax=cfg.vmax_T, cmap='jet', shading='auto')
+axs[1,1].set_title("(d) PINN Error", pad=12)
+axs[1,1].set_xlabel("x")
+axs[1,1].set_ylabel("y")
+axs[1,1].grid(True, linestyle=':', alpha=0.6)
+fig.colorbar(pcm4, ax=axs[1,1], **cbar_kw)
+
+# Add overall title and adjust layout
+fig.suptitle("Comparison of Regression and PINN T-Solutions", y=1.04, fontsize=15)
+plt.subplots_adjust(wspace=0.3, hspace=0.3)
+
+plt.savefig(os.path.join(data_path, 'fig_T.png'), dpi=300, bbox_inches='tight')

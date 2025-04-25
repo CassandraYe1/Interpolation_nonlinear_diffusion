@@ -29,6 +29,9 @@ lr_E_pde = 1e-1 # Learning rate for LBFGS optimizer of E
 lr_T_pde = 1e-1 # Learning rate for LBFGS optimizer of T
 epoch_pde = 10 # Epoch
 
+vmax_E = 0.25 # Maximum value of error colorbar E
+vmax_T = 0.25 # Maximum value of error colorbar T
+
 ## Phase 2: Define variables (to be initialized in init_config())
 D_ref = None
 K_ref = None
