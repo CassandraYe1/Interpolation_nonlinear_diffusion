@@ -150,9 +150,18 @@ $$
 
 (6)可视化参数：
 
+单温问题：
+
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
 |vmax   |误差图像色带的最大值    |0.25    |
+
+双温问题：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|vmax_E   |E的误差图像色带的最大值    |0.25    |
+|vmax_T   |T的误差图像色带的最大值    |0.25    |
 
 2. 使用场景
 
@@ -167,25 +176,25 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 30
 # zline-const
 python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 # zline-gauss
-python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax
+python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
 # zsquare-const
-python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax
+python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
 # zsquare-gauss
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
 
 ## 双温问题：
 # zconst-const
-python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
+python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2 --vmax_E --vmax_T
 # zconst-gauss
-python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zline-const
-python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zline-gauss
-python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zsquare-const
-python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zsquare-gauss
-python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 ```
 
 3. 输出说明
@@ -378,9 +387,18 @@ Two-temperature problem:
 
 (6) Visualization parameters:
 
+Single-temperature problem:
+
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
 |vmax   |Maximum value of error colorbar    |0.25    |
+
+Two-temperature problem:
+
+|Parameter      |Description      |Default      |
+|:--------:|:--------:|:---------:|
+|vmax_E   |Maximum value of error colorbar E   |0.25    |
+|vmax_T   |Maximum value of error colorbar T   |0.25    |
 
 2. Use cases
 
@@ -395,25 +413,25 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 30
 # zline-const
 python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 # zline-gauss
-python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax
+python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
 # zsquare-const
-python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax
+python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
 # zsquare-gauss
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
 
 ## Two-temperature problem:
 # zconst-const
-python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2
+python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2 --vmax_E --vmax_T
 # zconst-gauss
-python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zline-const
-python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zline-gauss
-python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zsquare-const
-python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 # zsquare-gauss
-python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1
+python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E --vmax_T
 ```
 
 3. Output specification
