@@ -148,6 +148,12 @@ $$
 |lr_T_pde   |关于T的LBFGS优化器学习率    |1e-1    |
 |epoch_pde    |训练轮次     |10      |
 
+(6)可视化参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|vmax   |误差图像色带的最大值    |0.25    |
+
 2. 使用场景
 
 这里给出每种情况对应的命令行语句。
@@ -155,17 +161,17 @@ $$
 ```bash
 ## 单温问题：
 # zconst-const
-python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
+python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2 --vmax
 # zconst-gauss
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 100 --lr_pde 1e-1
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 100 --lr_pde 1e-1 --vmax
 # zline-const
-python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1
+python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 # zline-gauss
-python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1
+python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax
 # zsquare-const
-python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1
+python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax
 # zsquare-gauss
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax
 
 ## 双温问题：
 # zconst-const
@@ -370,6 +376,11 @@ Two-temperature problem:
 |lr_T_pde   |LBFGS optimizer learning rate of T    |1e-1    |
 |epoch_pde    |training epochs     |10      |
 
+(6) Visualization parameters:
+
+|Parameter      |Description      |Default      |
+|:--------:|:--------:|:---------:|
+|vmax   |Maximum value of error colorbar    |0.25    |
 
 2. Use cases
 
@@ -378,17 +389,17 @@ Here are the corresponding command-line statements for each case:
 ```bash
 ## Single-temperature problem:
 # zconst-const
-python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2
+python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 150 --lr_pde 1e-2 --vmax
 # zconst-gauss
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 100 --lr_pde 1e-1
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_reg 1e-3 --Nfit_pde 100 --lr_pde 1e-1 --vmax
 # zline-const
-python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1
+python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 # zline-gauss
-python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1
+python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax
 # zsquare-const
-python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1
+python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax
 # zsquare-gauss
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax
 
 ## Two-temperature problem:
 # zconst-const
@@ -417,6 +428,8 @@ For single-temperature problem, results will be saved in "./diffusion-1T/<model_
 
 (4) sol_pinn.npy : Phase 2 predictions
 
+(5) fig.png : figure about the comparison of regression and PINN solutions
+
 For two-temperature problem, results will be saved in "./diffusion-2T/<model_name>/results/":
 
 (1) model_reg_E.pt : Phase 1 regression trained model of E
@@ -434,3 +447,7 @@ For two-temperature problem, results will be saved in "./diffusion-2T/<model_nam
 (7) sol_pinn_E.npy : Phase 2 E-predictions
 
 (8) sol_pinn_T.npy : Phase 2 T-predictions
+
+(9) fig_E.png : figure about the comparison of regression and PINN E-solutions
+
+(10) fig_T.png : figure about the comparison of regression and PINN T-solutions
