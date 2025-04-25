@@ -27,6 +27,8 @@ Nfit_pde = 200 # Number of training iterations
 lr_pde = 1e-1 # Learning rate for LBFGS optimizer
 epoch_pde = 10 # Epoch
 
+vmax = 0.25 # Maximum value of error colorbar
+
 ## Phase 2: Define variables (to be initialized in init_config())
 D_ref = None
 E_prev = None
