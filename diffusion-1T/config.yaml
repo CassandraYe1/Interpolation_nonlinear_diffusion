@@ -15,8 +15,11 @@ model_settings:
 grid_settings:
   Nx: 257 # X轴网格点数 | Number of grid points on x-axis
   Ny: 257 # Y轴网格点数 | Number of grid points on y-axis
-  width: 512 # 隐藏层单元数 | Number of units in each hidden layer
   n: 4 # 粗网格降采样因子 | Downsampling factor for coarse grid
+
+# 网络设置 | Network Settings
+network_settings:
+  width: 512 # 隐藏层单元数 | Number of units in each hidden layer
 
 # 训练设置 | Training Settings
 training_settings:

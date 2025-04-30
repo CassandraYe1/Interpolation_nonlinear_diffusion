@@ -18,6 +18,7 @@ class Config:
         # 初始化各配置组字典 | Initialize configuration group dictionaries
         self.model_settings = {}
         self.grid_settings = {}
+        self.network_settings = {}
         self.training_settings = {}
         self.visualization = {}
 
@@ -94,6 +95,7 @@ class Config:
             # 获取各配置组 | Get each configuration group
             self.model_settings = config_data.get('model_settings', {})
             self.grid_settings = config_data.get('grid_settings', {})
+            self.network_settings = config_data.get('network_settings', {})
             self.training_settings = config_data.get('training_settings', {})
             self.visualization = config_data.get('visualization', {})
 
@@ -103,8 +105,8 @@ class Config:
         self.ionization_type = self.model_settings.get('ionization_type', 'zconst')
         self.Nx = self.grid_settings.get('Nx', 257)
         self.Ny = self.grid_settings.get('Ny', 257)
-        self.width = self.grid_settings.get('width', 4)
         self.n = self.grid_settings.get('n', 4)
+        self.width = self.network_settings.get('width', 512)
         self.Nfit_reg = self.training_settings['regression'].get('Nfit', 300)
         self.lr_reg = self.training_settings['regression'].get('lr', 1e-2)
         self.epoch_reg = self.training_settings['regression'].get('epochs', 50)

@@ -30,8 +30,9 @@ def parse_args():
     # 网格设置参数 | Grid settings parameters
     parser.add_argument('--Nx', type=int, default=257, help='Number of grid points on x-axis')
     parser.add_argument('--Ny', type=int, default=257, help='Number of grid points on y-axis')
-    parser.add_argument('--width', type=int, default=512, help='Number of units in each hidden layer')
     parser.add_argument('--n', type=int, default=4, help='Downsampling factor')
+    # 网络设置参数 | Network settings parameters
+    parser.add_argument('--width', type=int, default=512, help='Number of units in each hidden layer')
     # 回归训练参数 | Regression training parameters
     parser.add_argument('--Nfit_reg', type=int, default=300, help='Number of training iterations for regularization phase')
     parser.add_argument('--lr_reg', type=float, default=1e-2, help='Learning rate for LBFGS optimizer in regularization phase')
