@@ -1,0 +1,46 @@
+# 模型设置 | Model Settings
+model_settings:
+  # 模型名称格式："电离度函数类别-初边值函数类别"
+  # Model name format: "ionization type-boundary condition type"
+  model_name: "zconst-const"
+
+  # 计算设备：cpu/cuda | Computing device: cpu/cuda
+  device_name: "cuda"
+
+  # 电离度函数类型：zconst(常数)/zline(间断)/zsquare(双方形)
+  # Ionization function type: zconst/zline/zsquare
+  ionization_type: "zconst"
+
+# 网格设置 | Grid Settings
+grid_settings:
+  Nx: 257 # X轴网格点数 | Number of grid points on x-axis
+  Ny: 257 # Y轴网格点数 | Number of grid points on y-axis
+  n: 4 # 粗网格降采样因子 | Downsampling factor for coarse grid
+
+# 网络设置 | Network Settings
+network_settings:
+  depth: 2 # 隐藏层层数 | Number of hidden layers
+  width: 512 # 隐藏层单元数 | Number of units in each hidden layer
+
+# 训练设置 | Training Settings
+training_settings:
+  # 基于粗网格参考数据的回归训练
+  # Regression training using coarse-grid reference data
+  regression:
+    Nfit: 300 # 训练迭代次数 | Number of training iterations
+    lr_E: 1e-2 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
+    lr_T: 1e-2 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
+    epochs: 50 # 训练轮数 | Training epochs
+
+  # 基于粗网格数据和PDE残差的训练
+  # Training using coarse-grid data and PDE residuals
+  pde:
+    Nfit: 200 # 训练迭代次数 | Number of training iterations
+    lr_E: 1e-1 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
+    lr_T: 1e-1 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
+    epochs: 50 # 训练轮数 | Training epochs
+
+# 可视化设置 | Visualization Settings
+visualization:
+  vmax_E: 0.25 # 关于E的误差颜色条的最大值 | Maximum value of error colorbar E
+  vmax_T: 0.25 # 关于T的误差颜色条的最大值 | Maximum value of error colorbar T
