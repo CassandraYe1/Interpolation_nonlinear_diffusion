@@ -341,7 +341,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
 
-设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
+设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-2，关于T的学习率为lr_T_pde=1e-2。可视化参数设置为vmax_E=0.28，vmax_T=0.02。
 
 命令行参数如下：
 
@@ -356,7 +356,122 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 |第一次训练 |1.0433e-4    |3.8226e-5    |
 |第二次训练 |4.1970e-5    |4.8864e-6    |
 
-<img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const" width="400" />
+<img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const-E" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const-T" width="400" />
+
+#### zconst-gauss
+
+电离度函数为常数（zconst）：$z=1$
+
+初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.004，vmax_T=0.015。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |E的l2相对误差 |T的l2相对误差 |
+|:--------:|:-----------:|:-----------:|
+|第一次训练 |1.0433e-4    |3.8226e-5    |
+|第二次训练 |4.1970e-5    |4.8864e-6    |
+
+<img src="./diffusion-2T/results/zconst-gauss/fig_E.png" alt="2T-zconst-gauss-E" width="400" /> <img src="./diffusion-2T/results/zconst-gauss/fig_T.png" alt="2T-zconst-gauss-T" width="400" />
+
+#### zline-const
+
+电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+
+初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+
+设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-2，关于T的学习率为lr_T_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=1.7，vmax_T=0.03。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 1.7 --vmax_T 0.03
+```
+
+关于变量E和T的两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |E的l2相对误差 |T的l2相对误差 |
+|:--------:|:-----------:|:-----------:|
+|第一次训练 |1.0433e-4    |3.8226e-5    |
+|第二次训练 |4.1970e-5    |4.8864e-6    |
+
+<img src="./diffusion-2T/results/zline-const/fig_E.png" alt="2T-zline-const-E" width="400" /> <img src="./diffusion-2T/results/zline-const/fig_T.png" alt="2T-zline-const-T" width="400" />
+
+#### zline-gauss
+
+电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+
+初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+设置第一次回归训练时的训练步数为Nfit_reg=200，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-4；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.012，vmax_T=0.15。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |E的l2相对误差 |T的l2相对误差 |
+|:--------:|:-----------:|:-----------:|
+|第一次训练 |1.0433e-4    |3.8226e-5    |
+|第二次训练 |4.1970e-5    |4.8864e-6    |
+
+<img src="./diffusion-2T/results/zline-gauss/fig_E.png" alt="2T-zline-gauss-E" width="400" /> <img src="./diffusion-2T/results/zline-gauss/fig_T.png" alt="2T-zline-gauss-T" width="400" />
+
+#### zsquare-const
+
+电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+
+初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+
+设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.6，vmax_T=0.15。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.6 --vmax_T 0.15
+```
+
+关于变量E和T的两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |E的l2相对误差 |T的l2相对误差 |
+|:--------:|:-----------:|:-----------:|
+|第一次训练 |1.0433e-4    |3.8226e-5    |
+|第二次训练 |4.1970e-5    |4.8864e-6    |
+
+<img src="./diffusion-2T/results/zsquare-const/fig_E.png" alt="2T-zsquare-const-E" width="400" /> <img src="./diffusion-2T/results/zsquare-const/fig_T.png" alt="2T-zsquare-const-T" width="400" />
+
+#### zsquare-gauss
+
+电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+
+初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+设置第一次回归训练时的训练步数为Nfit_reg=700，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=100，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.006，vmax_T=0.11。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |E的l2相对误差 |T的l2相对误差 |
+|:--------:|:-----------:|:-----------:|
+|第一次训练 |1.0433e-4    |3.8226e-5    |
+|第二次训练 |4.1970e-5    |4.8864e-6    |
+
+<img src="./diffusion-2T/results/zsquare-gauss/fig_E.png" alt="2T-zsquare-gauss-E" width="400" /> <img src="./diffusion-2T/results/zsquare-gauss/fig_T.png" alt="2T-zsquare-gauss-T" width="400" />
 
 -----------------------------------------------------------------------------------------------------------------------------
 
