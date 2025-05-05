@@ -1,8 +1,16 @@
-项目标题：
+# 项目标题：
 
-非线性辐射扩散问题的神经网络算法研究
+非线性辐射扩散问题的神经网络超分辨率算法研究
 
-项目描述：
+# 引言：
+
+非线性辐射扩散方程的高分辨率数值求解对于精确模拟能量输运过程至关重要。然而，传统的数值方法（如有限元法、有限体积法）尽管能够通过极细网格获得参考解，其巨大的计算成本严重制约了实际工程应用。与此同时，直接采用粗网格求解会导致显著的数值耗散和相位误差，特别是在强非线性区域（如电离度函数 $z$ 急剧变化处）。这一困境本质上是一个典型的科学计算超分辨率问题：如何从低分辨率数值解中高效恢复高分辨率物理场。
+
+针对这些问题，本项目提出了一种超分辨率神经网络框架，用神经网络直接学习从低分辨率网格到高分辨率网格的映射关系。该网络构建了"粗网格输入→网络预测→物理校正"的闭环架构，在传统数据驱动损失的基础上，引入基于方程的物理约束，确保预测解严格满足物理规律，在保证非线性辐射扩散问题求解精度的同时提升求解效率。
+
+# 方法：
+
+## 问题描述：
 
 给定 $\Omega = [0,1]\times[0,1]$ ，单温非线性辐射扩散问题的具体模型如下：
 
@@ -32,33 +40,93 @@ $$
 
 其中 $\Omega = [0,1]\times[0,1]$ 辐射扩散系数 $D_L, K_L$ 同样选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ 。
 
-对于上述单温、双温问题，电离度函数 $z$ 可以分为以下三种情况：
+对于上述单温、双温问题，电离度函数 $z$ 可以分为常数（zconst）、间断线性（zline）、双方形（zsquare）三种情况，初边值条件 $\beta(x,y,t), g(x,y,t)$ 则可以分为常数初值+线性边值（const）和高斯初值+零边值（gauss）两种情况。
 
-   (1)zconst(连续)： $z=1$
+## 参数设置：
 
-   (2)zline(左右突变)：当 $x\leq0.5$ 时， $z=1$ ；当 $x\textgreater0.5$ 时， $z=10$
+### 全局参数：
 
-   (3)zsquare(两块突变)：当 $\frac{3}{16}\textless x \textless\frac{7}{16}, \frac{9}{16}\textless y \textless\frac{13}{16}$ 或 $\frac{9}{16}\textless x \textless\frac{13}{16}, \frac{3}{16}\textless y \textless\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+#### 模型参数：
 
-初边值条件 $\beta(x,y,t), g(x,y,t)$ 可以分为以下两种情况：
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:--------:|
+|model_name    |目标模型（"电离度函数类型-初边值函数类型"）    |"zconst-const"  |
+|device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
+|ionization_type   |电离度函数类型（"zconst"或"zline"或"zsquare"）    |"zconst"          |
 
-   (1)const(常数初值+线性边值)： $\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+#### 网格参数：
 
-   (2)gauss(高斯初值+零边值)： $\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nx   |x轴网格点数    |257    |
+|Ny   |y轴网格点数    |257    |
+|n    |下采样倍数     |4      |
 
-考虑到经典数值方法(如有限体积、有限元)存在如下问题：
-   
-   (1)大变形网格上插值计算量大且精度难以保证；
+#### 网络参数：
 
-   (2)非线性方程难以保持正性；
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|depth   |隐藏层层数    |2    |
+|width   |隐藏层单元数    |512    |
 
-   (3)格式对网格变形和系数分布有限制，推广至时空高阶比较困难。
-   
-因此，本项目希望借助神经网络，发展融合方程及数据驱动的高精度神经网络求解算法，在提升单温、双温非线性辐射扩散问题求解精度的同时提升求解效率。
+### 单温问题算法参数：
 
-功能特性：
+#### 第一阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_reg   |训练步数    |300    |
+|lr_reg   |LBFGS优化器学习率    |1e-2    |
+|epoch_reg    |训练轮次     |50      |
+
+#### 第二阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |训练步数    |200    |
+|lr_pde   |LBFGS优化器学习率    |1e-1    |
+|epoch_pde    |训练轮次     |10      |
+
+#### 可视化参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|vmax   |误差图像色带的最大值    |0.25    |
+
+### 双温问题算法参数：
+
+#### 第一阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_reg   |训练步数    |300    |
+|lr_E_reg   |关于E的LBFGS优化器学习率    |1e-2    |
+|lr_T_reg   |关于T的LBFGS优化器学习率    |1e-2    |
+|epoch_reg    |训练轮次     |50      |
+
+#### 第二阶段训练参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|Nfit_pde   |训练步数    |200    |
+|lr_E_pde   |关于E的LBFGS优化器学习率    |1e-1    |
+|lr_T_pde   |关于T的LBFGS优化器学习率    |1e-1    |
+|epoch_pde    |训练轮次     |10      |
+
+#### 可视化参数：
+
+|参数      |说明      |默认值      |
+|:--------:|:--------:|:---------:|
+|vmax_E   |E的误差图像色带的最大值    |0.25    |
+|vmax_T   |T的误差图像色带的最大值    |0.25    |
+
+## 算法设计：
 
 结合低分辨率数值解 $E_{coarse}$ 以及方程本身，我们设计了针对单一方程的新型神经网络解法。
+
+构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络包含两（depth）个隐藏层，每一层包含512（width）个神经元，激活函数选用ReLU函数。输出层设置为二维通道，按电离度函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
+
+为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{reg}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{reg+pde}$，进一步提升神经网络模型的求解精度。
 
 以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{reg+pde}$ 的设计部分考虑添加数据驱动损失 $L_{reg}$和物理信息损失 $L_{pde}$ 的约束，具体公式如下：
 
@@ -81,125 +149,19 @@ $$
 \end{aligned}
 $$
 
-为了获取目标单温和双温问题的数据，取257×257的细网格点，设时间步长为0.001，设皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解，并通过4倍下采样得到65×65的粗网格解 $E_{coarse}$ 。
+# 数值实验：
 
-构建一个全连接神经网络，该网络包含两个隐藏层，每一层包含512个神经元，激活函数选用relu函数。将目标点的空间坐标值作为输入数据，输出层设置为二维的，按电离度函数 $z$ 在不同目标点的大小设置布尔值，从而对各目标点的输出结果进行选择。
+## 实验设置：
 
-为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{reg}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{reg+pde}$，进一步提升神经网络模型的求解精度。
+取257×257（Nx×Ny）的细网格点，设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过4（n）倍下采样得到，分辨率为65×65。
 
-使用说明：
+我们的神经网络采用LBFGS优化器。
 
-1. 参数说明
+## 实验结果展示：
 
-(1)系统参数：
+### 单温问题：
 
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:--------:|
-|model_name    |目标模型（"电离度函数类型-初边值函数类型"）    |"zconst-const"  |
-|device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
-
-(2)必选参数：
-
-参数zconst、zline和zsquare中，有且仅有一个值为True，其余两个值为False
-
-(3)网格配置参数：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nx   |x轴网格点数    |257    |
-|Ny   |y轴网格点数    |257    |
-|n    |下采样倍数     |4      |
-
-(4)第一阶段训练参数：
-
-单温问题：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nfit_reg   |训练步数    |300    |
-|lr_reg   |LBFGS优化器学习率    |1e-2    |
-|epoch_reg    |训练轮次     |50      |
-
-双温问题：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nfit_reg   |训练步数    |300    |
-|lr_E_reg   |关于E的LBFGS优化器学习率    |1e-2    |
-|lr_T_reg   |关于T的LBFGS优化器学习率    |1e-2    |
-|epoch_reg    |训练轮次     |50      |
-
-(5)第二阶段训练参数：
-
-单温问题：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nfit_pde   |训练步数    |200    |
-|lr_pde   |LBFGS优化器学习率    |1e-1    |
-|epoch_pde    |训练轮次     |10      |
-
-双温问题：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nfit_pde   |训练步数    |200    |
-|lr_E_pde   |关于E的LBFGS优化器学习率    |1e-1    |
-|lr_T_pde   |关于T的LBFGS优化器学习率    |1e-1    |
-|epoch_pde    |训练轮次     |10      |
-
-(6)可视化参数：
-
-单温问题：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|vmax   |误差图像色带的最大值    |0.25    |
-
-双温问题：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|vmax_E   |E的误差图像色带的最大值    |0.25    |
-|vmax_T   |T的误差图像色带的最大值    |0.25    |
-
-2. 使用场景
-
-这里给出每种情况对应的命令行语句。
-
-```bash
-## 单温问题：
-# zconst-const
-python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
-# zconst-gauss
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
-# zline-const
-python ./diffusion-1T/main.py --model_name "zline-const" --zline --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
-# zline-gauss
-python ./diffusion-1T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
-# zsquare-const
-python ./diffusion-1T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
-# zsquare-gauss
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
-
-## 双温问题：
-# zconst-const
-python ./diffusion-2T/main.py --model_name "zconst-const" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2 --vmax_E 0.28 --vmax_T 0.02
-# zconst-gauss
-python ./diffusion-2T/main.py --model_name "zconst-gauss" --zconst --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
-# zline-const
-python ./diffusion-2T/main.py --model_name "zline-const" --zline --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 1.7 --vmax_T 0.03
-# zline-gauss
-python ./diffusion-2T/main.py --model_name "zline-gauss" --zline --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
-# zsquare-const
-python ./diffusion-2T/main.py --model_name "zsquare-const" --zsquare --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.6 --vmax_T 0.15
-# zsquare-gauss
-python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
-```
-
-3. 输出说明
-
-对于单温问题，训练完成后会在 ./diffusion-1T/<model_name>/results/ 目录下生成：
+训练完成后会在 ./diffusion-1T/<model_name>/results/ 目录下生成：
 
 (1) model_reg.pt : 第一阶段训练模型
 
@@ -210,6 +172,30 @@ python ./diffusion-2T/main.py --model_name "zsquare-gauss" --zsquare --Nfit_reg 
 (4) sol_pinn.npy : 第二阶段预测结果
 
 (5) fig.png : 第一、第二阶段预测结果误差图像
+
+#### zconst-const
+
+电离度函数为常数（zconst）： $z=1$
+
+初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+
+设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |1.3803e-4|
+|第二次训练   |7.9253e-7|
+
+![1T-zconst-const](./diffusion-1T/results/zconst-const/fig.png)
+
 
 对于单温问题，训练完成后会在 ./diffusion-2T/<model_name>/results/ 目录下生成：
 
