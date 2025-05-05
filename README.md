@@ -194,10 +194,7 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 |第一次训练   |1.3803e-4|
 |第二次训练   |7.9253e-7|
 
-<img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="300" />
-
-![1T-zconst-const](./diffusion-1T/results/zconst-const/fig.png)
-
+<img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
 
 对于单温问题，训练完成后会在 ./diffusion-2T/<model_name>/results/ 目录下生成：
 
