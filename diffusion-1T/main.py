@@ -32,6 +32,7 @@ def parse_args():
     parser.add_argument('--Ny', type=int, default=257, help='Number of grid points on y-axis')
     parser.add_argument('--n', type=int, default=4, help='Downsampling factor')
     # 网络设置参数 | Network settings parameters
+    parser.add_argument('--depth', type=int, default=2, help='Number of hidden layers')
     parser.add_argument('--width', type=int, default=512, help='Number of units in each hidden layer')
     # 回归训练参数 | Regression training parameters
     parser.add_argument('--Nfit_reg', type=int, default=300, help='Number of training iterations for regularization phase')
@@ -88,7 +89,6 @@ def override_config_with_args(config: Config, args: argparse.Namespace) -> None:
                 f"Type or value may be incompatible: {str(e)}"
             )
         
-        # 可选：打印调试信息
     print("Configuration initialization completed.")
 
 

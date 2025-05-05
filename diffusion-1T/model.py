@@ -9,7 +9,7 @@ class DeepNN(nn.Module):
     Deep Neural Network model definition
     
     网络架构 | Architecture:
-        [2, cfg.width, cfg.width, cfg.width, 2], with ReLU activation functions
+        [2, cfg.width, ..., cfg.width, 2], with ReLU activation functions
     """
     
     def __init__(self, cfg: Config):
@@ -19,6 +19,7 @@ class DeepNN(nn.Module):
         
         Args:
             cfg: 包含以下属性的配置对象 | Configuration object with attributes:
+                - depth: int 隐藏层层数 | Number of hidden layers
                 - width: int 隐藏层单元数 | Number of units in each hidden layer
         """
         super().__init__()
@@ -27,14 +28,13 @@ class DeepNN(nn.Module):
         self.InpLayer = nn.Sequential(
             nn.Linear(2, cfg.width),
             nn.ReLU())
-        # 第一个隐藏层 | First hidden layer
-        self.HiddenLayer1 = nn.Sequential(
-            nn.Linear(cfg.width, cfg.width),
-            nn.ReLU())
-        # 第二个隐藏层 | Second hidden layer
-        self.HiddenLayer2 = nn.Sequential(
-            nn.Linear(cfg.width, cfg.width),
-            nn.ReLU())
+        # 隐藏层定义 | Hidden layer defination
+        self.HiddenLayers = nn.ModuleList([
+            nn.Sequential(
+                nn.Linear(cfg.width, cfg.width),
+                nn.ReLU()
+            ) for _ in range(cfg.depth)
+        ])
         # 输出层 (双通道) | Output layer (dual-channel)
         self.OutLayer = nn.Sequential(
             nn.Linear(cfg.width, 2),
@@ -56,8 +56,8 @@ class DeepNN(nn.Module):
                  [cfg.Nx*cfg.Ny, 1] Output tensor
         """
         H = self.InpLayer(X)
-        H = self.HiddenLayer1(H)
-        H = self.HiddenLayer2(H)
+        for layer in self.HiddenLayers:
+            H = layer(H)
         out = self.OutLayer(H)
 
         # 通道选择: 根据Z的值选择输出通道

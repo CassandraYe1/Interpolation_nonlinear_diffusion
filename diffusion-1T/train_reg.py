@@ -24,13 +24,12 @@ def train_model_reg(model, cfg: Config, Nfit=None, lr=None, epo=None):
         model: 训练好的模型
                The trained model
     """
-
     opt_lbfgs = torch.optim.LBFGS(model.parameters(), lr=lr)
 
     for i in range(Nfit):
-        model.train()
+       model.train()
 
-        def closure():
+       def closure():
             """
             LBFGS需要闭包函数计算损失
             LBFGS requires closure function for loss calculation
@@ -44,12 +43,12 @@ def train_model_reg(model, cfg: Config, Nfit=None, lr=None, epo=None):
             loss.backward()
             return loss
 
-        # 执行优化步骤 | Perform optimization step
-        loss = closure()
-        opt_lbfgs.step(closure)
+       # 执行优化步骤 | Perform optimization step
+       loss = closure()
+       opt_lbfgs.step(closure)
 
-        # 定期验证并打印进度 | Periodically validate and print progress
-        if i % epo == 0:
+       # 定期验证并打印进度 | Periodically validate and print progress
+       if i % epo == 0:
             model.eval()
             Epred = model(cfg.inp_fine, cfg.Z_fine).cpu().detach().numpy().reshape(cfg.Nx, cfg.Ny)
             ref_rl2 = relative_l2(cfg.E_ref.cpu().numpy().reshape(-1), Epred.reshape(-1))

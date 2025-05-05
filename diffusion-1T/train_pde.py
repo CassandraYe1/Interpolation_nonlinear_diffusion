@@ -24,7 +24,6 @@ def train_model_pde(model_cur, cfg: Config, Nfit=None, lr=None, epo=None):
         model_cur: 训练完成的模型
                    The trained model
     """
-
     opt_lbfgs = torch.optim.LBFGS(model_cur.parameters(), lr=lr)
 
     for i in range(Nfit):

@@ -19,6 +19,7 @@ grid_settings:
 
 # 网络设置 | Network Settings
 network_settings:
+  depth: 2 # 隐藏层层数 | Number of hidden layers
   width: 512 # 隐藏层单元数 | Number of units in each hidden layer
 
 # 训练设置 | Training Settings
