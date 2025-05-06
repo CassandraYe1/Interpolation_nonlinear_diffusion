@@ -177,7 +177,7 @@ $$
 
 电离度函数为常数（zconst）：$z=1$
 
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max { 20t, 10 } , g(x,y,t) = 0.01$$
+初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
 
@@ -200,7 +200,7 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 
 电离度函数为常数（zconst）：$z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.02。
 
@@ -223,7 +223,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.25。
 
@@ -246,7 +246,7 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=100，学习率为lr_pde=1。可视化参数设置为vmax=0.072。
 
@@ -269,7 +269,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=300，学习率为lr_pde=1e-1。可视化参数设置为vmax=1.0。
 
@@ -292,7 +292,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=400，学习率为lr_reg=1e-1；第二次PDE训练时的训练步数为Nfit_pde=350，学习率为lr_pde=1。可视化参数设置为vmax=0.16。
 
@@ -339,7 +339,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 电离度函数为常数（zconst）：$z=1$
 
-初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-2，关于T的学习率为lr_T_pde=1e-2。可视化参数设置为vmax_E=0.28，vmax_T=0.02。
 
@@ -362,7 +362,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 
 电离度函数为常数（zconst）：$z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.004，vmax_T=0.015。
 
@@ -385,7 +385,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-2，关于T的学习率为lr_T_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=1.7，vmax_T=0.03。
 
@@ -408,7 +408,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=200，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-4；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.012，vmax_T=0.15。
 
@@ -431,7 +431,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为常数初值+线性边值（const）：$\beta(x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.6，vmax_T=0.15。
 
@@ -454,7 +454,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta(x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
 
 设置第一次回归训练时的训练步数为Nfit_reg=700，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=100，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.006，vmax_T=0.11。
 
@@ -690,6 +690,11 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error |
+|:--------:|:--------:|
+|Phase 1   |3.1160e-3|
+|Phase 2   |1.0960e-5|
+
+<img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
 
 #### zline-const
 
@@ -708,6 +713,11 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error |
+|:--------:|:--------:|
+|Phase 1   |8.6974e-5|
+|Phase 2   |2.6432e-5|
+
+<img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
 
 #### zline-gauss
 
@@ -726,6 +736,11 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error |
+|:--------:|:--------:|
+|Phase 1   |1.2046e-3|
+|Phase 2   |8.1885e-4|
+
+<img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
 
 #### zsquare-const
 
@@ -744,6 +759,11 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error |
+|:--------:|:--------:|
+|Phase 1   |7.7425e-4|
+|Phase 2   |3.1866e-4|
+
+<img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
 
 #### zsquare-gauss
 
@@ -762,6 +782,11 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error |
+|:--------:|:--------:|
+|Phase 1   |4.7518e-3|
+|Phase 2   |3.9955e-3|
+
+<img src="./diffusion-1T/results/zsquare-gauss/fig.png" alt="1T-zsquare-gauss" width="400" />
 
 ### Two-Temperature Problem:
 
@@ -804,6 +829,11 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
+|:--------:|:-----------:|:-----------:|
+|Phase 1 |1.0433e-4    |3.8226e-5    |
+|Phase 2 |4.1970e-5    |4.8864e-6    |
+
+<img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const-E" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const-T" width="400" />
 
 #### zconst-gauss
 
@@ -822,6 +852,11 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
+|:--------:|:-----------:|:-----------:|
+|Phase 1 |1.2102e-4    |5.3335e-5    |
+|Phase 2 |7.9144e-6    |2.6790e-6    |
+
+<img src="./diffusion-2T/results/zconst-gauss/fig_E.png" alt="2T-zconst-gauss-E" width="400" /> <img src="./diffusion-2T/results/zconst-gauss/fig_T.png" alt="2T-zconst-gauss-T" width="400" />
 
 #### zline-const
 
@@ -840,6 +875,11 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
+|:--------:|:-----------:|:-----------:|
+|Phase 1 |3.3480e-4    |9.3573e-6    |
+|Phase 2 |9.2222e-4    |4.3018e-6    |
+
+<img src="./diffusion-2T/results/zline-const/fig_E.png" alt="2T-zline-const-E" width="400" /> <img src="./diffusion-2T/results/zline-const/fig_T.png" alt="2T-zline-const-T" width="400" />
 
 #### zline-gauss
 
@@ -858,6 +898,11 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
+|:--------:|:-----------:|:-----------:|
+|Phase 1 |3.2893e-4    |2.0064e-2    |
+|Phase 2 |9.5702e-6    |4.9225e-4    |
+
+<img src="./diffusion-2T/results/zline-gauss/fig_E.png" alt="2T-zline-gauss-E" width="400" /> <img src="./diffusion-2T/results/zline-gauss/fig_T.png" alt="2T-zline-gauss-T" width="400" />
 
 #### zsquare-const
 
@@ -876,6 +921,11 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
+|:--------:|:-----------:|:-----------:|
+|Phase 1 |1.6882e-3    |9.2393e-4    |
+|Phase 2 |3.9618e-5    |5.0227e-6    |
+
+<img src="./diffusion-2T/results/zsquare-const/fig_E.png" alt="2T-zsquare-const-E" width="400" /> <img src="./diffusion-2T/results/zsquare-const/fig_T.png" alt="2T-zsquare-const-T" width="400" />
 
 #### zsquare-gauss
 
@@ -894,3 +944,8 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
+|:--------:|:-----------:|:-----------:|
+|Phase 1 |3.5218e-4    |1.4630e-3    |
+|Phase 2 |2.2470e-5    |6.6278e-4    |
+
+<img src="./diffusion-2T/results/zsquare-gauss/fig_E.png" alt="2T-zsquare-gauss-E" width="400" /> <img src="./diffusion-2T/results/zsquare-gauss/fig_T.png" alt="2T-zsquare-gauss-T" width="400" />
