@@ -1,16 +1,14 @@
-# 项目标题：
+# 非线性辐射扩散问题的神经网络超分辨率算法研究
 
-非线性辐射扩散问题的神经网络超分辨率算法研究
-
-# 引言：
+## 引言：
 
 非线性辐射扩散方程的高分辨率数值求解对于精确模拟能量输运过程至关重要。然而，传统的数值方法（如有限元法、有限体积法）尽管能够通过极细网格获得参考解，其巨大的计算成本严重制约了实际工程应用。与此同时，直接采用粗网格求解会导致显著的数值耗散和相位误差，特别是在强非线性区域（如电离度函数 $z$ 急剧变化处）。这一困境本质上是一个典型的科学计算超分辨率问题：如何从低分辨率数值解中高效恢复高分辨率物理场。
 
 针对这些问题，本项目提出了一种超分辨率神经网络框架，用神经网络直接学习从低分辨率网格到高分辨率网格的映射关系。该网络构建了"粗网格输入→网络预测→物理校正"的架构，在传统数据驱动损失的基础上，引入基于方程的物理约束，确保预测解严格满足物理规律，在保证非线性辐射扩散问题求解精度的同时提升求解效率。
 
-# 方法：
+## 方法：
 
-## 问题描述：
+### 问题描述：
 
 给定 $\Omega = [0,1]\times[0,1]$ ，单温非线性辐射扩散问题的具体模型如下：
 
@@ -42,11 +40,11 @@ $$
 
 对于上述单温、双温问题，电离度函数 $z$ 可以分为常数（zconst）、间断线性（zline）、双方形（zsquare）三种情况，初边值条件 $\beta(x,y,t), g(x,y,t)$ 则可以分为常数初值+线性边值（const）和高斯初值+零边值（gauss）两种情况。
 
-## 参数设置：
+### 参数设置：
 
-### 全局参数：
+#### 全局参数：
 
-#### 模型参数：
+##### 模型参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:--------:|
@@ -54,7 +52,7 @@ $$
 |device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
 |ionization_type   |电离度函数类型（"zconst"或"zline"或"zsquare"）    |"zconst"          |
 
-#### 网格参数：
+##### 网格参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -62,16 +60,16 @@ $$
 |Ny   |y轴网格点数    |257    |
 |n    |下采样倍数     |4      |
 
-#### 网络参数：
+##### 网络参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
 |depth   |隐藏层层数    |2    |
 |width   |隐藏层单元数    |512    |
 
-### 单温问题算法参数：
+#### 单温问题算法参数：
 
-#### 第一阶段训练参数：
+##### 第一阶段训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -79,7 +77,7 @@ $$
 |lr_reg   |LBFGS优化器学习率    |1e-2    |
 |epoch_reg    |训练轮次     |50      |
 
-#### 第二阶段训练参数：
+##### 第二阶段训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -87,15 +85,15 @@ $$
 |lr_pde   |LBFGS优化器学习率    |1e-1    |
 |epoch_pde    |训练轮次     |10      |
 
-#### 可视化参数：
+##### 可视化参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
 |vmax   |误差图像色带的最大值    |0.25    |
 
-### 双温问题算法参数：
+#### 双温问题算法参数：
 
-#### 第一阶段训练参数：
+##### 第一阶段训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -104,7 +102,7 @@ $$
 |lr_T_reg   |关于T的LBFGS优化器学习率    |1e-2    |
 |epoch_reg    |训练轮次     |50      |
 
-#### 第二阶段训练参数：
+##### 第二阶段训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -113,14 +111,14 @@ $$
 |lr_T_pde   |关于T的LBFGS优化器学习率    |1e-1    |
 |epoch_pde    |训练轮次     |10      |
 
-#### 可视化参数：
+##### 可视化参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
 |vmax_E   |E的误差图像色带的最大值    |0.25    |
 |vmax_T   |T的误差图像色带的最大值    |0.25    |
 
-## 算法设计：
+### 算法设计：
 
 结合低分辨率数值解 $E_{coarse}$ 以及方程本身，我们设计了针对单一方程的新型神经网络解法。
 
@@ -149,17 +147,17 @@ $$
 \end{aligned}
 $$
 
-# 数值实验：
+## 数值实验：
 
-## 实验设置：
+### 实验设置：
 
 取Nx×Ny=257×257的细网格点，设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过n=4倍下采样得到，分辨率为65×65。
 
 我们的神经网络采用LBFGS优化器。
 
-## 实验结果展示：
+### 实验结果展示：
 
-### 单温问题：
+#### 单温问题：
 
 训练完成后会在 ./diffusion-1T/results/<model_name>/ 目录下生成：
 
@@ -173,7 +171,7 @@ $$
 
 (5) fig.png : 第一、第二阶段预测结果误差图像
 
-#### zconst-const
+##### zconst-const
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -196,7 +194,7 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 
 <img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
 
-#### zconst-gauss
+##### zconst-gauss
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -219,7 +217,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 <img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
 
-#### zline-const
+##### zline-const
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -242,7 +240,7 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 
 <img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
 
-#### zline-gauss
+##### zline-gauss
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -265,7 +263,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 <img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
 
-#### zsquare-const
+##### zsquare-const
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -288,7 +286,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 <img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
 
-#### zsquare-gauss
+##### zsquare-gauss
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -311,7 +309,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 <img src="./diffusion-1T/results/zsquare-gauss/fig.png" alt="1T-zsquare-gauss" width="400" />
 
-### 双温问题：
+#### 双温问题：
 
 训练完成后会在 ./diffusion-2T/results/<model_name>/ 目录下生成：
 
@@ -335,7 +333,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 (10) fig_T.png : 关于T的第一、第二阶段预测结果误差图像
 
-#### zconst-const
+##### zconst-const
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -358,7 +356,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 
 <img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const-E" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const-T" width="400" />
 
-#### zconst-gauss
+##### zconst-gauss
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -381,7 +379,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 <img src="./diffusion-2T/results/zconst-gauss/fig_E.png" alt="2T-zconst-gauss-E" width="400" /> <img src="./diffusion-2T/results/zconst-gauss/fig_T.png" alt="2T-zconst-gauss-T" width="400" />
 
-#### zline-const
+##### zline-const
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -404,7 +402,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 
 <img src="./diffusion-2T/results/zline-const/fig_E.png" alt="2T-zline-const-E" width="400" /> <img src="./diffusion-2T/results/zline-const/fig_T.png" alt="2T-zline-const-T" width="400" />
 
-#### zline-gauss
+##### zline-gauss
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -427,7 +425,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 <img src="./diffusion-2T/results/zline-gauss/fig_E.png" alt="2T-zline-gauss-E" width="400" /> <img src="./diffusion-2T/results/zline-gauss/fig_T.png" alt="2T-zline-gauss-T" width="400" />
 
-#### zsquare-const
+##### zsquare-const
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -450,7 +448,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 <img src="./diffusion-2T/results/zsquare-const/fig_E.png" alt="2T-zsquare-const-E" width="400" /> <img src="./diffusion-2T/results/zsquare-const/fig_T.png" alt="2T-zsquare-const-T" width="400" />
 
-#### zsquare-gauss
+##### zsquare-gauss
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
