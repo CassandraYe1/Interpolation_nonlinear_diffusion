@@ -1,44 +1,74 @@
 # 非线性辐射扩散问题的神经网络超分辨率算法研究
 
-## 引言：
+## 超分辨率方法：
 
-非线性辐射扩散方程的高分辨率数值求解对于精确模拟能量输运过程至关重要。然而，传统的数值方法（如有限元法、有限体积法）尽管能够通过极细网格获得参考解，其巨大的计算成本严重制约了实际工程应用。与此同时，直接采用粗网格求解会导致显著的数值耗散和相位误差，特别是在强非线性区域（如电离度函数 $z$ 急剧变化处）。这一困境本质上是一个典型的科学计算超分辨率问题：如何从低分辨率数值解中高效恢复高分辨率物理场。
+超分辨率技术在科学计算领域展现出突破传统数值方法效率瓶颈的革命性潜力。特别是在涉及多尺度、强非线性特征的物理场重构任务中，传统基于插值或数据驱动的超分辨率方法往往因缺乏物理规律约束，导致重构结果存在非物理解或守恒性破坏等根本缺陷。这一局限性在辐射输运、湍流模拟等对物理一致性有严格要求的领域尤为突出，严重制约了超分辨率技术在实际工程上的应用。
 
 针对这些问题，本项目提出了一种超分辨率神经网络框架，用神经网络直接学习从低分辨率网格到高分辨率网格的映射关系。该网络构建了"粗网格输入→网络预测→物理校正"的架构，在传统数据驱动损失的基础上，引入基于方程的物理约束，确保预测解严格满足物理规律，在保证非线性辐射扩散问题求解精度的同时提升求解效率。
 
-## 方法：
+## 非线性辐射扩散问题：
 
-### 问题描述：
+非线性辐射扩散问题是一类典型的多尺度强耦合输运方程，其核心在于描述辐射能量与物质能量通过光子输运产生的非线性能量交换过程。该过程的控制方程可表述为：
 
-给定 $\Omega = [0,1]\times[0,1]$ ，单温非线性辐射扩散问题的具体模型如下：
+### 单温问题：
 
 $$
 \begin{aligned}
-   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0, \quad(x,y,t)\in\Omega\times[0,1] \\
    & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\lbrace x=0\rbrace\times[0,1] \\
    & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\lbrace x=0\rbrace\times[0,1] \\
    & E|_{t=0} = g(x,y,0)
 \end{aligned}
 $$
 
-其中辐射扩散系数 $D_L$ 选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ 。
+其中 $\Omega = [0,1]\times[0,1]$ ；辐射扩散系数 $D_L$ 选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ 。
 
-双温非线性辐射扩散问题的具体模型如下：
+### 双温问题：
 
 $$
 \begin{aligned}
-   & \frac{\partial E}{\partial t} - \nabla \cdot (D_L \nabla E) = \sigma_{\alpha}(T^4 - E) \\
-   & \frac{\partial T}{\partial t} - \nabla \cdot (K_L \nabla T) = \sigma_{\alpha}(E - T^4) \\
+   & \frac{\partial E}{\partial t} - \nabla \cdot (D_L \nabla E) = \sigma_{\alpha}(T^4 - E), \quad(x,y,t)\in\Omega\times[0,1] \\
+   & \frac{\partial T}{\partial t} - \nabla \cdot (K_L \nabla T) = \sigma_{\alpha}(E - T^4), \quad(x,y,t)\in\Omega\times[0,1] \\
    & 0.5E + D_L \nabla E \cdot n = \beta(x,y,t), \quad (x,y,t) \in \lbrace x=0 \rbrace \times [0,1] \\
    & 0.5E + D_L \nabla E \cdot n = 0, \quad (x,y,t) \in \partial\Omega \setminus \lbrace x=0 \rbrace \times [0,1] \\
    & K_L \nabla T \cdot n = 0, \quad (x,y,t) \in \partial\Omega \times [0,1] \\
-   & E\vert_{t=0} = T^4\vert_{t=0} = g(x,y,0)
+   & E\vert_{t=0} = g(x,y,0) \\
+   & T^4\vert_{t=0} = g(x,y,0)
 \end{aligned}
 $$
 
-其中 $\Omega = [0,1]\times[0,1]$ 辐射扩散系数 $D_L, K_L$ 同样选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ 。
+其中 $\Omega = [0,1]\times[0,1]$ ；辐射扩散系数 $D_L, K_L$ 同样选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ 。
 
-对于上述单温、双温问题，电离度函数 $z$ 可以分为常数（zconst）、间断线性（zline）、双方形（zsquare）三种情况，初边值条件 $\beta(x,y,t), g(x,y,t)$ 则可以分为常数初值+线性边值（const）和高斯初值+零边值（gauss）两种情况。
+对于上述单温、双温问题，电离度函数 $z$ 可以分为常数（zconst）、间断线性（zline）、双方形（zsquare）三种情况，初边值条件 $\beta(x,y,t), g(x,y,t)$ 则可以分为常数初值+线性边值（const）和高斯初值+零边值（gauss）两种情况。每种情况的具体公式由后文给出。
+
+## 神经网络超分辨率算法设计：
+
+结合低分辨率数值解 $E_{coarse}$ 以及方程本身，我们设计了针对单一方程的新型神经网络解法。
+
+构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络包含depth=2个隐藏层，每一层包含width=512个神经元，激活函数选用ReLU函数。输出层设置为二维通道，按电离度函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
+
+为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{reg}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{reg+pde}$，进一步提升神经网络模型的求解精度。
+
+以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{reg+pde}$ 的设计部分考虑添加数据驱动损失 $L_{reg}$和物理信息损失 $L_{pde}$ 的约束，具体公式如下：
+
+$$
+\begin{aligned}
+   & L_{reg+pde} = L_{reg}+10L_{pde} \\
+   & L_{reg} = \Vert E^n-E^n_{coarse} \Vert \\
+   & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
+\end{aligned}
+$$
+
+用同样的方法，我们也给出了双温问题的损失函数具体公式：
+
+$$
+\begin{aligned}
+   L_{reg+pde} &= L_{reg} + 10L_{pde} \\
+   L_{reg} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
+   L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
+   & + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
+\end{aligned}
+$$
 
 ### 参数设置：
 
@@ -117,35 +147,6 @@ $$
 |:--------:|:--------:|:---------:|
 |vmax_E   |E的误差图像色带的最大值    |0.25    |
 |vmax_T   |T的误差图像色带的最大值    |0.25    |
-
-### 算法设计：
-
-结合低分辨率数值解 $E_{coarse}$ 以及方程本身，我们设计了针对单一方程的新型神经网络解法。
-
-构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络包含depth=2个隐藏层，每一层包含width=512个神经元，激活函数选用ReLU函数。输出层设置为二维通道，按电离度函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
-
-为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{reg}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{reg+pde}$，进一步提升神经网络模型的求解精度。
-
-以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{reg+pde}$ 的设计部分考虑添加数据驱动损失 $L_{reg}$和物理信息损失 $L_{pde}$ 的约束，具体公式如下：
-
-$$
-\begin{aligned}
-   & L_{reg+pde} = L_{reg}+10L_{pde} \\
-   & L_{reg} = \Vert E^n-E^n_{coarse} \Vert \\
-   & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
-\end{aligned}
-$$
-
-用同样的方法，我们也给出了双温问题的损失函数具体公式：
-
-$$
-\begin{aligned}
-   L_{reg+pde} &= L_{reg} + 10L_{pde} \\
-   L_{reg} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
-   L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
-   & + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
-\end{aligned}
-$$
 
 ## 数值实验：
 
