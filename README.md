@@ -206,9 +206,9 @@ $$
 
 ##### (1) zconst-const
 
-电离度函数为常数（zconst）：$z=1$
+电离度函数为常数（zconst）： $z=1$
 
-初边值条件为常数初值+线性边值（const）：$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
 
@@ -229,9 +229,9 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 
 ##### (2) zconst-gauss
 
-电离度函数为常数（zconst）：$z=1$
+电离度函数为常数（zconst）： $z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.02。
 
@@ -254,7 +254,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为常数初值+线性边值（const）：$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.25。
 
@@ -277,7 +277,7 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=100，学习率为lr_pde=1。可视化参数设置为vmax=0.072。
 
@@ -300,7 +300,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为常数初值+线性边值（const）：$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=300，学习率为lr_pde=1e-1。可视化参数设置为vmax=1.0。
 
@@ -323,7 +323,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 设置第一次回归训练时的训练步数为Nfit_reg=400，学习率为lr_reg=1e-1；第二次PDE训练时的训练步数为Nfit_pde=350，学习率为lr_pde=1。可视化参数设置为vmax=0.16。
 
