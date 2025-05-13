@@ -45,17 +45,17 @@ $$
 
 结合低分辨率数值解 $E_{\text{coarse}}$ 以及方程本身，我们设计了针对单一方程的新型神经网络解法。
 
-构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络包含depth=2个隐藏层，每一层包含width=512个神经元，激活函数选用ReLU函数。输出层设置为二维通道，按电离度函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
+构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络是等宽的，隐藏层层数和每个隐藏层的神经元数量可以手动设置（默认设置为2隐藏层、512个神经元），激活函数选用ReLU函数。输出层设置为二维通道，按电离度函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
 
-为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{reg}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{reg+pde}$，进一步提升神经网络模型的求解精度。
+为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{\text{reg}}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{\text{reg+pde}}$，进一步提升神经网络模型的求解精度。
 
-以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{reg+pde}$ 的设计部分考虑添加数据驱动损失 $L_{reg}$和物理信息损失 $L_{pde}$ 的约束，具体公式如下：
+以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{\text{reg+pde}}$ 的设计部分考虑添加数据驱动损失 $L_{\text{reg}}$和物理信息损失 $L_{\text{pde}}$ 的约束，具体公式如下：
 
 $$
 \begin{aligned}
-   & L_{reg+pde} = L_{reg}+10L_{pde} \\
-   & L_{reg} = \Vert E^n-E^n_{coarse} \Vert \\
-   & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
+   & L_{\text{reg+pde}} = L_{\text{reg}}+10L_{\text{pde}} \\
+   & L_{\text{reg}} = \Vert E^n-E^n_{\text{coarse}} \Vert \\
+   & L_{\text{pde}} = \Vert E^n-D^n_{\text{coarse}}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{\text{coarse}} \Vert
 \end{aligned}
 $$
 
@@ -63,12 +63,16 @@ $$
 
 $$
 \begin{aligned}
-   L_{reg+pde} &= L_{reg} + 10L_{pde} \\
-   L_{reg} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
-   L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
-   & + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
+   L_{\text{reg+pde}} &= L_{\text{reg}} + 10L_{\text{pde}} \\
+   L_{\text{reg}} &= \Vert E^n - E^n_{\text{coarse}} \Vert + \Vert T^n - T^n_{\text{coarse}} \Vert \\
+   L_{\text{pde}} &= \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert \\
+   & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert
 \end{aligned}
 $$
+
+## 代码介绍
+
+本代码实现了一个结合数据驱动与物理约束的双阶段神经网络训练框架，用于求解非线性辐射扩散方程的高分辨率数值解。代码采用模块化设计，支持灵活的参数配置与跨平台（CPU/GPU）训练。
 
 ### 参数设置：
 
@@ -148,15 +152,7 @@ $$
 |vmax_E   |E的误差图像色带的最大值    |0.25    |
 |vmax_T   |T的误差图像色带的最大值    |0.25    |
 
-## 数值实验：
-
-### 实验设置：
-
-取Nx×Ny=257×257的细网格点，设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过n=4倍下采样得到，分辨率为65×65。
-
-我们的神经网络采用LBFGS优化器。
-
-### 实验结果展示：
+### 输出结果：
 
 #### 单温问题：
 
@@ -171,144 +167,6 @@ $$
 (4) sol_pinn.npy : 第二阶段预测结果
 
 (5) fig.png : 第一、第二阶段预测结果误差图像
-
-##### zconst-const
-
-电离度函数为常数（zconst）：$z=1$
-
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
-
-设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
-```
-
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |1.3803e-4|
-|第二次训练   |7.9253e-7|
-
-<img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
-
-##### zconst-gauss
-
-电离度函数为常数（zconst）：$z=1$
-
-初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
-
-设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.02。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
-```
-
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |3.1160e-3|
-|第二次训练   |1.0960e-5|
-
-<img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
-
-##### zline-const
-
-电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
-
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
-
-设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.25。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
-```
-
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |8.6974e-5|
-|第二次训练   |2.6432e-5|
-
-<img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
-
-##### zline-gauss
-
-电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
-
-初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
-
-设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=100，学习率为lr_pde=1。可视化参数设置为vmax=0.072。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
-```
-
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |1.2046e-3|
-|第二次训练   |8.1885e-4|
-
-<img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
-
-##### zsquare-const
-
-电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
-
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
-
-设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=300，学习率为lr_pde=1e-1。可视化参数设置为vmax=1.0。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
-```
-
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |7.7425e-4|
-|第二次训练   |3.1866e-4|
-
-<img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
-
-##### zsquare-gauss
-
-电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
-
-初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
-
-设置第一次回归训练时的训练步数为Nfit_reg=400，学习率为lr_reg=1e-1；第二次PDE训练时的训练步数为Nfit_pde=350，学习率为lr_pde=1。可视化参数设置为vmax=0.16。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
-```
-
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |4.7518e-3|
-|第二次训练   |3.9955e-3|
-
-<img src="./diffusion-1T/results/zsquare-gauss/fig.png" alt="1T-zsquare-gauss" width="400" />
 
 #### 双温问题：
 
@@ -334,7 +192,159 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 (10) fig_T.png : 关于T的第一、第二阶段预测结果误差图像
 
-##### zconst-const
+## 数值实验：
+
+### 实验设置：
+
+取Nx×Ny=257×257的细网格点，设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过n=4倍下采样得到，分辨率为65×65。
+
+我们的神经网络采用LBFGS优化器。
+
+### 实验结果展示：
+
+#### 单温问题：
+
+##### (1) zconst-const
+
+电离度函数为常数（zconst）：$z=1$
+
+初边值条件为常数初值+线性边值（const）：$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
+
+设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |1.3803e-4|
+|第二次训练   |7.9253e-7|
+
+<img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
+
+##### (2) zconst-gauss
+
+电离度函数为常数（zconst）：$z=1$
+
+初边值条件为高斯初值+零边值（gauss）：$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.02。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |3.1160e-3|
+|第二次训练   |1.0960e-5|
+
+<img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
+
+##### (3) zline-const
+
+电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+
+初边值条件为常数初值+线性边值（const）：$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
+
+设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.25。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |8.6974e-5|
+|第二次训练   |2.6432e-5|
+
+<img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
+
+##### (4) zline-gauss
+
+电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+
+初边值条件为高斯初值+零边值（gauss）：$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=100，学习率为lr_pde=1。可视化参数设置为vmax=0.072。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |1.2046e-3|
+|第二次训练   |8.1885e-4|
+
+<img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
+
+##### (5) zsquare-const
+
+电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+
+初边值条件为常数初值+线性边值（const）：$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$
+
+设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=300，学习率为lr_pde=1e-1。可视化参数设置为vmax=1.0。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |7.7425e-4|
+|第二次训练   |3.1866e-4|
+
+<img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
+
+##### (6) zsquare-gauss
+
+电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+
+初边值条件为高斯初值+零边值（gauss）：$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
+
+设置第一次回归训练时的训练步数为Nfit_reg=400，学习率为lr_reg=1e-1；第二次PDE训练时的训练步数为Nfit_pde=350，学习率为lr_pde=1。可视化参数设置为vmax=0.16。
+
+命令行参数如下：
+
+```bash
+python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
+```
+
+两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+
+|训练      |l2相对误差 |
+|:--------:|:--------:|
+|第一次训练   |4.7518e-3|
+|第二次训练   |3.9955e-3|
+
+<img src="./diffusion-1T/results/zsquare-gauss/fig.png" alt="1T-zsquare-gauss" width="400" />
+
+#### 双温问题：
+
+##### (1) zconst-const
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -357,7 +367,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 
 <img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const-E" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const-T" width="400" />
 
-##### zconst-gauss
+##### (2) zconst-gauss
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -368,7 +378,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 命令行参数如下：
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
+python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
 ```
 
 两次训练结果与参考解之间的l2相对误差以及误差图像如下：
@@ -380,7 +390,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 <img src="./diffusion-2T/results/zconst-gauss/fig_E.png" alt="2T-zconst-gauss-E" width="400" /> <img src="./diffusion-2T/results/zconst-gauss/fig_T.png" alt="2T-zconst-gauss-T" width="400" />
 
-##### zline-const
+##### (3) zline-const
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -403,7 +413,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 
 <img src="./diffusion-2T/results/zline-const/fig_E.png" alt="2T-zline-const-E" width="400" /> <img src="./diffusion-2T/results/zline-const/fig_T.png" alt="2T-zline-const-T" width="400" />
 
-##### zline-gauss
+##### (4) zline-gauss
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -414,7 +424,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 命令行参数如下：
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
+python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
 ```
 
 两次训练结果与参考解之间的l2相对误差以及误差图像如下：
@@ -426,7 +436,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 <img src="./diffusion-2T/results/zline-gauss/fig_E.png" alt="2T-zline-gauss-E" width="400" /> <img src="./diffusion-2T/results/zline-gauss/fig_T.png" alt="2T-zline-gauss-T" width="400" />
 
-##### zsquare-const
+##### (5) zsquare-const
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -449,7 +459,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 <img src="./diffusion-2T/results/zsquare-const/fig_E.png" alt="2T-zsquare-const-E" width="400" /> <img src="./diffusion-2T/results/zsquare-const/fig_T.png" alt="2T-zsquare-const-T" width="400" />
 
-##### zsquare-gauss
+##### (6) zsquare-gauss
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -460,7 +470,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 命令行参数如下：
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
+python ./diffusion-2T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
 ```
 
 两次训练结果与参考解之间的l2相对误差以及误差图像如下：
