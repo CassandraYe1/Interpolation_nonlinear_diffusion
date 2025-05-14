@@ -484,15 +484,13 @@ python ./diffusion-2T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 -----------------------------------------------------------------------------------------------------------------------------
 
-# Project Title:
+# Research on Neural Network Super-Resolution Algorithms for Nonlinear Radiation Diffusion Problems
 
-Research on Neural Network Super-Resolution Algorithms for Nonlinear Radiation Diffusion Problems
+## Super-Resolution Method:
 
-# Introduction:
+Super-resolution technology demonstrates revolutionary potential in scientific computing to overcome the efficiency limitations of traditional numerical methods. Particularly in physical field reconstruction tasks involving multi-scale and strongly nonlinear features, conventional interpolation-based or data-driven super-resolution approaches often suffer from fundamental flaws such as unphysical solutions or conservation law violations due to the lack of physics-based constraints. This limitation becomes especially pronounced in fields demanding strict physical consistency—such as radiation transport and turbulence simulation—severely restricting the practical engineering applications of super-resolution techniques.
 
-High-resolution numerical solutions of nonlinear radiation diffusion equations are crucial for accurately simulating energy transport processes. However, though traditional numerical methods (e.g., finite element method, finite volume method) are capable of obtaining reference solutions through extremely fine grids, they suffer from prohibitive computational costs that severely limit practical engineering applications. Meanwhile, direct coarse-grid solutions introduce significant numerical dissipation and phase errors, particularly in strongly nonlinear regions (e.g., where the ionization degree function $z$ undergoes sharp variations). This dilemma represents a quintessential scientific computing super-resolution problem: how to efficiently reconstruct high-resolution physical fields from low-resolution numerical solutions.
-
-To address these challenges, this project proposes a super-resolution neural network framework that directly learns the mapping from low-resolution to high-resolution grids. The network establishes an architecture of "coarse-grid input → network prediction → physical correction," incorporating equation-based physical constraints alongside traditional data-driven loss functions. This ensures predicted solutions strictly adhere to physical laws while maintaining the accuracy of nonlinear radiation diffusion problem solutions and significantly improving computational efficiency.
+To address these challenges, this project proposes a neural network-based super-resolution framework that directly learns the mapping from low-resolution to high-resolution computational grids. The architecture follows a "coarse-grid input → network prediction → physics correction" pipeline, incorporating governing equation-derived physical constraints alongside traditional data-driven loss functions. This ensures strict adherence to physical laws while maintaining solution accuracy for nonlinear radiation diffusion problems and significantly improving computational efficiency.
 
 # Method:
 
