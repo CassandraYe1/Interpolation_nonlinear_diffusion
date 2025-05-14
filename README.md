@@ -74,6 +74,10 @@ $$
 
 本代码实现了一个结合数据驱动与物理约束的双阶段神经网络训练框架，用于求解非线性辐射扩散方程的高分辨率数值解。代码采用模块化设计，支持灵活的参数配置与跨平台（CPU/GPU）训练。
 
+取“Nx”×“Ny”的细网格点（默认设置为257×257），设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过“n”倍下采样得到（默认设置为4），分辨率为65×65。
+
+我们的神经网络采用LBFGS优化器。
+
 ### 参数设置：
 
 #### 全局参数：
@@ -192,19 +196,11 @@ $$
 
 (10) fig_T.png : 关于T的第一、第二阶段预测结果误差图像
 
-## 数值实验：
+## 数值实验设置：
 
-### 实验设置：
+### 单温问题：
 
-取Nx×Ny=257×257的细网格点，设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过n=4倍下采样得到，分辨率为65×65。
-
-我们的神经网络采用LBFGS优化器。
-
-### 实验结果展示：
-
-#### 单温问题：
-
-##### (1) zconst-const
+#### (1) zconst-const
 
 电离度函数为常数（zconst）： $z=1$
 
@@ -227,7 +223,7 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 
 <img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
 
-##### (2) zconst-gauss
+#### (2) zconst-gauss
 
 电离度函数为常数（zconst）： $z=1$
 
@@ -250,7 +246,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 <img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
 
-##### (3) zline-const
+#### (3) zline-const
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -273,7 +269,7 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 
 <img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
 
-##### (4) zline-gauss
+#### (4) zline-gauss
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -296,7 +292,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 <img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
 
-##### (5) zsquare-const
+#### (5) zsquare-const
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -319,7 +315,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 <img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
 
-##### (6) zsquare-gauss
+#### (6) zsquare-gauss
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -342,9 +338,9 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 <img src="./diffusion-1T/results/zsquare-gauss/fig.png" alt="1T-zsquare-gauss" width="400" />
 
-#### 双温问题：
+### 双温问题：
 
-##### (1) zconst-const
+#### (1) zconst-const
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -367,7 +363,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 
 <img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const-E" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const-T" width="400" />
 
-##### (2) zconst-gauss
+#### (2) zconst-gauss
 
 电离度函数为常数（zconst）：$z=1$
 
@@ -390,7 +386,7 @@ python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 <img src="./diffusion-2T/results/zconst-gauss/fig_E.png" alt="2T-zconst-gauss-E" width="400" /> <img src="./diffusion-2T/results/zconst-gauss/fig_T.png" alt="2T-zconst-gauss-T" width="400" />
 
-##### (3) zline-const
+#### (3) zline-const
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -413,7 +409,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 
 <img src="./diffusion-2T/results/zline-const/fig_E.png" alt="2T-zline-const-E" width="400" /> <img src="./diffusion-2T/results/zline-const/fig_T.png" alt="2T-zline-const-T" width="400" />
 
-##### (4) zline-gauss
+#### (4) zline-gauss
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
@@ -436,7 +432,7 @@ python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 <img src="./diffusion-2T/results/zline-gauss/fig_E.png" alt="2T-zline-gauss-E" width="400" /> <img src="./diffusion-2T/results/zline-gauss/fig_T.png" alt="2T-zline-gauss-T" width="400" />
 
-##### (5) zsquare-const
+#### (5) zsquare-const
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
@@ -459,7 +455,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 <img src="./diffusion-2T/results/zsquare-const/fig_E.png" alt="2T-zsquare-const-E" width="400" /> <img src="./diffusion-2T/results/zsquare-const/fig_T.png" alt="2T-zsquare-const-T" width="400" />
 
-##### (6) zsquare-gauss
+#### (6) zsquare-gauss
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
