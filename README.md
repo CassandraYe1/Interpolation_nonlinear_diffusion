@@ -94,8 +94,8 @@ $$
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
-|Nx   |x轴网格点数    |257    |
-|Ny   |y轴网格点数    |257    |
+|Nx   |x轴细网格点数    |257    |
+|Ny   |y轴细网格点数    |257    |
 |n    |下采样倍数     |4      |
 
 ##### 网络参数：
@@ -488,29 +488,29 @@ Super-resolution technology demonstrates revolutionary potential in scientific c
 
 To address these challenges, this project proposes a neural network-based super-resolution framework that directly learns the mapping from low-resolution to high-resolution computational grids. The architecture follows a "coarse-grid input → network prediction → physics correction" pipeline, incorporating governing equation-derived physical constraints alongside traditional data-driven loss functions. This ensures strict adherence to physical laws while maintaining solution accuracy for nonlinear radiation diffusion problems and significantly improving computational efficiency.
 
-# Method:
+## Nonlinear Radiation Diffusion Problem:
 
-## Problem Setup:
+The nonlinear radiation diffusion problem represents a classic example of multiscale strongly coupled transport equations. At its core, it describes the nonlinear energy exchange process between radiation energy and material energy mediated by photon transport. The governing equations for this process can be expressed as follows.
 
-With $\Omega = [0,1]\times[0,1]$ , the specific model for the single-temperature nonlinear radiation diffusion problem is as follows:
+### Single-Temperature Problem:
 
 $$
 \begin{aligned}
-   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0 \\
+   & \frac{\partial E}{\partial t}-\nabla\cdot(D_L\nabla E) = 0, \quad(x,y,t)\in\Omega\times[0,1] \\
    & 0.5E+D_L\nabla E\cdot n = \beta(x,y,t), \quad(x,y,t)\in\lbrace x=0\rbrace\times[0,1] \\
    & 0.5E+D_L\nabla E\cdot n = 0, \quad(x,y,t)\in\partial\Omega\setminus\lbrace x=0\rbrace\times[0,1] \\
    & E|_{t=0} = g(x,y,0)
 \end{aligned}
 $$
 
-where the radiation diffusion coefficient $D_L$ adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ .
+where $\Omega = [0,1]\times[0,1]$ , while the radiation diffusion coefficient $D_L$ adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}$ .
 
-The specific model for the two-temperature nonlinear radiation diffusion problem is as follows:
+### Two-Temperature Problem:
 
 $$
 \begin{aligned}
-   & \frac{\partial E}{\partial t} - \nabla \cdot (D_L \nabla E) = \sigma_{\alpha}(T^4 - E) \\
-   & \frac{\partial T}{\partial t} - \nabla \cdot (K_L \nabla T) = \sigma_{\alpha}(E - T^4) \\
+   & \frac{\partial E}{\partial t} - \nabla \cdot (D_L \nabla E) = \sigma_{\alpha}(T^4 - E), \quad(x,y,t)\in\Omega\times[0,1] \\
+   & \frac{\partial T}{\partial t} - \nabla \cdot (K_L \nabla T) = \sigma_{\alpha}(E - T^4), \quad(x,y,t)\in\Omega\times[0,1] \\
    & 0.5E + D_L \nabla E \cdot n = \beta(x,y,t), \quad (x,y,t) \in \lbrace x=0 \rbrace \times [0,1] \\
    & 0.5E + D_L \nabla E \cdot n = 0, \quad (x,y,t) \in \partial\Omega \setminus \lbrace x=0 \rbrace \times [0,1] \\
    & K_L \nabla T \cdot n = 0, \quad (x,y,t) \in \partial\Omega \times [0,1] \\
@@ -518,15 +518,52 @@ $$
 \end{aligned}
 $$
 
-where the radiation diffusion coefficient $D_L, K_L$ also adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ .
+where $\Omega = [0,1]\times[0,1]$ , while the radiation diffusion coefficient $D_L, K_L$ also adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ .
 
-For the single-temperature and two-temperature problems mentioned above, the ionization function $z$ can be classified into three cases: "zconst" (constant), "zline" (intermittent linear) and "zsquare" (two-squares). Initial and boundary conditions $\beta(x,y,t), g(x,y,t)$ can also be classified into two cases: "const" (constant initial+linear boundary) and "gauss" (gauss initial+zero boundary).
+For the single-temperature and two-temperature problems mentioned above, the ionization function $z$ can be classified into three cases: "zconst" (constant), "zline" (intermittent linear) and "zsquare" (two-squares). Initial and boundary conditions $\beta(x,y,t), g(x,y,t)$ can also be classified into two cases: "const" (constant initial+linear boundary) and "gauss" (gauss initial+zero boundary). The specific formula for each case will be given later.
 
-## Parameter specification:
+## Design of Neural Network Super-Resolution Algorithm:
 
-### Global Parameters:
+We propose a novel neural network-based solver for a single equation by combining low-resolution numerical solutions $E_{\text{coarse}}$ with the governing equation itself.
 
-#### Model parameters:
+We construct a fully connected neural network that takes the spatial coordinates of target points $(x,y)$ as input data. The network features a uniform-width architecture, where both the number of hidden layers "depth" and neurons per hidden layer "width" are configurable (default configuration: 2 hidden layers with 512 neurons each), employing ReLU as the activation function. The output layer is configured as a two-channel structure, where a Boolean mask is applied based on the magnitude of the ionization function $z$ at different target points to select the corresponding output channel for each target point.
+
+To ensure solving efficiency, we first utilize the low-resolution reference solution to construct a data-driven loss function $L_{\text{reg}}$ for training. Then, incorporating the equations of the target radiation diffusion problem, we design a physics-constrained loss function $L_{\text{reg+pde}}$ to further improve the solving accuracy of the neural network model.
+
+Taking the single-temperature problem as an example, we discretize the temporal derivative in the equation using backward differencing and employ a neural network to compute the results at each time step. The loss function $L_{\text{reg+pde}}$ of the network incorporates both data-driven loss $L_{\text{reg}}$ and physics-informed loss $L_{\text{pde}}$ as constraints. The specific formulation is as follows:
+
+$$
+\begin{aligned}
+   & L_{\text{reg+pde}} = L_{\text{reg}}+10L_{\text{pde}} \\
+   & L_{\text{reg}} = \Vert E^n-E^n_{\text{coarse}} \Vert \\
+   & L_{\text{pde}} = \Vert E^n-D^n_{\text{coarse}}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{\text{coarse}} \Vert
+\end{aligned}
+$$
+
+Using the same methodology, we also derive the specific formulation of the loss function for the two-temperature problem as follows:
+
+$$
+\begin{aligned}
+   L_{\text{reg+pde}} &= L_{\text{reg}} + 10L_{\text{pde}} \\
+   L_{\text{reg}} &= \Vert E^n - E^n_{\text{coarse}} \Vert + \Vert T^n - T^n_{\text{coarse}} \Vert \\
+   L_{\text{pde}} &= \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert \\
+   & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert
+\end{aligned}
+$$
+
+## Code Introduction:
+
+This code implements a dual-phase neural network training framework that integrates data-driven learning with physics-based constraints for obtaining high-resolution numerical solutions to nonlinear radiation diffusion equations. The modular-designed code supports flexible parameter configuration and cross-platform (CPU/GPU) training.
+
+The reference solution is obtained through finite element method with the following specifications: (1) a fine grid of "Nx" × "Ny" points (default: 257×257); (2) time step size of 0.001; (3) Picard iteration convergence limit of 0.001. The known coarse-grid solution $E_{\text{coarse}}$ is derived by "n"-times downsampling (default: n=4) of the reference solution, yielding a resolution of 65×65.
+
+Our neural network employs the LBFGS optimizer for training.
+
+### Parameter specification:
+
+#### Global Parameters:
+
+##### Model parameters:
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:--------:|
@@ -534,24 +571,24 @@ For the single-temperature and two-temperature problems mentioned above, the ion
 |device_name   |computation device ("cuda" or "cpu")    |"cuda"          |
 |ionization_type   |ionization function type ("zconst", "zline" or "zsquare")    |"zconst"          |
 
-#### Grid parameters:
+##### Grid parameters:
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
-|Nx   |grid points on x-axis    |257    |
-|Ny   |grid points on x-axis    |257    |
+|Nx   |fine-grid points on x-axis    |257    |
+|Ny   |fine-grid points on x-axis    |257    |
 |n    |downsampling factor      |4      |
 
-#### Model parameters:
+##### Model parameters:
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
 |depth   |Number of hidden layers    |2    |
 |width   |Number of units in each hidden layer    |512    |
 
-### Parameters of single-temperature problem:
+#### Parameters of single-temperature problem:
 
-#### Training parameters (Phase 1):
+##### Training parameters (Phase 1):
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
@@ -559,7 +596,7 @@ For the single-temperature and two-temperature problems mentioned above, the ion
 |lr_reg   |LBFGS optimizer learning rate    |1e-2    |
 |epoch_reg    |training epochs     |50      |
 
-#### Training parameters (Phase 2):
+##### Training parameters (Phase 2):
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
@@ -567,15 +604,15 @@ For the single-temperature and two-temperature problems mentioned above, the ion
 |lr_pde   |LBFGS optimizer learning rate    |1e-1    |
 |epoch_pde    |training epochs     |10      |
 
-#### Visualization parameters:
+##### Visualization parameters:
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
 |vmax   |Maximum value of error colorbar    |0.25    |
 
-### Parameters of two-temperature problem:
+#### Parameters of two-temperature problem:
 
-#### Training parameters (Phase 1):
+##### Training parameters (Phase 1):
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
@@ -584,7 +621,7 @@ For the single-temperature and two-temperature problems mentioned above, the ion
 |lr_T_reg   |LBFGS optimizer learning rate of T    |1e-2    |
 |epoch_reg    |training epochs     |50      |
 
-#### Training parameters (Phase 2):
+##### Training parameters (Phase 2):
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
@@ -593,41 +630,12 @@ For the single-temperature and two-temperature problems mentioned above, the ion
 |lr_T_pde   |LBFGS optimizer learning rate of T    |1e-1    |
 |epoch_pde    |training epochs     |10      |
 
-#### Visualization parameters:
+##### Visualization parameters:
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:---------:|
 |vmax_E   |Maximum value of error colorbar E   |0.25    |
 |vmax_T   |Maximum value of error colorbar T   |0.25    |
-
-## Algorithm Design:
-
-We propose a novel neural network-based solver for a single equation by combining low-resolution numerical solutions $E_{coarse}$ with the governing equation itself.
-
-We construct a fully connected neural network that takes the spatial coordinates of target points $(x,y)$ as input data. The network consists of "depth"=2 hidden layers, each containing "width"=512 neurons, with ReLU activation functions. The output layer is configured as a two-channel structure, where a Boolean mask is applied based on the magnitude of the ionization function $z$ at different target points to select the corresponding output channel for each target point.
-
-To ensure solving efficiency, we first utilize the low-resolution reference solution to construct a data-driven loss function $L_{reg}$ for training. Then, incorporating the equations of the target radiation diffusion problem, we design a physics-constrained loss function $L_{reg+pde}$ to further improve the solving accuracy of the neural network model.
-
-Taking the single-temperature problem as an example, we discretize the temporal derivative in the equation using backward differencing and employ a neural network to compute the results at each time step. The loss function $L_{reg+pde}$ of the network incorporates both data-driven loss $L_{reg}$ and physics-informed loss $L_{pde}$ as constraints. The specific formulation is as follows:
-
-$$
-\begin{aligned}
-   & L_{reg+pde} = L_{reg}+10L_{pde} \\
-   & L_{reg} = \Vert E^n-E^n_{coarse} \Vert \\
-   & L_{pde} = \Vert E^n-D^n_{coarse}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{coarse} \Vert
-\end{aligned}
-$$
-
-Using the same methodology, we also derive the specific formulation of the loss function for the two-temperature problem as follows:
-
-$$
-\begin{aligned}
-   L_{reg+pde} &= L_{reg} + 10L_{pde} \\
-   L_{reg} &= \Vert E^n - E^n_{coarse} \Vert + \Vert T^n - T^n_{coarse} \Vert \\
-   L_{pde} &= \Vert E^n - D^n_{coarse} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{coarse} \Vert \\
-   &\quad + \Vert T^n - K^n_{coarse} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{coarse} \Vert
-\end{aligned}
-$$
 
 # Numerical Experiments:
 
