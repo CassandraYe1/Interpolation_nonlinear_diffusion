@@ -91,7 +91,7 @@ GitHub仓库路径：./diffusion-1T/
 1. 从网盘下载数据包（[下载链接](https://pan.baidu.com/...) | 提取码：xxxx）
 2. 解压后将其中的`data/`目录内容完整复制到本地仓库的`./diffusion-1T/`下
 3. 验证数据完整性：
-```bash
+```
 
 ### 参数设置：
 
