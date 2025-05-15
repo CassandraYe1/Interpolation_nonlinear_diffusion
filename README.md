@@ -196,7 +196,7 @@ $$
 
 (10) fig_T.png : 关于T的第一、第二阶段预测结果误差图像
 
-## 数值实验设置：
+## 数值实验：
 
 ### 单温问题：
 
@@ -637,17 +637,9 @@ Our neural network employs the LBFGS optimizer for training.
 |vmax_E   |Maximum value of error colorbar E   |0.25    |
 |vmax_T   |Maximum value of error colorbar T   |0.25    |
 
-# Numerical Experiments:
+### Output:
 
-## Experimental Settings:
-
-The finite element method solutions are taken as reference solutions, using a fine-grid of "Nx"×"Ny"=257×257 spatial points with the time step size 0.001 and the tolerance of Picard iteration convergence criterion 0.001. The known coarse-grid solution $E_{coarse}$ is obtained by "n"=4 times downsampling of the reference solutions, resulting in a resolution of 65×65.
-
-Our neural network employs the LBFGS optimizer.
-
-## Experimental Results:
-
-### Single-Temperature Problem:
+#### Single-temperature Problem:
 
 Results will be saved in "./diffusion-1T/results/<model_name>/":
 
@@ -661,7 +653,35 @@ Results will be saved in "./diffusion-1T/results/<model_name>/":
 
 (5) fig.png : figure about the comparison of regression and PINN solutions
 
-#### zconst-const
+#### Two-temperature Problem:
+
+Results will be saved in "./diffusion-2T/results/<model_name>/":
+
+(1) model_reg_E.pt : Phase 1 regression trained model of E
+
+(2) model_reg_T.pt : Phase 1 regression trained model of T
+
+(3) model_pinn_E.pt : Phase 2 physics-informed model of E
+
+(4) model_pinn_T.pt : Phase 2 physics-informed model of T
+
+(5) sol_reg_E.npy : Phase 1 E-predictions
+
+(6) sol_reg_T.npy : Phase 1 T-predictions
+
+(7) sol_pinn_E.npy : Phase 2 E-predictions
+
+(8) sol_pinn_T.npy : Phase 2 T-predictions
+
+(9) fig_E.png : figure about the comparison of regression and PINN E-solutions
+
+(10) fig_T.png : figure about the comparison of regression and PINN T-solutions
+
+## Numerical Experiments:
+
+### Single-Temperature Problem:
+
+#### (1) zconst-const
 
 Ionization function uses "zconst" type: Always $z=1$
 
@@ -684,7 +704,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
 
-#### zconst-gauss
+#### (2) zconst-gauss
 
 Ionization function uses "zconst" type: Always $z=1$
 
@@ -707,7 +727,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
 
-#### zline-const
+#### (3) zline-const
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
@@ -730,7 +750,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
 
-#### zline-gauss
+#### (4) zline-gauss
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
@@ -753,7 +773,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
 
-#### zsquare-const
+#### (5) zsquare-const
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
@@ -776,7 +796,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
 
-#### zsquare-gauss
+#### (6) zsquare-gauss
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
@@ -801,29 +821,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 ### Two-Temperature Problem:
 
-Results will be saved in "./diffusion-2T/results/<model_name>/":
-
-(1) model_reg_E.pt : Phase 1 regression trained model of E
-
-(2) model_reg_T.pt : Phase 1 regression trained model of T
-
-(3) model_pinn_E.pt : Phase 2 physics-informed model of E
-
-(4) model_pinn_T.pt : Phase 2 physics-informed model of T
-
-(5) sol_reg_E.npy : Phase 1 E-predictions
-
-(6) sol_reg_T.npy : Phase 1 T-predictions
-
-(7) sol_pinn_E.npy : Phase 2 E-predictions
-
-(8) sol_pinn_T.npy : Phase 2 T-predictions
-
-(9) fig_E.png : figure about the comparison of regression and PINN E-solutions
-
-(10) fig_T.png : figure about the comparison of regression and PINN T-solutions
-
-#### zconst-const
+#### (1) zconst-const
 
 Ionization function uses "zconst" type: Always $z=1$
 
@@ -846,7 +844,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-2T/results/zconst-const/fig_E.png" alt="2T-zconst-const-E" width="400" /> <img src="./diffusion-2T/results/zconst-const/fig_T.png" alt="2T-zconst-const-T" width="400" />
 
-#### zconst-gauss
+#### (2) zconst-gauss
 
 Ionization function uses "zconst" type: Always $z=1$
 
@@ -857,7 +855,7 @@ Set the number of training steps for the first regression training to Nfit_reg=3
 The command-line parameters are as follows:
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
+python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
 ```
 
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
@@ -869,7 +867,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-2T/results/zconst-gauss/fig_E.png" alt="2T-zconst-gauss-E" width="400" /> <img src="./diffusion-2T/results/zconst-gauss/fig_T.png" alt="2T-zconst-gauss-T" width="400" />
 
-#### zline-const
+#### (3) zline-const
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
@@ -892,7 +890,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-2T/results/zline-const/fig_E.png" alt="2T-zline-const-E" width="400" /> <img src="./diffusion-2T/results/zline-const/fig_T.png" alt="2T-zline-const-T" width="400" />
 
-#### zline-gauss
+#### (4) zline-gauss
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
@@ -903,7 +901,7 @@ Set the number of training steps for the first regression training to Nfit_reg=2
 The command-line parameters are as follows:
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
+python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
 ```
 
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
@@ -915,7 +913,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-2T/results/zline-gauss/fig_E.png" alt="2T-zline-gauss-E" width="400" /> <img src="./diffusion-2T/results/zline-gauss/fig_T.png" alt="2T-zline-gauss-T" width="400" />
 
-#### zsquare-const
+#### (5) zsquare-const
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
@@ -938,7 +936,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 <img src="./diffusion-2T/results/zsquare-const/fig_E.png" alt="2T-zsquare-const-E" width="400" /> <img src="./diffusion-2T/results/zsquare-const/fig_T.png" alt="2T-zsquare-const-T" width="400" />
 
-#### zsquare-gauss
+#### (6) zsquare-gauss
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
@@ -949,7 +947,7 @@ Set the number of training steps for the first regression training to Nfit_reg=7
 The command-line parameters are as follows:
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
+python ./diffusion-2T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
 ```
 
 The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
