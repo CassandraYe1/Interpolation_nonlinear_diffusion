@@ -571,7 +571,7 @@ Our neural network employs the LBFGS optimizer for training.
 
 The original datasets are hosted on Baidu Netdisk and should be mapped to the local repository following the specified directory structure:
 
-[Download Link] (Baidu Netdisk) | Access Code: xxxx
+[Baidu Netdisk Link](https://pan.baidu.com/...) | Access Code: `xxxx`
 
 Copy all contents from ./diffusion-1T/data/ (source) to ./diffusion-1T/ (local repository), and all contents from ./diffusion-2T/data/ (source) to ./diffusion-2T/ (local repository).
 
