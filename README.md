@@ -74,7 +74,7 @@ $$
 
 本代码实现了一个结合数据驱动与物理约束的双阶段神经网络训练框架，用于求解非线性辐射扩散方程的高分辨率数值解。代码采用模块化设计，支持灵活的参数配置与跨平台（CPU/GPU）训练。
 
-取“Nx”×“Ny”的细网格点（默认设置为257×257），设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{coarse}$ 由参考解经过“n”倍下采样得到（默认设置为4），分辨率为65×65。
+取“Nx”×“Ny”的细网格点（默认设置为257×257），设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{\text{coarse}}$ 由参考解经过“n”倍下采样得到（默认设置为4），分辨率为65×65。
 
 我们的神经网络采用LBFGS优化器。
 
@@ -204,7 +204,7 @@ $$
 
 电离度函数为常数（zconst）： $z=1$
 
-初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
 
@@ -685,7 +685,7 @@ Results will be saved in "./diffusion-2T/results/<model_name>/":
 
 Ionization function uses "zconst" type: Always $z=1$
 
-Initial and boundary condition uses "const" type: $$\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=100, with a learning rate of lr_reg=1e-3. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of lr_pde=1. The visualization parameter is set to vmax=0.1.
 
