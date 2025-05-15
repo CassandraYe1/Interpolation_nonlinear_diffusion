@@ -82,16 +82,9 @@ $$
 
 原始数据托管于百度网盘，需按以下路径映射部署到本地仓库：
 
-```bash
-# 数据目录结构映射
-百度网盘路径：/diffusion-1T/data/  
-GitHub仓库路径：./diffusion-1T/
+[下载链接](https://pan.baidu.com/...) | 提取码：xxxx
 
-# 操作流程
-1. 从网盘下载数据包（[下载链接](https://pan.baidu.com/...) | 提取码：xxxx）
-2. 解压后将其中的`data/`目录内容完整复制到本地仓库的`./diffusion-1T/`下
-3. 验证数据完整性：
-```
+将其中的`./diffusion-1T/data/`目录内容完整复制到本地仓库的`./diffusion-1T/`下，将其中的`./diffusion-2T/data/`目录内容完整复制到本地仓库的`./diffusion-2T/`下。
 
 ### 参数设置：
 
@@ -573,6 +566,14 @@ This code implements a dual-phase neural network training framework that integra
 The reference solution is obtained through finite element method with the following specifications: (1) a fine grid of "Nx" × "Ny" points (default: 257×257); (2) time step size of 0.001; (3) Picard iteration convergence limit of 0.001. The known coarse-grid solution $E_{\text{coarse}}$ is derived by "n"-times downsampling (default: n=4) of the reference solution, yielding a resolution of 65×65.
 
 Our neural network employs the LBFGS optimizer for training.
+
+### Data Acquisition：
+
+The original datasets are hosted on Baidu Netdisk and should be mapped to the local repository following the specified directory structure:
+
+[Download Link] (Baidu Netdisk) | Access Code: xxxx
+
+Copy all contents from ./diffusion-1T/data/ (source) to ./diffusion-1T/ (local repository), and all contents from ./diffusion-2T/data/ (source) to ./diffusion-2T/ (local repository).
 
 ### Parameter specification:
 
