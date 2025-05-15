@@ -250,7 +250,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.25。
 
@@ -296,7 +296,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max\{20t, 10\}, g(x,y,t) = 0.01$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=300，学习率为lr_pde=1e-1。可视化参数设置为vmax=1.0。
 
@@ -342,9 +342,9 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 #### (1) zconst-const
 
-电离度函数为常数（zconst）：$z=1$
+电离度函数为常数（zconst）： $z=1$
 
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-2，关于T的学习率为lr_T_pde=1e-2。可视化参数设置为vmax_E=0.28，vmax_T=0.02。
 
@@ -365,9 +365,9 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 
 #### (2) zconst-gauss
 
-电离度函数为常数（zconst）：$z=1$
+电离度函数为常数（zconst）： $z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.004，vmax_T=0.015。
 
@@ -390,7 +390,7 @@ python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-2，关于T的学习率为lr_T_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=1.7，vmax_T=0.03。
 
@@ -413,7 +413,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 
 电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
-初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 设置第一次回归训练时的训练步数为Nfit_reg=200，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-4；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.012，vmax_T=0.15。
 
@@ -436,7 +436,7 @@ python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为常数初值+线性边值（const）：$$\beta (x,y,t) = max{20t, 10}, g(x,y,t) = 0.01$$
+初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 设置第一次回归训练时的训练步数为Nfit_reg=300，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.6，vmax_T=0.15。
 
@@ -459,7 +459,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-初边值条件为高斯初值+零边值（gauss）：$$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 设置第一次回归训练时的训练步数为Nfit_reg=700，关于E的学习率为lr_E_reg=1e-3，关于T的学习率为lr_T_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=100，关于E的学习率为lr_E_pde=1e-1，关于T的学习率为lr_T_pde=1e-1。可视化参数设置为vmax_E=0.006，vmax_T=0.11。
 
@@ -685,7 +685,7 @@ Results will be saved in "./diffusion-2T/results/<model_name>/":
 
 Ionization function uses "zconst" type: Always $z=1$
 
-Initial and boundary condition uses "const" type: $\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=100, with a learning rate of lr_reg=1e-3. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of lr_pde=1. The visualization parameter is set to vmax=0.1.
 
@@ -708,7 +708,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zconst" type: Always $z=1$
 
-Initial and boundary condition uses "gauss" type: $$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 Set the number of training steps for the first regression training to Nfit_reg=200, with a learning rate of lr_reg=1e-3. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of lr_pde=1. The visualization parameter is set to vmax=0.02.
 
@@ -731,7 +731,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
-Initial and boundary condition uses "const" type: $$\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=150, with a learning rate of lr_reg=1e-2. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of lr_pde=1. The visualization parameter is set to vmax=0.25.
 
@@ -754,7 +754,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
-Initial and boundary condition uses "gauss" type: $$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 Set the number of training steps for the first regression training to Nfit_reg=200, with a learning rate of lr_reg=1e-2. For the second PDE training, set Nfit_pde=100 training steps, with a learning rate of lr_pde=1. The visualization parameter is set to vmax=0.072.
 
@@ -777,7 +777,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
-Initial and boundary condition uses "const" type: $$\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=150, with a learning rate of lr_reg=1e-2. For the second PDE training, set Nfit_pde=300 training steps, with a learning rate of lr_pde=1e-1. The visualization parameter is set to vmax=1.0.
 
@@ -800,7 +800,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
-Initial and boundary condition uses "gauss" type: $$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 Set the number of training steps for the first regression training to Nfit_reg=400, with a learning rate of lr_reg=1e-1. For the second PDE training, set Nfit_pde=350 training steps, with a learning rate of lr_pde=1. The visualization parameter is set to vmax=0.16.
 
@@ -825,7 +825,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zconst" type: Always $z=1$
 
-Initial and boundary condition uses "const" type: $$\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=300, with a learning rate of E lr_E_reg=1e-3 and a learning rate of T lr_T_reg=1e-3. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of E lr_E_pde=1e-2 and a learning rate of T lr_T_pde=1e-2. The visualization parameter is set to vmax_E=0.28 and vmax_T=0.02.
 
@@ -848,7 +848,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zconst" type: Always $z=1$
 
-Initial and boundary condition uses "gauss" type: $$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 Set the number of training steps for the first regression training to Nfit_reg=300, with a learning rate of E lr_E_reg=1e-3 and a learning rate of T lr_T_reg=1e-3. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of E lr_E_pde=1e-1 and a learning rate of T lr_T_pde=1e-1. The visualization parameter is set to vmax_E=0.004 and vmax_T=0.015.
 
@@ -871,7 +871,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
-Initial and boundary condition uses "const" type: $$\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=300, with a learning rate of E lr_E_reg=1e-2 and a learning rate of T lr_T_reg=1e-2. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of E lr_E_pde=1e-1 and a learning rate of T lr_T_pde=1e-1. The visualization parameter is set to vmax_E=1.7 and vmax_T=0.03.
 
@@ -894,7 +894,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
-Initial and boundary condition uses "gauss" type: $$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 Set the number of training steps for the first regression training to Nfit_reg=200, with a learning rate of E lr_E_reg=1e-3 and a learning rate of T lr_T_reg=1e-4. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of E lr_E_pde=1e-1 and a learning rate of T lr_T_pde=1e-1. The visualization parameter is set to vmax_E=0.012 and vmax_T=0.15.
 
@@ -917,7 +917,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
-Initial and boundary condition uses "const" type: $$\beta (x,y,t) = max\{20t, 10\}, g(x,y,t) = 0.01$$
+Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
 Set the number of training steps for the first regression training to Nfit_reg=300, with a learning rate of E lr_E_reg=1e-3 and a learning rate of T lr_T_reg=1e-3. For the second PDE training, set Nfit_pde=200 training steps, with a learning rate of E lr_E_pde=1e-1 and a learning rate of T lr_T_pde=1e-1. The visualization parameter is set to vmax_E=0.6 and vmax_T=0.15.
 
@@ -940,7 +940,7 @@ The l2 relative errors between the two training results and the reference soluti
 
 Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
-Initial and boundary condition uses "gauss" type: $$\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$$
+Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
 Set the number of training steps for the first regression training to Nfit_reg=700, with a learning rate of E lr_E_reg=1e-3 and a learning rate of T lr_T_reg=1e-3. For the second PDE training, set Nfit_pde=100 training steps, with a learning rate of E lr_E_pde=1e-1 and a learning rate of T lr_T_pde=1e-1. The visualization parameter is set to vmax_E=0.006 and vmax_T=0.11.
 
