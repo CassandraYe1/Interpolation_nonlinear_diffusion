@@ -32,58 +32,65 @@ class Config:
         初始化所有数据相关变量为None
         Initialize all data-related variables to None
         """
-        self.D_ref = None
-        self.E_prev = None
-        self.E_ref = None
-        self.X = None
-        self.Y = None
-        self.Z = None
-        self.inp_fine = None
-        self.Z_fine = None
+        # 精细网格 | Fine grid
+        self.D_ref = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.E_prev = None   # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
+        self.E_ref = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.X = None        # X坐标矩阵 | X-coordinate matrix
+        self.Y = None        # Y坐标矩阵 | Y-coordinate matrix
+        self.Z = None        # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_fine = None # 输入张量 | Input tensor
+        self.Z_fine = None   # 展平后的电离函数布尔值张量 | Flattened ionization function bool tensor
 
-        self.X_coarse = None
-        self.Y_coarse = None
-        self.Z_coarse = None
-        self.inp_coarse = None
-        self.D_coarse = None
-        self.E_coarse_prev = None
-        self.E_coarse_ref = None
+        # 粗网格 | Coarse grid
+        self.X_coarse = None      # X坐标矩阵 | X-coordinate matrix
+        self.Y_coarse = None      # Y坐标矩阵 | Y-coordinate matrix
+        self.Z_coarse = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_coarse = None    # 输入张量 | Input tensor
+        self.D_coarse = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.E_coarse_prev = None # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
+        self.E_coarse_ref = None  # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
 
-        self.Xd = None
-        self.Yd = None
-        self.Zd = None
-        self.inp_d = None
-        self.Ed = None
-        self.Ed_ = None
-        self.Dd = None
+        # 内部点 | Internal points (excluding boundaries)
+        self.Xd = None    # X坐标矩阵 | X-coordinate matrix
+        self.Yd = None    # Y坐标矩阵 | Y-coordinate matrix
+        self.Zd = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_d = None # 输入张量 | Input tensor
+        self.Ed = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Ed_ = None   # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
+        self.Dd = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
 
-        self.Xl = None
-        self.Yl = None
-        self.Zl = None
-        self.inp_l = None
-        self.El = None
-        self.Dl = None
+        # 左边界 | Left boundary
+        self.Xl = None    # X坐标矩阵 | X-coordinate matrix
+        self.Yl = None    # Y坐标矩阵 | Y-coordinate matrix
+        self.Zl = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_l = None # 输入张量 | Input tensor
+        self.El = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Dl = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
 
-        self.Xr = None
-        self.Yr = None
-        self.Zr = None
-        self.inp_r = None
-        self.Er = None
-        self.Dr = None
+        # 右边界 | Right boundary
+        self.Xr = None    # X坐标矩阵 | X-coordinate matrix
+        self.Yr = None    # Y坐标矩阵 | Y-coordinate matrix
+        self.Zr = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_r = None # 输入张量 | Input tensor
+        self.Er = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Dr = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
 
-        self.Xb = None
-        self.Yb = None
-        self.Zb = None
-        self.inp_b = None
-        self.Eb = None
-        self.Db = None
+        # 下边界 | Bottom boundary
+        self.Xb = None    # X坐标矩阵 | X-coordinate matrix
+        self.Yb = None    # Y坐标矩阵 | Y-coordinate matrix
+        self.Zb = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_b = None # 输入张量 | Input tensor
+        self.Eb = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Db = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
 
-        self.Xt = None
-        self.Yt = None
-        self.Zt = None
-        self.inp_t = None
-        self.Et = None
-        self.Dt = None
+        # 上边界 | Top boundary
+        self.Xt = None    # X坐标矩阵 | X-coordinate matrix
+        self.Yt = None    # Y坐标矩阵 | Y-coordinate matrix
+        self.Zt = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_t = None # 输入张量 | Input tensor
+        self.Et = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Dt = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
 
     def load_from_yaml(self):
         """
