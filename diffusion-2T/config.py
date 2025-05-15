@@ -32,83 +32,89 @@ class Config:
         初始化所有数据相关变量为None
         Initialize all data-related variables to None
         """
-        D_ref = None
-        K_ref = None
-        E_prev = None
-        E_ref = None
-        T_prev = None
-        T_ref = None
-        sigma_ref = None
-        X = None
-        Y = None
-        Z = None
-        inp_fine = None
-        Z_fine = None
+        # 精细网格 | Fine grid
+        self.D_ref = None     # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.K_ref = None     # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.E_prev = None    # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
+        self.E_ref = None     # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.T_prev = None    # 前一时间步温度分布张量 | Temperature distribution tensor from previous time step
+        self.T_ref = None     # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.sigma_ref = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
+        self.X = None         # X坐标矩阵 | X-coordinate matrix
+        self.Y = None         # Y坐标矩阵 | Y-coordinate matrix
+        self.Z = None         # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_fine = None  # 输入张量 | Input tensor
+        self.Z_fine = None    # 展平后的电离函数布尔值张量 | Flattened ionization function bool tensor
 
-        X_coarse = None
-        Y_coarse = None
-        Z_coarse = None
-        inp_coarse = None
-        Z_coarse = None
-        D_coarse = None
-        K_coarse = None
-        E_coarse_prev = None
-        E_coarse_ref = None
-        T_coarse_prev = None
-        T_coarse_ref = None
-        sigma_coarse_ref = None
+        # 粗网格 | Coarse grid
+        self.X_coarse = None         # X坐标矩阵 | X-coordinate matrix
+        self.Y_coarse = None         # Y坐标矩阵 | Y-coordinate matrix
+        self.Z_coarse = None         # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_coarse = None       # 输入张量 | Input tensor
+        self.D_coarse = None         # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.K_coarse = None         # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.E_coarse_prev = None    # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
+        self.E_coarse_ref = None     # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.T_coarse_prev = None    # 前一时间步温度分布张量 | Temperature distribution tensor from previous time step
+        self.T_coarse_ref = None     # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.sigma_coarse_ref = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
 
-        Xd = None
-        Yd = None
-        Zd = None
-        inp_d = None
-        Ed = None
-        Ed_ = None
-        Td = None
-        Td_ = None
-        Dd = None
-        Kd = None
-        sigma_d = None
+        # 内部点 | Internal points (excluding boundaries)
+        self.Xd = None      # X坐标矩阵 | X-coordinate matrix
+        self.Yd = None      # Y坐标矩阵 | Y-coordinate matrix
+        self.Zd = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_d = None   # 输入张量 | Input tensor
+        self.Ed = None      # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Ed_ = None     # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
+        self.Td = None      # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.Td_ = None     # 前一时间步温度分布张量 | Temperature distribution tensor from previous time step
+        self.Dd = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.Kd = None      # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.sigma_d = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
 
-        Xl = None
-        Yl = None
-        Zl = None
-        inp_l = None
-        El = None
-        Tl = None
-        Dl = None
-        Kl = None
-        sigma_l = None
+        # 左边界 | Left boundary
+        self.Xl = None      # X坐标矩阵 | X-coordinate matrix
+        self.Yl = None      # Y坐标矩阵 | Y-coordinate matrix
+        self.Zl = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_l = None   # 输入张量 | Input tensor
+        self.El = None      # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Tl = None      # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.Dl = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.Kl = None      # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.sigma_l = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
 
-        Xr = None
-        Yr = None
-        Zr = None
-        inp_r = None
-        Er = None
-        Tr = None
-        Dr = None
-        Kr = None
-        sigma_r = None
+        # 右边界 | Right boundary
+        self.Xr = None      # X坐标矩阵 | X-coordinate matrix
+        self.Yr = None      # Y坐标矩阵 | Y-coordinate matrix
+        self.Zr = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_r = None   # 输入张量 | Input tensor
+        self.Er = None      # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Tr = None      # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.Dr = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.Kr = None      # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.sigma_r = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
 
-        Xb = None
-        Yb = None
-        Zb = None
-        inp_b = None
-        Eb = None
-        Tb = None
-        Db = None
-        Kb = None
-        sigma_b = None
+        # 下边界 | Bottom boundary
+        self.Xb = None      # X坐标矩阵 | X-coordinate matrix
+        self.Yb = None      # Y坐标矩阵 | Y-coordinate matrix
+        self.Zb = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_b = None   # 输入张量 | Input tensor
+        self.Eb = None      # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Tb = None      # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.Db = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.Kb = None      # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.sigma_b = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
 
-        Xt = None
-        Yt = None
-        Zt = None
-        inp_t = None
-        Et = None
-        Tt = None
-        Dt = None
-        Kt = None
-        sigma_t = None
+        # 上边界 | Top boundary
+        self.Xt = None      # X坐标矩阵 | X-coordinate matrix
+        self.Yt = None      # Y坐标矩阵 | Y-coordinate matrix
+        self.Zt = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.inp_t = None   # 输入张量 | Input tensor
+        self.Et = None      # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
+        self.Tt = None      # 当前时间步温度分布张量 | Temperature distribution tensor from current time step
+        self.Dt = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
+        self.Kt = None      # 当前时间步热导率张量 | Thermal conductivity tensor from current time step
+        self.sigma_t = None # 当前时间步电导率张量 | Electrical conductivity tensor from current time step
 
     def load_from_yaml(self):
         """
