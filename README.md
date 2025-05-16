@@ -82,7 +82,7 @@ $$
 
 原始数据托管于百度网盘，需按以下路径映射部署到本地仓库：
 
-[下载链接](https://pan.baidu.com/...) | 提取码：xxxx
+[下载链接](https://pan.baidu.com/s/1Ib-cABf92qbmVYx4y8tmGA) | 提取码：`xk2t`
 
 将其中的`./diffusion-1T/data/`目录内容完整复制到本地仓库的`./diffusion-1T/`下，将其中的`./diffusion-2T/data/`目录内容完整复制到本地仓库的`./diffusion-2T/`下。
 
@@ -571,7 +571,7 @@ Our neural network employs the LBFGS optimizer for training.
 
 The original datasets are hosted on Baidu Netdisk and should be mapped to the local repository following the specified directory structure:
 
-[Baidu Netdisk Link](https://pan.baidu.com/...) | Access Code: `xxxx`
+[Baidu Netdisk Link](https://pan.baidu.com/s/1Ib-cABf92qbmVYx4y8tmGA) | Access Code: `xk2t`
 
 Copy all contents from ./diffusion-1T/data/ (source) to ./diffusion-1T/ (local repository), and all contents from ./diffusion-2T/data/ (source) to ./diffusion-2T/ (local repository).
 
