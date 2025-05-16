@@ -168,41 +168,41 @@ $$
 
 #### 单温问题：
 
-训练完成后会在 ./diffusion-1T/results/<model_name>/ 目录下生成：
+训练完成后会在`./diffusion-1T/results/<model_name>/`目录下生成：
 
-(1) model_reg.pt : 第一阶段训练模型
+(1) `model_reg.pt`: 第一阶段训练模型
 
-(2) model_pinn.pt : 第二阶段训练模型
+(2) `model_pinn.pt`: 第二阶段训练模型
 
-(3) sol_reg.npy : 第一阶段预测结果
+(3) `sol_reg.npy`: 第一阶段预测结果
 
-(4) sol_pinn.npy : 第二阶段预测结果
+(4) `sol_pinn.npy`: 第二阶段预测结果
 
-(5) fig.png : 第一、第二阶段预测结果误差图像
+(5) `fig.png`: 第一、第二阶段预测结果误差图像
 
 #### 双温问题：
 
-训练完成后会在 ./diffusion-2T/results/<model_name>/ 目录下生成：
+训练完成后会在`./diffusion-2T/results/<model_name>/`目录下生成：
 
-(1) model_reg_E.pt : 第一阶段关于E的训练模型
+(1) `model_reg_E.pt`: 第一阶段关于E的训练模型
 
-(2) model_reg_T.pt : 第一阶段关于T的训练模型
+(2) `model_reg_T.pt`: 第一阶段关于T的训练模型
 
-(3) model_pinn_E.pt : 第二阶段关于E的训练模型
+(3) `model_pinn_E.pt`: 第二阶段关于E的训练模型
 
-(4) model_pinn_T.pt : 第二阶段关于T的训练模型
+(4) `model_pinn_T.pt`: 第二阶段关于T的训练模型
 
-(5) sol_reg_E.npy : 第一阶段对E的预测结果
+(5) `sol_reg_E.npy`: 第一阶段对E的预测结果
 
-(6) sol_reg_T.npy : 第一阶段对T的预测结果
+(6) `sol_reg_T.npy`: 第一阶段对T的预测结果
 
-(7) sol_pinn_E.npy : 第二阶段对E的预测结果
+(7) `sol_pinn_E.npy`: 第二阶段对E的预测结果
 
-(8) sol_pinn_T.npy : 第二阶段对T的预测结果
+(8) `sol_pinn_T.npy`: 第二阶段对T的预测结果
 
-(9) fig_E.png : 关于E的第一、第二阶段预测结果误差图像
+(9) `fig_E.png`: 关于E的第一、第二阶段预测结果误差图像
 
-(10) fig_T.png : 关于T的第一、第二阶段预测结果误差图像
+(10) `fig_T.png`: 关于T的第一、第二阶段预测结果误差图像
 
 ## 数值实验：
 
@@ -657,41 +657,41 @@ Copy all contents from ./diffusion-1T/data/ (source) to ./diffusion-1T/ (local r
 
 #### Single-temperature Problem:
 
-Results will be saved in "./diffusion-1T/results/<model_name>/":
+Results will be saved in `./diffusion-1T/results/<model_name>/`:
 
-(1) model_reg.pt : Phase 1 regression trained model
+(1) `model_reg.pt`: Phase 1 regression trained model
 
-(2) model_pinn.pt : Phase 2 physics-informed model
+(2) `model_pinn.pt`: Phase 2 physics-informed model
 
-(3) sol_reg.npy : Phase 1 predictions
+(3) `sol_reg.npy`: Phase 1 predictions
 
-(4) sol_pinn.npy : Phase 2 predictions
+(4) `sol_pinn.npy`: Phase 2 predictions
 
-(5) fig.png : figure about the comparison of regression and PINN solutions
+(5) `fig.png`: figure about the comparison of regression and PINN solutions
 
 #### Two-temperature Problem:
 
-Results will be saved in "./diffusion-2T/results/<model_name>/":
+Results will be saved in `./diffusion-2T/results/<model_name>/`:
 
-(1) model_reg_E.pt : Phase 1 regression trained model of E
+(1) `model_reg_E.pt`: Phase 1 regression trained model of E
 
-(2) model_reg_T.pt : Phase 1 regression trained model of T
+(2) `model_reg_T.pt`: Phase 1 regression trained model of T
 
-(3) model_pinn_E.pt : Phase 2 physics-informed model of E
+(3) `model_pinn_E.pt`: Phase 2 physics-informed model of E
 
-(4) model_pinn_T.pt : Phase 2 physics-informed model of T
+(4) `model_pinn_T.pt`: Phase 2 physics-informed model of T
 
-(5) sol_reg_E.npy : Phase 1 E-predictions
+(5) `sol_reg_E.npy`: Phase 1 E-predictions
 
-(6) sol_reg_T.npy : Phase 1 T-predictions
+(6) `sol_reg_T.npy`: Phase 1 T-predictions
 
-(7) sol_pinn_E.npy : Phase 2 E-predictions
+(7) `sol_pinn_E.npy`: Phase 2 E-predictions
 
-(8) sol_pinn_T.npy : Phase 2 T-predictions
+(8) `sol_pinn_T.npy`: Phase 2 T-predictions
 
-(9) fig_E.png : figure about the comparison of regression and PINN E-solutions
+(9) `fig_E.png`: figure about the comparison of regression and PINN E-solutions
 
-(10) fig_T.png : figure about the comparison of regression and PINN T-solutions
+(10) `fig_T.png`: figure about the comparison of regression and PINN T-solutions
 
 ## Numerical Experiments:
 
