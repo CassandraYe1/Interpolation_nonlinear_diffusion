@@ -573,7 +573,7 @@ The original datasets are hosted on Baidu Netdisk and should be mapped to the lo
 
 [Baidu Netdisk Link](https://pan.baidu.com/s/1Ib-cABf92qbmVYx4y8tmGA) | Access Code: `xk2t`
 
-Copy all contents from ./diffusion-1T/data/ (source) to ./diffusion-1T/ (local repository), and all contents from ./diffusion-2T/data/ (source) to ./diffusion-2T/ (local repository).
+Copy all contents from `./diffusion-1T/data/` (source) to ./diffusion-1T/ (local repository), and all contents from `./diffusion-2T/data/` (source) to `./diffusion-2T/` (local repository).
 
 ### Parameter specification:
 
