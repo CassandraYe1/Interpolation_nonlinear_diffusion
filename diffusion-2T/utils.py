@@ -78,7 +78,7 @@ def pde_res(E, T, D, K, E_, T_, sigma, X, dt):
     return [torch.abs(res_E.mean()), torch.abs(res_T.mean())]
 
 
-def plot_E(E_reg, E_pinn, E_ref, X, Y, data_path, vmax_E=None):
+def plot_E(E_reg, E_pinn, E_ref, X, Y, data_path, vmax=None):
     """
     绘制关于E的回归解和PINN解的对比图
     Plot comparison of regression and PINN solutions of E
@@ -90,7 +90,7 @@ def plot_E(E_reg, E_pinn, E_ref, X, Y, data_path, vmax_E=None):
         X:      [cfg.Nx, cfg.Ny] X坐标网格 | [cfg.Nx, cfg.Ny] X coordinate grid
         Y:      [cfg.Nx, cfg.Ny] Y坐标网格 | [cfg.Nx, cfg.Ny] Y coordinate grid
         data_path: 图像保存路径 | Path to save figure
-        vmax_E: 误差图的最大值 | Maximum value for error plots
+        vmax: 误差图的最大值 | Maximum value for error plots
     """
     # 设置matplotlib绘图参数 | Set matplotlib plotting parameters
     mpl.rcParams['font.size'] = 10
@@ -116,7 +116,7 @@ def plot_E(E_reg, E_pinn, E_ref, X, Y, data_path, vmax_E=None):
     fig.colorbar(pcm1, ax=axs[0,0], **cbar_kw)
 
     # 子图2: 回归误差 | Subplot 2: Regression Error
-    pcm2 = axs[0,1].pcolormesh(X, Y, np.abs(E_ref - E_reg), vmin=0, vmax=vmax_E, cmap='jet', shading='auto')
+    pcm2 = axs[0,1].pcolormesh(X, Y, np.abs(E_ref - E_reg), vmin=0, vmax=vmax, cmap='jet', shading='auto')
     axs[0,1].set_title("(b) Regression Error", pad=12)
     axs[0,1].set_xlabel("x")
     axs[0,1].set_ylabel("y")
@@ -132,7 +132,7 @@ def plot_E(E_reg, E_pinn, E_ref, X, Y, data_path, vmax_E=None):
     fig.colorbar(pcm3, ax=axs[1,0], **cbar_kw)
 
     # 子图4: PINN误差 | Subplot 4: PINN Error
-    pcm4 = axs[1,1].pcolormesh(X, Y, np.abs(E_ref - E_pinn), vmin=0, vmax=vmax_E, cmap='jet', shading='auto')
+    pcm4 = axs[1,1].pcolormesh(X, Y, np.abs(E_ref - E_pinn), vmin=0, vmax=vmax, cmap='jet', shading='auto')
     axs[1,1].set_title("(d) PINN Error", pad=12)
     axs[1,1].set_xlabel("x")
     axs[1,1].set_ylabel("y")
@@ -146,7 +146,7 @@ def plot_E(E_reg, E_pinn, E_ref, X, Y, data_path, vmax_E=None):
     plt.savefig(os.path.join(data_path, 'fig_E.png'), dpi=300, bbox_inches='tight')
 
 
-def plot_T(T_reg, T_pinn, T_ref, X, Y, data_path, vmax_T=None):
+def plot_T(T_reg, T_pinn, T_ref, X, Y, data_path, vmax=None):
     """
     绘制关于T的回归解和PINN解的对比图
     Plot comparison of regression and PINN solutions of T
@@ -158,7 +158,7 @@ def plot_T(T_reg, T_pinn, T_ref, X, Y, data_path, vmax_T=None):
         X:      [cfg.Nx, cfg.Ny] X坐标网格 | [cfg.Nx, cfg.Ny] X coordinate grid
         Y:      [cfg.Nx, cfg.Ny] Y坐标网格 | [cfg.Nx, cfg.Ny] Y coordinate grid
         data_path: 图像保存路径 | Path to save figure
-        vmax_T: 误差图的最大值 | Maximum value for error plots
+        vmax: 误差图的最大值 | Maximum value for error plots
     """
     # 设置matplotlib绘图参数 | Set matplotlib plotting parameters
     mpl.rcParams['font.size'] = 10
@@ -184,7 +184,7 @@ def plot_T(T_reg, T_pinn, T_ref, X, Y, data_path, vmax_T=None):
     fig.colorbar(pcm1, ax=axs[0,0], **cbar_kw)
 
     # 子图2: 回归误差 | Subplot 2: Regression Error
-    pcm2 = axs[0,1].pcolormesh(X, Y, np.abs(T_ref - T_reg), vmin=0, vmax=vmax_T, cmap='jet', shading='auto')
+    pcm2 = axs[0,1].pcolormesh(X, Y, np.abs(T_ref - T_reg), vmin=0, vmax=vmax, cmap='jet', shading='auto')
     axs[0,1].set_title("(b) Regression Error", pad=12)
     axs[0,1].set_xlabel("x")
     axs[0,1].set_ylabel("y")
@@ -200,7 +200,7 @@ def plot_T(T_reg, T_pinn, T_ref, X, Y, data_path, vmax_T=None):
     fig.colorbar(pcm3, ax=axs[1,0], **cbar_kw)
 
     # 子图4: PINN误差 | Subplot 4: PINN Error
-    pcm4 = axs[1,1].pcolormesh(X, Y, np.abs(T_ref - T_pinn), vmin=0, vmax=vmax_T, cmap='jet', shading='auto')
+    pcm4 = axs[1,1].pcolormesh(X, Y, np.abs(T_ref - T_pinn), vmin=0, vmax=vmax, cmap='jet', shading='auto')
     axs[1,1].set_title("(d) PINN Error", pad=12)
     axs[1,1].set_xlabel("x")
     axs[1,1].set_ylabel("y")
