@@ -39,13 +39,13 @@ $$
 
 其中 $\Omega = [0,1]\times[0,1]$ ；辐射扩散系数 $D_L, K_L$ 同样选用限流形式，即 $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ 。
 
-对于上述单温、双温问题，电离度函数 $z$ 可以分为常数（zconst）、间断线性（zline）、双方形（zsquare）三种情况，初边值条件 $\beta(x,y,t), g(x,y,t)$ 则可以分为常数初值+线性边值（const）和高斯初值+零边值（gauss）两种情况。每种情况的具体公式由后文给出。
+对于上述单温、双温问题，材料函数 $z$ 可以分为常数（zconst）、间断线性（zline）、双方形（zsquare）三种情况，初边值条件 $\beta(x,y,t), g(x,y,t)$ 则可以分为常数初值+线性边值（const）和高斯初值+零边值（gauss）两种情况。每种情况的具体公式由后文给出。
 
 ## 神经网络超分辨率算法设计：
 
 结合低分辨率数值解 $E_{\text{coarse}}$ 以及方程本身，本项目设计了针对单一方程的新型神经网络解法。
 
-构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络是等宽的，隐藏层层数和每个隐藏层的神经元数量可以手动设置（默认设置为2隐藏层、512个神经元），激活函数选用ReLU函数。输出层设置为二维通道，按电离度函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
+构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络是等宽的，隐藏层层数和每个隐藏层的神经元数量可以手动设置（默认设置为2隐藏层、512个神经元），激活函数选用ReLU函数。输出层设置为二维通道，按材料函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
 
 为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{\text{reg}}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{\text{reg+pde}}$，进一步提升神经网络模型的求解精度。
 
@@ -117,9 +117,9 @@ Interpolation_nonlinear_diffusion/
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:--------:|
-|model_name    |目标模型（"电离度函数类型-初边值函数类型"）    |zconst-const  |
+|model_name    |目标模型（"材料函数类型-初边值函数类型"）    |zconst-const  |
 |device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
-|ionization_type   |电离度函数类型（"zconst"或"zline"或"zsquare"）    |zconst          |
+|ionization_type   |材料函数类型（"zconst"或"zline"或"zsquare"）    |zconst          |
 
 ##### 网格参数：
 
@@ -233,7 +233,7 @@ Interpolation_nonlinear_diffusion/
 
 #### (1) zconst-const
 
-电离度函数为常数（zconst）： $z=1$
+材料函数为常数（zconst）： $z=1$
 
 初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -256,7 +256,7 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 
 #### (2) zconst-gauss
 
-电离度函数为常数（zconst）： $z=1$
+材料函数为常数（zconst）： $z=1$
 
 初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -279,7 +279,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 #### (3) zline-const
 
-电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+材料函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
 初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -302,7 +302,7 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 
 #### (4) zline-gauss
 
-电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+材料函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
 初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -325,7 +325,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 #### (5) zsquare-const
 
-电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+材料函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
 初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -348,7 +348,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 #### (6) zsquare-gauss
 
-电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+材料函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
 初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -373,7 +373,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 
 #### (1) zconst-const
 
-电离度函数为常数（zconst）： $z=1$
+材料函数为常数（zconst）： $z=1$
 
 初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -396,7 +396,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 
 #### (2) zconst-gauss
 
-电离度函数为常数（zconst）： $z=1$
+材料函数为常数（zconst）： $z=1$
 
 初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -419,7 +419,7 @@ python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zco
 
 #### (3) zline-const
 
-电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+材料函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
 初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -442,7 +442,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 
 #### (4) zline-gauss
 
-电离度函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+材料函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
 
 初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -465,7 +465,7 @@ python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zlin
 
 #### (5) zsquare-const
 
-电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+材料函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
 初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -488,7 +488,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 
 #### (6) zsquare-gauss
 
-电离度函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+材料函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
 初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -551,13 +551,13 @@ $$
 
 where $\Omega = [0,1]\times[0,1]$ , while the radiation diffusion coefficient $D_L, K_L$ also adopts the flux-limited form, expressed as $D_L = \frac{1}{3\sigma_{\alpha}+\frac{|\nabla E|}{E}}, \sigma_{\alpha} = \frac{z^3}{E^{3/4}}, K_L = \frac{T^4}{T^{3/2}z+T^{5/2}|\nabla T|}$ .
 
-For the single-temperature and two-temperature problems mentioned above, the ionization function $z$ can be classified into three cases: "zconst" (constant), "zline" (intermittent linear) and "zsquare" (two-squares). Initial and boundary conditions $\beta(x,y,t), g(x,y,t)$ can also be classified into two cases: "const" (constant initial+linear boundary) and "gauss" (gauss initial+zero boundary). The specific formula for each case will be given later.
+For the single-temperature and two-temperature problems mentioned above, the material function $z$ can be classified into three cases: "zconst" (constant), "zline" (intermittent linear) and "zsquare" (two-squares). Initial and boundary conditions $\beta(x,y,t), g(x,y,t)$ can also be classified into two cases: "const" (constant initial+linear boundary) and "gauss" (gauss initial+zero boundary). The specific formula for each case will be given later.
 
 ## Design of Neural Network Super-Resolution Algorithm:
 
 We propose a novel neural network-based solver for a single equation by combining low-resolution numerical solutions $E_{\text{coarse}}$ with the governing equation itself.
 
-We construct a fully connected neural network that takes the spatial coordinates of target points $(x,y)$ as input data. The network features a uniform-width architecture, where both the number of hidden layers "depth" and neurons per hidden layer "width" are configurable (default configuration: 2 hidden layers with 512 neurons each), employing ReLU as the activation function. The output layer is configured as a two-channel structure, where a Boolean mask is applied based on the magnitude of the ionization function $z$ at different target points to select the corresponding output channel for each target point.
+We construct a fully connected neural network that takes the spatial coordinates of target points $(x,y)$ as input data. The network features a uniform-width architecture, where both the number of hidden layers "depth" and neurons per hidden layer "width" are configurable (default configuration: 2 hidden layers with 512 neurons each), employing ReLU as the activation function. The output layer is configured as a two-channel structure, where a Boolean mask is applied based on the magnitude of the material function $z$ at different target points to select the corresponding output channel for each target point.
 
 To ensure solving efficiency, we first utilize the low-resolution reference solution to construct a data-driven loss function $L_{\text{reg}}$ for training. Then, incorporating the equations of the target radiation diffusion problem, we design a physics-constrained loss function $L_{\text{reg+pde}}$ to further improve the solving accuracy of the neural network model.
 
@@ -629,9 +629,9 @@ Interpolation_nonlinear_diffusion/
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:--------:|
-|model_name    |target model ("ionization function type-initial&boundary condition type")   |zconst-const  |
+|model_name    |target model ("material function type-initial&boundary condition type")   |zconst-const  |
 |device_name   |computation device ("cuda" or "cpu")    |cuda          |
-|ionization_type   |ionization function type ("zconst", "zline" or "zsquare")    |zconst          |
+|ionization_type   |material function type ("zconst", "zline" or "zsquare")    |zconst          |
 
 ##### Grid parameters:
 
@@ -745,7 +745,7 @@ Results will be saved in `./diffusion-2T/results/<model_name>/`:
 
 #### (1) zconst-const
 
-Ionization function uses "zconst" type: Always $z=1$
+material function uses "zconst" type: Always $z=1$
 
 Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -768,7 +768,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (2) zconst-gauss
 
-Ionization function uses "zconst" type: Always $z=1$
+material function uses "zconst" type: Always $z=1$
 
 Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -791,7 +791,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (3) zline-const
 
-Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
+material function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
 Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -814,7 +814,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (4) zline-gauss
 
-Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
+material function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
 Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -837,7 +837,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (5) zsquare-const
 
-Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
+material function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
 Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -860,7 +860,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (6) zsquare-gauss
 
-Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
+material function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
 Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -885,7 +885,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (1) zconst-const
 
-Ionization function uses "zconst" type: Always $z=1$
+material function uses "zconst" type: Always $z=1$
 
 Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -908,7 +908,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (2) zconst-gauss
 
-Ionization function uses "zconst" type: Always $z=1$
+material function uses "zconst" type: Always $z=1$
 
 Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -931,7 +931,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (3) zline-const
 
-Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
+material function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
 Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -954,7 +954,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (4) zline-gauss
 
-Ionization function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
+material function uses "zline" type: When $x\leq0.5$, $z=1$; when $x>0.5$, $z=10$
 
 Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
@@ -977,7 +977,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (5) zsquare-const
 
-Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
+material function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
 Initial and boundary condition uses "const" type: $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
 
@@ -1000,7 +1000,7 @@ NMSE between the two training results and the reference solution, along with the
 
 #### (6) zsquare-gauss
 
-Ionization function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
+material function uses "zsquare" type: When $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ or $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$, $z=10$; otherwise $z=1$
 
 Initial and boundary condition uses "gauss" type: $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
 
