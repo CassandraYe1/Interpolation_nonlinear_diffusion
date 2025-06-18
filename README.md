@@ -590,9 +590,40 @@ The reference solution is obtained through finite element method with the follow
 
 Our neural network employs the LBFGS optimizer for training.
 
-### Parameter specification:
+### Project Structure：
+   
+```
+Interpolation_nonlinear_diffusion/
+├── diffusion-1T/
+│   ├── data/
+│   ├── results/
+│   ├── config.yaml
+│   ├── config.py
+│   ├── utils.py
+│   ├── data_loader.py
+│   ├── model.py
+│   ├── train_reg.py
+│   ├── train_pde.py
+│   ├── main.py
+│   └── plot.ipynb
+├── diffusion-2T/
+│   ├── data/
+│   ├── results/
+│   ├── config.yaml
+│   ├── config.py
+│   ├── utils.py
+│   ├── data_loader.py
+│   ├── model.py
+│   ├── train_reg.py
+│   ├── train_pde.py
+│   ├── main.py
+│   └── plot.ipynb
+└── README.md
+```
 
-#### Global Parameters:
+### Parameter Specification:
+
+#### Global parameters:
 
 ##### Model parameters:
 
@@ -670,7 +701,7 @@ Our neural network employs the LBFGS optimizer for training.
 
 ### Output:
 
-#### Single-temperature Problem:
+#### Single-temperature problem:
 
 Results will be saved in `./diffusion-1T/results/<model_name>/`:
 
@@ -684,7 +715,7 @@ Results will be saved in `./diffusion-1T/results/<model_name>/`:
 
 (5) `fig.png`: figure about the comparison of regression and PINN solutions
 
-#### Two-temperature Problem:
+#### Two-temperature problem:
 
 Results will be saved in `./diffusion-2T/results/<model_name>/`:
 
