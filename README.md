@@ -78,6 +78,37 @@ $$
 
 我们的神经网络采用LBFGS优化器。
 
+### 项目结构：
+   
+```
+Interpolation_nonlinear_diffusion/
+├── diffusion-1T/
+│   ├── data/
+│   ├── results/
+│   ├── config.yaml
+│   ├── config.py
+│   ├── utils.py
+│   ├── data_loader.py
+│   ├── model.py
+│   ├── train_reg.py
+│   ├── train_pde.py
+│   ├── main.py
+│   └── plot.ipynb
+├── diffusion-2T/
+│   ├── data/
+│   ├── results/
+│   ├── config.yaml
+│   ├── config.py
+│   ├── utils.py
+│   ├── data_loader.py
+│   ├── model.py
+│   ├── train_reg.py
+│   ├── train_pde.py
+│   ├── main.py
+│   └── plot.ipynb
+└── README.md
+```
+
 ### 参数设置：
 
 #### 全局参数：
@@ -86,9 +117,9 @@ $$
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:--------:|
-|model_name    |目标模型（"电离度函数类型-初边值函数类型"）    |"zconst-const"  |
+|model_name    |目标模型（"电离度函数类型-初边值函数类型"）    |zconst-const  |
 |device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
-|ionization_type   |电离度函数类型（"zconst"或"zline"或"zsquare"）    |"zconst"          |
+|ionization_type   |电离度函数类型（"zconst"或"zline"或"zsquare"）    |zconst          |
 
 ##### 网格参数：
 
@@ -214,7 +245,7 @@ $$
 python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |l2相对误差 |
 |:--------:|:--------:|
@@ -237,7 +268,7 @@ python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zco
 python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |l2相对误差 |
 |:--------:|:--------:|
@@ -260,7 +291,7 @@ python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zco
 python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |l2相对误差 |
 |:--------:|:--------:|
@@ -283,7 +314,7 @@ python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zlin
 python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |l2相对误差 |
 |:--------:|:--------:|
@@ -306,7 +337,7 @@ python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zlin
 python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |l2相对误差 |
 |:--------:|:--------:|
@@ -329,7 +360,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zs
 python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |l2相对误差 |
 |:--------:|:--------:|
@@ -354,7 +385,7 @@ python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zs
 python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2 --vmax_E 0.28 --vmax_T 0.02
 ```
 
-关于变量E和T的两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+关于变量E和T的两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |E的l2相对误差 |T的l2相对误差 |
 |:--------:|:-----------:|:-----------:|
@@ -377,7 +408,7 @@ python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zco
 python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |E的l2相对误差 |T的l2相对误差 |
 |:--------:|:-----------:|:-----------:|
@@ -400,7 +431,7 @@ python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zco
 python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 1.7 --vmax_T 0.03
 ```
 
-关于变量E和T的两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+关于变量E和T的两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |E的l2相对误差 |T的l2相对误差 |
 |:--------:|:-----------:|:-----------:|
@@ -423,7 +454,7 @@ python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zlin
 python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |E的l2相对误差 |T的l2相对误差 |
 |:--------:|:-----------:|:-----------:|
@@ -446,7 +477,7 @@ python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zlin
 python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.6 --vmax_T 0.15
 ```
 
-关于变量E和T的两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+关于变量E和T的两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |E的l2相对误差 |T的l2相对误差 |
 |:--------:|:-----------:|:-----------:|
@@ -469,7 +500,7 @@ python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zs
 python ./diffusion-2T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
 ```
 
-两次训练结果与参考解之间的l2相对误差以及误差图像如下：
+两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
 
 |训练      |E的l2相对误差 |T的l2相对误差 |
 |:--------:|:-----------:|:-----------:|
@@ -567,9 +598,9 @@ Our neural network employs the LBFGS optimizer for training.
 
 |Parameter      |Description      |Default      |
 |:--------:|:--------:|:--------:|
-|model_name    |target model ("ionization function type-initial&boundary condition type")   |"zconst-const"  |
-|device_name   |computation device ("cuda" or "cpu")    |"cuda"          |
-|ionization_type   |ionization function type ("zconst", "zline" or "zsquare")    |"zconst"          |
+|model_name    |target model ("ionization function type-initial&boundary condition type")   |zconst-const  |
+|device_name   |computation device ("cuda" or "cpu")    |cuda          |
+|ionization_type   |ionization function type ("zconst", "zline" or "zsquare")    |zconst          |
 
 ##### Grid parameters:
 
@@ -695,7 +726,7 @@ The command-line parameters are as follows:
 python ./diffusion-1T/main.py --model_name "zconst-const" --zconst --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error |
 |:--------:|:--------:|
@@ -718,7 +749,7 @@ The command-line parameters are as follows:
 python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error |
 |:--------:|:--------:|
@@ -741,7 +772,7 @@ The command-line parameters are as follows:
 python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error |
 |:--------:|:--------:|
@@ -764,7 +795,7 @@ The command-line parameters are as follows:
 python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error |
 |:--------:|:--------:|
@@ -787,7 +818,7 @@ The command-line parameters are as follows:
 python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error |
 |:--------:|:--------:|
@@ -810,7 +841,7 @@ The command-line parameters are as follows:
 python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error |
 |:--------:|:--------:|
@@ -835,7 +866,7 @@ The command-line parameters are as follows:
 python ./diffusion-2T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-2 --lr_T_pde 1e-2 --vmax_E 0.28 --vmax_T 0.02
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
 |:--------:|:-----------:|:-----------:|
@@ -858,7 +889,7 @@ The command-line parameters are as follows:
 python ./diffusion-2T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.004 --vmax_T 0.015
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
 |:--------:|:-----------:|:-----------:|
@@ -881,7 +912,7 @@ The command-line parameters are as follows:
 python ./diffusion-2T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 300 --lr_E_reg 1e-2 --lr_T_reg 1e-2 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 1.7 --vmax_T 0.03
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
 |:--------:|:-----------:|:-----------:|
@@ -904,7 +935,7 @@ The command-line parameters are as follows:
 python ./diffusion-2T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_E_reg 1e-3 --lr_T_reg 1e-4 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.012 --vmax_T 0.15
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
 |:--------:|:-----------:|:-----------:|
@@ -927,7 +958,7 @@ The command-line parameters are as follows:
 python ./diffusion-2T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 300 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 200 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.6 --vmax_T 0.15
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
 |:--------:|:-----------:|:-----------:|
@@ -950,7 +981,7 @@ The command-line parameters are as follows:
 python ./diffusion-2T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 700 --lr_E_reg 1e-3 --lr_T_reg 1e-3 --Nfit_pde 100 --lr_E_pde 1e-1 --lr_T_pde 1e-1 --vmax_E 0.006 --vmax_T 0.11
 ```
 
-The l2 relative errors between the two training results and the reference solution, along with the error images, are shown below:
+NMSE between the two training results and the reference solution, along with the absolute error visualization, are shown below:
 
 |Training      |L2 relative error of E |L2 relative error of T |
 |:--------:|:-----------:|:-----------:|
