@@ -36,18 +36,15 @@ def parse_args():
     parser.add_argument('--depth', type=int, default=2, help='Number of hidden layers')
     parser.add_argument('--width', type=int, default=512, help='Number of units in each hidden layer')
     # 回归训练参数 | Regression training parameters
-    parser.add_argument('--Nfit_reg', type=int, default=300, help='Number of training iterations for regularization phase')
-    parser.add_argument('--lr_E_reg', type=float, default=1e-2, help='Learning rate for LBFGS optimizer of E in regularization phase')
-    parser.add_argument('--lr_T_reg', type=float, default=1e-2, help='Learning rate for LBFGS optimizer of T in regularization phase')
+    parser.add_argument('--Nfit_reg', type=int, default=500, help='Number of training iterations for regularization phase')
+    parser.add_argument('--lr_E_reg', type=float, default=1e-1, help='Learning rate for LBFGS optimizer of E in regularization phase')
+    parser.add_argument('--lr_T_reg', type=float, default=1e-1, help='Learning rate for LBFGS optimizer of T in regularization phase')
     parser.add_argument('--epoch_reg', type=int, default=50, help='Epochs for regularization training')
     # PDE训练参数 | PDE training parameters
-    parser.add_argument('--Nfit_pde', type=int, default=200, help='Number of training iterations for PDE phase')
-    parser.add_argument('--lr_E_pde', type=float, default=1e-1, help='Learning rate for LBFGS optimizer of E in PDE phase')
-    parser.add_argument('--lr_T_pde', type=float, default=1e-1, help='Learning rate for LBFGS optimizer of T in PDE phase')
+    parser.add_argument('--Nfit_pde', type=int, default=500, help='Number of training iterations for PDE phase')
+    parser.add_argument('--lr_E_pde', type=float, default=1, help='Learning rate for LBFGS optimizer of E in PDE phase')
+    parser.add_argument('--lr_T_pde', type=float, default=1, help='Learning rate for LBFGS optimizer of T in PDE phase')
     parser.add_argument('--epoch_pde', type=int, default=10, help='Epochs for PDE training')
-    # 可视化参数 | Visualization parameters
-    parser.add_argument('--vmax_E', type=float, default=0.25, help='Maximum value of error colorbar E')
-    parser.add_argument('--vmax_T', type=float, default=0.25, help='Maximum value of error colorbar T')
     
     return parser.parse_args()
 
@@ -214,7 +211,3 @@ if __name__ == "__main__":
     print('E: PINN Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_pinn_final)))
     print('T: Regression Solution rl2: {:.4e}'.format(relative_l2(T_ref, T_reg_final)))
     print('T: PINN Solution rl2: {:.4e}'.format(relative_l2(T_ref, T_pinn_final)))
-
-    # === 可视化 === | === Visualization ===
-    plot_E(E_reg_final, E_pinn_final, E_ref, X, Y, data_path, vmax=cfg.vmax_E, t=cfg.t)
-    plot_T(T_reg_final, T_pinn_final, T_ref, X, Y, data_path, vmax=cfg.vmax_T, t=cfg.t)
