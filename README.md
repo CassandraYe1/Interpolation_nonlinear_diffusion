@@ -224,120 +224,35 @@ python ./diffusion-1T/main.py --model_name "zconst_const" --ionization_type "zco
 |第一次训练   | $1.30\times10^{-4}$ |
 |第二次训练   | $1.02\times10^{-4}$ |
 
-#### (2) zconst-gauss
+#### (2) zline-const
 
-材料函数为常数（zconst）： $z=1$
-
-初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
-
-设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.02。
-
-命令行参数如下：
+间断线性材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zconst-gauss" --ionization_type "zconst" --Nfit_reg 200 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.02
+python ./diffusion-1T/main.py --model_name "zline_const" --ionization_type "zline" --Nx 129 --Ny 129
 ```
 
-两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
+两次训练结果与参考解之间的相对 $L_2$ 误差如下：
 
-|训练      |l2相对误差 |
+|训练      |相对 $L_2$ 误差 |
 |:--------:|:--------:|
-|第一次训练   |3.1160e-3|
-|第二次训练   |1.0960e-5|
+|第一次训练   | $1.83\times10^{-3}$ |
+|第二次训练   | $1.81\times10^{-3}$ |
 
-<img src="./diffusion-1T/results/zconst-gauss/fig.png" alt="1T-zconst-gauss" width="400" />
+#### (3) zsquare-const
 
-#### (3) zline-const
-
-材料函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
-
-初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
-
-设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.25。
-
-命令行参数如下：
+双方形材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zline-const" --ionization_type "zline" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 200 --lr_pde 1 --vmax 0.25
+python ./diffusion-1T/main.py --model_name "zsquare_const" --ionization_type "zsquare" --Nx 145 --Ny 145
 ```
 
-两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
+两次训练结果与参考解之间的相对 $L_2$ 误差如下：
 
-|训练      |l2相对误差 |
+|训练      |相对 $L_2$ 误差 |
 |:--------:|:--------:|
-|第一次训练   |8.6974e-5|
-|第二次训练   |2.6432e-5|
-
-<img src="./diffusion-1T/results/zline-const/fig.png" alt="1T-zline-const" width="400" />
-
-#### (4) zline-gauss
-
-材料函数为间断线性（zline）：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
-
-初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
-
-设置第一次回归训练时的训练步数为Nfit_reg=200，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=100，学习率为lr_pde=1。可视化参数设置为vmax=0.072。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zline-gauss" --ionization_type "zline" --Nfit_reg 200 --lr_reg 1e-2 --Nfit_pde 100 --lr_pde 1 --vmax 0.072
-```
-
-两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |1.2046e-3|
-|第二次训练   |8.1885e-4|
-
-<img src="./diffusion-1T/results/zline-gauss/fig.png" alt="1T-zline-gauss" width="400" />
-
-#### (5) zsquare-const
-
-材料函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
-
-初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
-
-设置第一次回归训练时的训练步数为Nfit_reg=150，学习率为lr_reg=1e-2；第二次PDE训练时的训练步数为Nfit_pde=300，学习率为lr_pde=1e-1。可视化参数设置为vmax=1.0。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zsquare-const" --ionization_type "zsquare" --Nfit_reg 150 --lr_reg 1e-2 --Nfit_pde 300 --lr_pde 1e-1 --vmax 1.0
-```
-
-两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |7.7425e-4|
-|第二次训练   |3.1866e-4|
-
-<img src="./diffusion-1T/results/zsquare-const/fig.png" alt="1T-zsquare-const" width="400" />
-
-#### (6) zsquare-gauss
-
-材料函数为双方形（zsquare）：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
-
-初边值条件为高斯初值+零边值（gauss）： $\beta (x,y,t) = 0, g(x,y,t) = 0.01+100e^{-(x^2+y^2)/0.01}$
-
-设置第一次回归训练时的训练步数为Nfit_reg=400，学习率为lr_reg=1e-1；第二次PDE训练时的训练步数为Nfit_pde=350，学习率为lr_pde=1。可视化参数设置为vmax=0.16。
-
-命令行参数如下：
-
-```bash
-python ./diffusion-1T/main.py --model_name "zsquare-gauss" --ionization_type "zsquare" --Nfit_reg 400 --lr_reg 1e-1 --Nfit_pde 350 --lr_pde 1 --vmax 0.16
-```
-
-两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
-
-|训练      |l2相对误差 |
-|:--------:|:--------:|
-|第一次训练   |4.7518e-3|
-|第二次训练   |3.9955e-3|
-
-<img src="./diffusion-1T/results/zsquare-gauss/fig.png" alt="1T-zsquare-gauss" width="400" />
+|第一次训练   | $4.12\times10^{-3}$ |
+|第二次训练   | $1.58\times10^{-3}$ |
 
 ### 双温问题：
 
