@@ -2,7 +2,7 @@
 model_settings:
   # 模型名称格式："电离度函数类别-初边值函数类别"
   # Model name format: "ionization type-boundary condition type"
-  model_name: "zconst-const"
+  model_name: "zconst_const"
 
   # 计算设备：cpu/cuda | Computing device: cpu/cuda
   device_name: "cuda"
@@ -15,7 +15,8 @@ model_settings:
 grid_settings:
   Nx: 257 # X轴网格点数 | Number of grid points on x-axis
   Ny: 257 # Y轴网格点数 | Number of grid points on y-axis
-  n: 4 # 粗网格降采样因子 | Downsampling factor for coarse grid
+  n: 2 # 粗网格降采样因子 | Downsampling factor for coarse grid
+  t: 1 # 目标时间点 | Target time step
 
 # 网络设置 | Network Settings
 network_settings:

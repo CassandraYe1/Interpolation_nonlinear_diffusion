@@ -64,4 +64,87 @@ class DeepNN(nn.Module):
         # Channel selection: choose output channel based on Z values
         out = out[:,[0]] * Z + out[:,[1]] * (~Z)
         return out
+
+
+class MultiRegionModel(nn.Module):
+    """
+    管理四个区域的模型
+    """
+    def __init__(self, cfg: Config):
+        super().__init__()
+        self.regions = ["top_left", "top_right", "bottom_left", "bottom_right"]
+        self.models = nn.ModuleDict({
+            region: DeepNN(cfg) for region in self.regions
+        })
+        self.cfgs = {
+            region: Config(region) for region in self.regions
+        }
+        
+        # 初始化各区域配置
+        for region in self.regions:
+            self.cfgs[region].init_config()
+    
+    def forward(self, inputs):
+        outputs = {}
+        for region in self.regions:
+            # 获取对应区域的输入
+            x, z = inputs[region]
+            # 通过对应区域的模型
+            outputs[region] = self.models[region](x, z)
+        return outputs
+    
+    def train_step(self, optimizer, closure):
+        """
+        执行一个训练步骤
+        """
+        total_loss = 0.0
+        optimizer.zero_grad()
+        
+        # 计算所有区域的损失
+        for region in self.regions:
+            loss = closure(region)
+            total_loss += loss
+        
+        # 反向传播和优化
+        total_loss.backward()
+        optimizer.step()
+        
+        return total_loss
+    
+    def get_results(self):
+        """
+        获取合并后的结果
+        """
+        full_size = 257
+        full_E_reg = torch.zeros((full_size, full_size), device=self.cfgs["top_left"].device_name)
+        full_E_pinn = torch.zeros_like(full_E_reg)
+        count = torch.zeros_like(full_E_reg)
+        
+        for region in self.regions:
+            cfg = self.cfgs[region]
+            x_start, x_end, y_start, y_end = cfg.region_boundaries[region]
+            
+            # 获取预测结果
+            E_reg = self.models[region](cfg.inp_fine, cfg.Z_fine_bool).detach().reshape(cfg.Nx, cfg.Ny)
+            E_pinn = E_reg.clone()  # 简化为相同，实际中应为第二阶段结果
+            
+            # 调整尺寸以匹配完整网格
+            if region in ["top_right", "bottom_right"]:
+                E_reg = E_reg[:, 1:]
+                E_pinn = E_pinn[:, 1:]
+            if region in ["bottom_left", "bottom_right"]:
+                E_reg = E_reg[1:, :]
+                E_pinn = E_pinn[1:, :]
+            
+            # 累加到完整网格
+            x_len, y_len = E_reg.shape
+            full_E_reg[x_start:x_start+x_len, y_start:y_start+y_len] += E_reg
+            full_E_pinn[x_start:x_start+x_len, y_start:y_start+y_len] += E_pinn
+            count[x_start:x_start+x_len, y_start:y_start+y_len] += 1
+        
+        # 计算平均值
+        full_E_reg /= count
+        full_E_pinn /= count
+        
+        return full_E_reg, full_E_pinn
         

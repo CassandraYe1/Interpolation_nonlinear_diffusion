@@ -5,7 +5,7 @@ from typing import Tuple
 import os
 
 
-def load_data(config) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
+def load_data(config, region) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
     """
     加载精细网格参考解数据
     Load the fine-grid reference solution.
@@ -39,15 +39,27 @@ def load_data(config) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.T
     Y = np.load(os.path.join(data_path, 'Y.npy'))
 
     # 将数据转换为PyTorch张量并转移到GPU | Convert data to PyTorch tensors and move to GPU
-    D_ref = torch.tensor(kappa_E[-1]).cuda()
-    K_ref = torch.tensor(kappa_T[-1]).cuda()
-    E_prev = torch.tensor(sol_E[-2]).cuda()
-    E_ref = torch.tensor(sol_E[-1]).cuda()
-    T_prev = torch.tensor(sol_T[-2]).cuda()
-    T_ref = torch.tensor(sol_T[-1]).cuda()
-    sigma_ref = torch.tensor(sigma[-1] * (sol_T[-1]**4 - sol_E[-1])).cuda()
-    X = torch.tensor(X).requires_grad_().cuda()
-    Y = torch.tensor(Y).requires_grad_().cuda()
+    if region == "top_left":
+        x_slice = slice(0, config.Nx)
+        y_slice = slice(0, config.Ny)
+    elif region == "top_right":
+        x_slice = slice(0, config.Nx)
+        y_slice = slice(257-config.Ny, 257)
+    elif region == "bottom_left":
+        x_slice = slice(257-config.Nx, 257)
+        y_slice = slice(0, config.Ny)
+    elif region == "bottom_right":
+        x_slice = slice(257-config.Nx, 257)
+        y_slice = slice(257-config.Ny, 257)
+    D_ref = torch.tensor(kappa_E[int(1000*config.t-1), x_slice, y_slice]).to(config.device_name)
+    K_ref = torch.tensor(kappa_T[int(1000*config.t-1), x_slice, y_slice]).to(config.device_name)
+    E_prev = torch.tensor(sol_E[int(1000*config.t-2), x_slice, y_slice]).to(config.device_name)
+    E_ref = torch.tensor(sol_E[int(1000*config.t-1), x_slice, y_slice]).to(config.device_name)
+    T_prev = torch.tensor(sol_T[int(1000*config.t-2), x_slice, y_slice]).to(config.device_name)
+    T_ref = torch.tensor(sol_T[int(1000*config.t-1), x_slice, y_slice]).to(config.device_name)
+    sigma_ref = torch.tensor(sigma[int(1000*config.t-1), x_slice, y_slice] * (sol_T[int(1000*config.t-1), x_slice, y_slice]**4 - sol_E[int(1000*config.t-1), x_slice, y_slice])).to(config.device_name)
+    X = torch.tensor(X[x_slice, y_slice]).requires_grad_().to(config.device_name)
+    Y = torch.tensor(Y[x_slice, y_slice]).requires_grad_().to(config.device_name)
 
     return D_ref, K_ref, E_prev, E_ref, T_prev, T_ref, sigma_ref, X, Y
 
@@ -68,10 +80,10 @@ def z_const(X, Y, config) -> torch.Tensor:
     Returns:
         Z: [cfg.Nx, cfg.Ny] "zconst"类型的布尔电离函数 | Boolean ionization function of type "zconst"
     """
-    Z = torch.ones(config.Nx, config.Ny)
-    Z = (Z>2).cuda()
+    Z = torch.ones(config.Nx,config.Ny)
+    Z_bool = (Z>2).to(config.device_name)
 
-    return Z
+    return Z, Z_bool
 
 
 def z_line(X, Y, config) -> torch.Tensor:
@@ -87,13 +99,13 @@ def z_line(X, Y, config) -> torch.Tensor:
     Returns:
         Z: [cfg.Nx, cfg.Ny] "zline"类型的布尔电离函数 | Boolean ionization function of type "zline"
     """
-    Z = torch.zeros(config.Nx, config.Ny)
+    Z = torch.zeros(config.Nx,config.Ny)
     for i in range(config.Nx):
-        for j in range(config.Nx):
+        for j in range(config.Ny):
             Z[i,j] = (X[i,j]<1./2.)*10.0 + (X[i,j]>=1./2.)*1.0
-    Z = (Z>2).cuda()
+    Z_bool = (Z>2).to(config.device_name)
 
-    return Z
+    return Z, Z_bool
 
 
 def z_square(X, Y, config) -> torch.Tensor:
@@ -110,11 +122,11 @@ def z_square(X, Y, config) -> torch.Tensor:
         Z: [cfg.Nx, cfg.Ny] "zsquare"类型的布尔电离函数 | Boolean ionization function of type "zsquare"
     """
     ax, ay, bx, by = 3., 9., 9., 3.
-    Z = torch.zeros(config.Nx, config.Ny)
+    Z = torch.zeros(config.Nx,config.Ny)
     for i in range(config.Nx):
-        for j in range(config.Nx):
+        for j in range(config.Ny):
             Z[i,j] = (X[i,j]<(ax+4.)/16.)*(X[i,j]>ax/16.0)*(Y[i,j]<(ay+4.)/16.)*(Y[i,j]>ay/16.0)*9.0 + \
                      (X[i,j]<(bx+4.)/16.)*(X[i,j]>bx/16.0)*(Y[i,j]<(by+4.)/16.)*(Y[i,j]>by/16.0)*9.0 + 1.0
-    Z = (Z>2).cuda()
+    Z_bool = (Z>2).to(config.device_name)
 
-    return Z
+    return Z, Z_bool
