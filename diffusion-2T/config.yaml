@@ -28,20 +28,15 @@ training_settings:
   # 基于粗网格参考数据的回归训练
   # Regression training using coarse-grid reference data
   regression:
-    Nfit: 300 # 训练迭代次数 | Number of training iterations
-    lr_E: 1e-2 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
-    lr_T: 1e-2 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
+    Nfit: 500 # 训练迭代次数 | Number of training iterations
+    lr_E: 1e-1 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
+    lr_T: 1e-1 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
     epochs: 50 # 训练轮数 | Training epochs
 
   # 基于粗网格数据和PDE残差的训练
   # Training using coarse-grid data and PDE residuals
   pde:
-    Nfit: 200 # 训练迭代次数 | Number of training iterations
-    lr_E: 1e-1 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
-    lr_T: 1e-1 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
+    Nfit: 500 # 训练迭代次数 | Number of training iterations
+    lr_E: 1 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
+    lr_T: 1 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
     epochs: 50 # 训练轮数 | Training epochs
-
-# 可视化设置 | Visualization Settings
-visualization:
-  vmax_E: 0.25 # 关于E的误差颜色条的最大值 | Maximum value of error colorbar E
-  vmax_T: 0.25 # 关于T的误差颜色条的最大值 | Maximum value of error colorbar T
