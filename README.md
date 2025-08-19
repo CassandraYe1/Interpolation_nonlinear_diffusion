@@ -84,13 +84,13 @@ $$
 \begin{aligned}
    & L_{\text{reg+pde}} = L_{\text{reg}} + wL_{\text{pde}} \\
    & L_{\text{reg}} = \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} \\
-   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
+   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 + 
 \end{aligned}
 $$
 
 $$
 \begin{equation}
-   + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
+   \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
 \end{equation}
 $$
 
