@@ -47,6 +47,16 @@ $$
 
 边值条件在左边界处设置为零边值，即 $\beta(x,y,t) = 0$ 。
 
+### 典型测试问题：
+
+在辐射扩散方程中，材料函数 $z(x,y)$ 是描述计算域内介质吸收辐射能量并将其转化为内能效率的关键物理量。我们构造了以下三种材料函数 $z(x,y)$ 的参数化模型：
+
+常数材料函数： $z=1$
+
+间断线性材料函数：当 $x\leq0.5$ 时， $z=1$ ；当 $x>0.5$ 时， $z=10$
+
+双方形材料函数：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
+
 ## 神经网络超分辨率算法设计：
 
 结合低分辨率数值解 $E_{\text{coarse}}$ 以及方程本身，本项目设计了针对单一方程的新型神经网络解法。
@@ -84,15 +94,14 @@ $$
 \begin{aligned}
    & L_{\text{reg+pde}} = L_{\text{reg}} + wL_{\text{pde}} \\
    & L_{\text{reg}} = \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} \\
-   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 + \\
-   & \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
+   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 + 
 \end{aligned}
 $$
 
 $$
-\begin{equation}
+\begin{aligned}
    \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
-\end{equation}
+\end{aligned}
 $$
 
 其中 $E^n_{\text{coarse}},T^n_{\text{coarse}}$ 表示当前时间步的已知低分辨率解， $E^{n-1}_{\text{coarse}},T^{n-1}_{\text{coarse}}$ 表示前一时间步的已知低分辨率解， $D^n_{\text{coarse}}$ 表示当前时间步的已知辐射扩散系数， $K^n_{\text{coarse}}$ 表示当前时间步的已知材料导热系数， $w$ 是动态权重系数。使用有限差分法对物理信息损失项 $L_{\text{pde}}$ 进行离散线性化处理。
@@ -113,15 +122,7 @@ $$
 
 ## 代码介绍
 
-本代码实现了一个结合数据驱动与物理约束的双阶段神经网络训练框架，用于求解非线性辐射扩散方程的高分辨率数值解。代码采用模块化设计，支持灵活的参数配置与跨平台（CPU/GPU）训练。
-
-取“Nx”×“Ny”的细网格点（默认设置为257×257），设置时间步长为0.001，皮卡迭代的收敛极限为0.001，将有限元法求出的结果作为参考解。已知的粗网格解 $E_{\text{coarse}}$ 由参考解经过“n”倍下采样得到（默认设置为4），分辨率为65×65。
-
-我们的神经网络采用LBFGS优化器。
-
 ### 项目结构：
-
-从[https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42](https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42)访问数据集。根据下述项目结构，将提取的`/diffusion-1T/data`和`/diffusion-2T/data`分别放在根目录中。
    
 ```
 Interpolation_nonlinear_diffusion/
@@ -135,8 +136,7 @@ Interpolation_nonlinear_diffusion/
 │   ├── model.py
 │   ├── train_reg.py
 │   ├── train_pde.py
-│   ├── main.py
-│   └── plot.ipynb
+│   └── main.py
 ├── diffusion-2T/
 │   ├── data/
 │   ├── results/
@@ -147,8 +147,8 @@ Interpolation_nonlinear_diffusion/
 │   ├── model.py
 │   ├── train_reg.py
 │   ├── train_pde.py
-│   ├── main.py
-│   └── plot.ipynb
+│   └── main.py
+├── requirements.txt
 └── README.md
 ```
 
@@ -160,7 +160,7 @@ Interpolation_nonlinear_diffusion/
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:--------:|
-|model_name    |目标模型（"材料函数类型-初边值函数类型"）    |zconst-const  |
+|model_name    |目标模型（"材料函数类型_初值函数类型"）    |zconst_const  |
 |device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
 |ionization_type   |材料函数类型（"zconst"或"zline"或"zsquare"）    |zconst          |
 
@@ -170,7 +170,7 @@ Interpolation_nonlinear_diffusion/
 |:--------:|:--------:|:---------:|
 |Nx   |x轴细网格点数    |257    |
 |Ny   |y轴细网格点数    |257    |
-|n    |下采样倍数     |4      |
+|n    |下采样倍数     |2      |
 
 ##### 网络参数：
 
@@ -179,123 +179,50 @@ Interpolation_nonlinear_diffusion/
 |depth   |隐藏层层数    |2    |
 |width   |隐藏层单元数    |512    |
 
-#### 单温问题算法参数：
+#### 训练参数：
 
 ##### 第一阶段训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
-|Nfit_reg   |训练步数    |300    |
-|lr_reg   |LBFGS优化器学习率    |1e-2    |
+|Nfit_reg   |训练步数    |500    |
+|lr_E_reg   |关于E的LBFGS优化器学习率    |1e-1    |
+|lr_T_reg   |关于T的LBFGS优化器学习率    |1e-1    |
 |epoch_reg    |训练轮次     |50      |
 
 ##### 第二阶段训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
-|Nfit_pde   |训练步数    |200    |
-|lr_pde   |LBFGS优化器学习率    |1e-1    |
+|Nfit_pde   |训练步数    |500    |
+|lr_E_pde   |关于E的LBFGS优化器学习率    |1    |
+|lr_T_pde   |关于T的LBFGS优化器学习率    |1    |
 |epoch_pde    |训练轮次     |10      |
-
-##### 可视化参数：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|vmax   |误差图像色带的最大值    |0.25    |
-
-#### 双温问题算法参数：
-
-##### 第一阶段训练参数：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nfit_reg   |训练步数    |300    |
-|lr_E_reg   |关于E的LBFGS优化器学习率    |1e-2    |
-|lr_T_reg   |关于T的LBFGS优化器学习率    |1e-2    |
-|epoch_reg    |训练轮次     |50      |
-
-##### 第二阶段训练参数：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|Nfit_pde   |训练步数    |200    |
-|lr_E_pde   |关于E的LBFGS优化器学习率    |1e-1    |
-|lr_T_pde   |关于T的LBFGS优化器学习率    |1e-1    |
-|epoch_pde    |训练轮次     |10      |
-
-##### 可视化参数：
-
-|参数      |说明      |默认值      |
-|:--------:|:--------:|:---------:|
-|vmax_E   |E的误差图像色带的最大值    |0.25    |
-|vmax_T   |T的误差图像色带的最大值    |0.25    |
-
-### 输出结果：
-
-#### 单温问题：
-
-训练完成后会在`./diffusion-1T/results/<model_name>/`目录下生成：
-
-(1) `model_reg.pt`: 第一阶段训练模型
-
-(2) `model_pinn.pt`: 第二阶段训练模型
-
-(3) `sol_reg.npy`: 第一阶段预测结果
-
-(4) `sol_pinn.npy`: 第二阶段预测结果
-
-(5) `fig.png`: 第一、第二阶段预测结果误差图像
-
-#### 双温问题：
-
-训练完成后会在`./diffusion-2T/results/<model_name>/`目录下生成：
-
-(1) `model_reg_E.pt`: 第一阶段关于E的训练模型
-
-(2) `model_reg_T.pt`: 第一阶段关于T的训练模型
-
-(3) `model_pinn_E.pt`: 第二阶段关于E的训练模型
-
-(4) `model_pinn_T.pt`: 第二阶段关于T的训练模型
-
-(5) `sol_reg_E.npy`: 第一阶段对E的预测结果
-
-(6) `sol_reg_T.npy`: 第一阶段对T的预测结果
-
-(7) `sol_pinn_E.npy`: 第二阶段对E的预测结果
-
-(8) `sol_pinn_T.npy`: 第二阶段对T的预测结果
-
-(9) `fig_E.png`: 关于E的第一、第二阶段预测结果误差图像
-
-(10) `fig_T.png`: 关于T的第一、第二阶段预测结果误差图像
 
 ## 数值实验：
 
+### 数据集：
+
+参考解由FreeFem++的有限元求解器生成，具体设置如下：对于单温及双温问题，在上取个节点的四边形网格，时间离散采用隐式向后欧拉。时间步长设置为，时间域从计算至，共1000步。每一时间步都使用Picard迭代求解非线性系统，更新解直至两次迭代间的残差降低至0.001或迭代次数达到100次。低分辨率数据由参考解经过下采样得到。
+
+从[https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42](https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42)访问数据集。根据上述项目结构，将提取的`/diffusion-1T/data`和`/diffusion-2T/data`分别放在根目录中。
+
 ### 单温问题：
 
-#### (1) zconst-const
+#### (1) zconst_const
 
-材料函数为常数（zconst）： $z=1$
-
-初边值条件为常数初值+线性边值（const）： $\beta (x,y,t) = \max$ { $20t, 10$ }, $g(x,y,t) = 0.01$
-
-设置第一次回归训练时的训练步数为Nfit_reg=100，学习率为lr_reg=1e-3；第二次PDE训练时的训练步数为Nfit_pde=200，学习率为lr_pde=1。可视化参数设置为vmax=0.1。
-
-命令行参数如下：
+常数材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
 ```bash
-python ./diffusion-1T/main.py --model_name "zconst-const" --ionization_type "zconst" --Nfit_reg 100 --lr_reg 1e-3 --Nfit_pde 200 --lr_pde 1 --vmax 0.1
+python ./diffusion-1T/main.py --model_name "zconst_const" --ionization_type "zconst" --Nx 129 --Ny 129 --Nfit_reg 300 --Nfit_pde 200
 ```
 
-两次训练结果与参考解之间的NMSE误差以及绝对误差可视化如下：
+两次训练结果与参考解之间的相对 $L_2$ 误差如下：
 
-|训练      |l2相对误差 |
+|训练      |相对 $L_2$ 误差 |
 |:--------:|:--------:|
-|第一次训练   |1.3803e-4|
-|第二次训练   |7.9253e-7|
-
-<img src="./diffusion-1T/results/zconst-const/fig.png" alt="1T-zconst-const" width="400" />
+|第一次训练   | $1.30\times10^{-4}$ |
+|第二次训练   | $1.02\times10^{-4}$ |
 
 #### (2) zconst-gauss
 
