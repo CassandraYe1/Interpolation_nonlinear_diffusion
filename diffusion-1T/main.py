@@ -119,7 +119,7 @@ if __name__ == "__main__":
 
         # 训练并计时 | Train and time
         start_time = time.time()
-        [model, rl2_loss_reg] = train_model_reg(model, cfg=cfg, Nfit=cfg.Nfit_reg, lr=cfg.lr_reg, epo=cfg.epoch_reg)
+        [model, rl2_loss_reg] = train_model_reg(model, cfg=cfg, Nfit=cfg.Nfit_reg, lr=cfg.lr_E_reg, epo=cfg.epoch_reg)
         end_time = time.time()
         training_time_reg = end_time - start_time
         print(f"Regression training time: {training_time_reg:.6e} seconds")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
 
         # 训练并计时 | Train and time
         start_time = time.time()
-        [model_cur, rl2_loss_pinn] = train_model_pde(model_cur, cfg=cfg, Nfit=cfg.Nfit_pde, lr=cfg.lr_pde, epo=cfg.epoch_pde)
+        [model_cur, rl2_loss_pinn] = train_model_pde(model_cur, cfg=cfg, Nfit=cfg.Nfit_pde, lr=cfg.lr_E_pde, epo=cfg.epoch_pde)
         end_time = time.time()
         training_time_pinn = end_time - start_time
         print(f"PINN training time: {training_time_pinn:.6e} seconds")
