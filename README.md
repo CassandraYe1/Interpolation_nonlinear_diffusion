@@ -84,9 +84,14 @@ $$
 \begin{aligned}
    & L_{\text{reg+pde}} = L_{\text{reg}} + wL_{\text{pde}} \\
    & L_{\text{reg}} = \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} \\
-   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 \\
-   & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
+   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2
 \end{aligned}
+$$
+
+$$
+\begin{equation}
+   + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
+\end{equation}
 $$
 
 其中 $E^n_{\text{coarse}},T^n_{\text{coarse}}$ 表示当前时间步的已知低分辨率解， $E^{n-1}_{\text{coarse}},T^{n-1}_{\text{coarse}}$ 表示前一时间步的已知低分辨率解， $D^n_{\text{coarse}}$ 表示当前时间步的已知辐射扩散系数， $K^n_{\text{coarse}}$ 表示当前时间步的已知材料导热系数， $w$ 是动态权重系数。使用有限差分法对物理信息损失项 $L_{\text{pde}}$ 进行离散线性化处理。
