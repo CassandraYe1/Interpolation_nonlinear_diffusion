@@ -82,8 +82,10 @@ $$
 
 $$
 \begin{aligned}
-   L_{\text{reg+pde}} &= L_{\text{reg}} + wL_{\text{pde}} \\
-   L_{\text{reg}} &= \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} \\
+   & L_{\text{reg+pde}} = L_{\text{reg}} + wL_{\text{pde}} \\
+   & L_{\text{reg}} = \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} 
+\end{aligned}
+\begin{aligned}
    L_{\text{pde}} &= \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 \\
    & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
 \end{aligned}
@@ -99,11 +101,11 @@ $$
 
 $$
 \begin{equation}
-   w = \alpha\frac{L_{text{reg}}}{10L_{text{pde}}}
+   w = \alpha\frac{L_{\text{reg}}}{10L_{\text{pde}}}
 \end{equation}
 $$
 
-其中 $\alpha$ 表示与 $\lg\frac{L_{text{pde}}}{L_{text{reg}}}$ 有关的平滑系数，以捕捉两个损失项之间的数量级差异。
+其中 $\alpha$ 表示与 $\lg\frac{L_{\text{pde}}}{L_{\text{reg}}}$ 有关的平滑系数，以捕捉两个损失项之间的数量级差异。
 
 ## 代码介绍
 
