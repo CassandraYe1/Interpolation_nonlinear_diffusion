@@ -36,15 +36,13 @@ def parse_args():
     parser.add_argument('--depth', type=int, default=2, help='Number of hidden layers')
     parser.add_argument('--width', type=int, default=512, help='Number of units in each hidden layer')
     # 回归训练参数 | Regression training parameters
-    parser.add_argument('--Nfit_reg', type=int, default=300, help='Number of training iterations for regularization phase')
-    parser.add_argument('--lr_reg', type=float, default=1e-2, help='Learning rate for LBFGS optimizer in regularization phase')
+    parser.add_argument('--Nfit_reg', type=int, default=500, help='Number of training iterations for regularization phase')
+    parser.add_argument('--lr_E_reg', type=float, default=1e-1, help='Learning rate for LBFGS optimizer in regularization phase')
     parser.add_argument('--epoch_reg', type=int, default=50, help='Epochs for regularization training')
     # PDE训练参数 | PDE training parameters
-    parser.add_argument('--Nfit_pde', type=int, default=200, help='Number of training iterations for PDE phase')
-    parser.add_argument('--lr_pde', type=float, default=1e-1, help='Learning rate for LBFGS optimizer in PDE phase')
+    parser.add_argument('--Nfit_pde', type=int, default=500, help='Number of training iterations for PDE phase')
+    parser.add_argument('--lr_E_pde', type=float, default=1, help='Learning rate for LBFGS optimizer in PDE phase')
     parser.add_argument('--epoch_pde', type=int, default=10, help='Epochs for PDE training')
-    # 可视化参数 | Visualization parameters
-    parser.add_argument('--vmax', type=float, default=0.25, help='Maximum value of error colorbar')
     
     return parser.parse_args()
 
@@ -122,7 +120,6 @@ if __name__ == "__main__":
         # 训练并计时 | Train and time
         start_time = time.time()
         [model, rl2_loss_reg] = train_model_reg(model, cfg=cfg, Nfit=cfg.Nfit_reg, lr=cfg.lr_reg, epo=cfg.epoch_reg)
-        #model.load_state_dict(torch.load(os.path.join(data_path, 'model_reg_'+region+'.pt')))
         end_time = time.time()
         training_time_reg = end_time - start_time
         print(f"Regression training time: {training_time_reg:.6e} seconds")
@@ -142,7 +139,6 @@ if __name__ == "__main__":
 
         # 训练并计时 | Train and time
         start_time = time.time()
-        #model_cur.load_state_dict(torch.load(os.path.join(data_path, 'model_pinn_1_1.pt')))
         [model_cur, rl2_loss_pinn] = train_model_pde(model_cur, cfg=cfg, Nfit=cfg.Nfit_pde, lr=cfg.lr_pde, epo=cfg.epoch_pde)
         end_time = time.time()
         training_time_pinn = end_time - start_time
@@ -183,6 +179,3 @@ if __name__ == "__main__":
 
     print('Regression Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_reg_final)))
     print('PINN Solution rl2: {:.4e}'.format(relative_l2(E_ref, E_pinn_final)))
-
-    # === 可视化 === | === Visualization ===
-    plot(E_reg_final, E_pinn_final, E_ref, X, Y, data_path, vmax=cfg.vmax, t=cfg.t)
