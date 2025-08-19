@@ -5,11 +5,12 @@ from data_loader import *
 
 
 class Config:
-    def __init__(self):
+    def __init__(self, region="top_left"):
         """
         默认配置初始化
         Default configuration initialization
         """
+        self.region = region
         # 获取项目根目录和配置文件路径 | Get project root and config file path
         project_root = os.path.dirname(os.path.abspath(__file__))
         config_path = os.path.join(project_root, 'config.yaml')
@@ -38,14 +39,17 @@ class Config:
         self.E_ref = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
         self.X = None        # X坐标矩阵 | X-coordinate matrix
         self.Y = None        # Y坐标矩阵 | Y-coordinate matrix
-        self.Z = None        # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Z = None        # 电离函数矩阵 | Ionization function matrix
+        self.Z_bool = None   # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_fine = None # 输入张量 | Input tensor
         self.Z_fine = None   # 展平后的电离函数布尔值张量 | Flattened ionization function bool tensor
+        self.Z_fine_bool = None   # 展平后的电离函数布尔值张量 | Flattened ionization function bool tensor
 
         # 粗网格 | Coarse grid
         self.X_coarse = None      # X坐标矩阵 | X-coordinate matrix
         self.Y_coarse = None      # Y坐标矩阵 | Y-coordinate matrix
         self.Z_coarse = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Z_coarse_bool = None      # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_coarse = None    # 输入张量 | Input tensor
         self.D_coarse = None      # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
         self.E_coarse_prev = None # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
@@ -55,6 +59,7 @@ class Config:
         self.Xd = None    # X坐标矩阵 | X-coordinate matrix
         self.Yd = None    # Y坐标矩阵 | Y-coordinate matrix
         self.Zd = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Zd_bool = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_d = None # 输入张量 | Input tensor
         self.Ed = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
         self.Ed_ = None   # 前一时间步电场分布张量 | Electric field distribution tensor from previous time step
@@ -64,6 +69,7 @@ class Config:
         self.Xl = None    # X坐标矩阵 | X-coordinate matrix
         self.Yl = None    # Y坐标矩阵 | Y-coordinate matrix
         self.Zl = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Zl_bool = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_l = None # 输入张量 | Input tensor
         self.El = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
         self.Dl = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
@@ -72,6 +78,7 @@ class Config:
         self.Xr = None    # X坐标矩阵 | X-coordinate matrix
         self.Yr = None    # Y坐标矩阵 | Y-coordinate matrix
         self.Zr = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Zr_bool = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_r = None # 输入张量 | Input tensor
         self.Er = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
         self.Dr = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
@@ -80,6 +87,7 @@ class Config:
         self.Xb = None    # X坐标矩阵 | X-coordinate matrix
         self.Yb = None    # Y坐标矩阵 | Y-coordinate matrix
         self.Zb = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Zb_bool = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_b = None # 输入张量 | Input tensor
         self.Eb = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
         self.Db = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
@@ -88,6 +96,7 @@ class Config:
         self.Xt = None    # X坐标矩阵 | X-coordinate matrix
         self.Yt = None    # Y坐标矩阵 | Y-coordinate matrix
         self.Zt = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
+        self.Zt_bool = None    # 电离函数布尔值矩阵 | Ionization function bool matrix
         self.inp_t = None # 输入张量 | Input tensor
         self.Et = None    # 当前时间步电场分布张量 | Electric field distribution tensor from current time step
         self.Dt = None    # 当前时间步扩散系数张量 | Diffusion coefficient tensor from current time step
@@ -107,12 +116,13 @@ class Config:
             self.visualization = config_data.get('visualization', {})
 
         # 将配置映射到类属性 | Map configurations to class attributes
-        self.model_name = self.model_settings.get('model_name', 'zconst-const')
+        self.model_name = self.model_settings.get('model_name', 'zconst_const')
         self.device_name = self.model_settings.get('device_name', 'cuda')
         self.ionization_type = self.model_settings.get('ionization_type', 'zconst')
         self.Nx = self.grid_settings.get('Nx', 257)
         self.Ny = self.grid_settings.get('Ny', 257)
-        self.n = self.grid_settings.get('n', 4)
+        self.n = self.grid_settings.get('n', 2)
+        self.t = self.grid_settings.get('t', 1)
         self.depth = self.network_settings.get('depth', 2)
         self.width = self.network_settings.get('width', 512)
         self.Nfit_reg = self.training_settings['regression'].get('Nfit', 300)
@@ -135,30 +145,45 @@ class Config:
         # 验证电离函数类型 | Validate ionization type
         if self.ionization_type not in ['zconst', 'zline', 'zsquare']:
             raise ValueError(f"Invalid ionization_type: {self.ionization_type}")
+
+        self.region_boundaries = {
+            "top_left": (0, self.Nx, 0, self.Ny),
+            "top_right": (0, self.Nx, 257-self.Ny, 257),
+            "bottom_left": (257-self.Nx, 257, 0, self.Ny),
+            "bottom_right": (257-self.Nx, 257, 257-self.Ny, 257)
+        }
+        self.weights = {
+            "top_left": self.weight[0],
+            "top_right": self.weight[1],
+            "bottom_left": self.weight[2],
+            "bottom_right": self.weight[3]
+        }
         
         # 加载数据并计算电离函数 | Load data and compute ionization function
-        self.D_ref, self.E_prev, self.E_ref, self.X, self.Y = load_data(self)
+        self.D_ref, self.E_prev, self.E_ref, self.X, self.Y = load_data(self, self.region)
         if self.ionization_type == 'zconst':
-            self.Z = z_const(self.X, self.Y, self)
+            self.Z, self.Z_bool = z_const(self.X, self.Y, self)
         elif self.ionization_type == 'zline':
-            self.Z = z_line(self.X, self.Y, self)
+            self.Z, self.Z_bool = z_line(self.X, self.Y, self)
         elif self.ionization_type == 'zsquare':
-            self.Z = z_square(self.X, self.Y, self)
+            self.Z, self.Z_bool = z_square(self.X, self.Y, self)
 
         # 构建精细网格输入张量 | Construct fine grid input tensor
         self.inp_fine = torch.concat(
             [self.X.reshape(-1,1), self.Y.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
-        self.Z_fine = self.Z.reshape(-1,1)
+            axis=1).requires_grad_().to(self.device_name)
+        self.Z_fine = self.Z
+        self.Z_fine_bool = self.Z_bool.reshape(-1,1)
 
         # 粗网格数据准备 | Prepare coarse grid data
         self.X_coarse = self.X[::self.n,::self.n]
         self.Y_coarse = self.Y[::self.n,::self.n]
         self.Z_coarse = self.Z[::self.n,::self.n]
+        self.Z_coarse_bool = self.Z_bool[::self.n,::self.n]
         self.inp_coarse = torch.concat(
             [self.X_coarse.reshape(-1,1), self.Y_coarse.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
-        self.Z_coarse = self.Z_coarse.reshape(-1,1)
+            axis=1).requires_grad_().to(self.device_name)
+        self.Z_coarse_bool = self.Z_coarse_bool.reshape(-1,1)
         self.D_coarse = self.D_ref[::self.n,::self.n]
         self.E_coarse_prev = self.E_prev[::self.n,::self.n]
         self.E_coarse_ref = self.E_ref[::self.n,::self.n]
@@ -166,10 +191,11 @@ class Config:
         # 内部点数据准备 | Prepare internal points data (excluding boundaries)
         self.Xd = self.X[1:-1,1:-1]
         self.Yd = self.Y[1:-1,1:-1]
-        self.Zd = self.Z[1:-1,1:-1].reshape(-1,1)
+        self.Zd = self.Z[1:-1,1:-1]
+        self.Zd_bool = self.Z_bool[1:-1,1:-1].reshape(-1,1)
         self.inp_d = torch.concat(
             [self.Xd.reshape(-1,1), self.Yd.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
+            axis=1).requires_grad_().to(self.device_name)
         self.Ed = self.E_ref[1:-1,1:-1]
         self.Ed_ = self.E_prev[1:-1,1:-1]
         self.Dd = self.D_ref[1:-1,1:-1]
@@ -177,40 +203,44 @@ class Config:
         # 左边界数据准备 | Prepare left boundary data
         self.Xl = self.X[:,0]
         self.Yl = self.Y[:,0]
-        self.Zl = self.Z[:,0].reshape(-1,1)
+        self.Zl = self.Z[:,0]
+        self.Zl_bool = self.Z_bool[:,0].reshape(-1,1)
         self.inp_l = torch.concat(
             [self.Xl.reshape(-1,1), self.Yl.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
+            axis=1).requires_grad_().to(self.device_name)
         self.El = self.E_ref[:,[0]]
         self.Dl = self.D_ref[:,[0]]
 
         # 右边界数据准备 | Prepare right boundary data
         self.Xr = self.X[:,-1]
         self.Yr = self.Y[:,-1]
-        self.Zr = self.Z[:,-1].reshape(-1,1)
+        self.Zr = self.Z[:,-1]
+        self.Zr_bool = self.Z_bool[:,-1].reshape(-1,1)
         self.inp_r = torch.concat(
             [self.Xr.reshape(-1,1), self.Yr.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
+            axis=1).requires_grad_().to(self.device_name)
         self.Er = self.E_ref[:,[-1]]
         self.Dr = self.D_ref[:,[-1]]
 
         # 下边界数据准备 | Prepare bottom boundary data
         self.Xb = self.X[0]
         self.Yb = self.Y[0]
-        self.Zb = self.Z[0].reshape(-1,1)
+        self.Zb = self.Z[0]
+        self.Zb_bool = self.Z_bool[0].reshape(-1,1)
         self.inp_b = torch.concat(
             [self.Xb.reshape(-1,1), self.Yb.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
+            axis=1).requires_grad_().to(self.device_name)
         self.Eb = self.E_ref[0].reshape(-1,1)
         self.Db = self.D_ref[0].reshape(-1,1)
 
         # 上边界数据准备 | Prepare top boundary data
         self.Xt = self.X[-1]
         self.Yt = self.Y[-1]
-        self.Zt = self.Z[-1].reshape(-1,1)
+        self.Zt = self.Z[-1]
+        self.Zt_bool = self.Z_bool[-1].reshape(-1,1)
         self.inp_t = torch.concat(
             [self.Xt.reshape(-1,1), self.Yt.reshape(-1,1)], 
-            axis=1).requires_grad_().cuda()
+            axis=1).requires_grad_().to(self.device_name)
         self.Et = self.E_ref[-1].reshape(-1,1)
         self.Dt = self.D_ref[-1].reshape(-1,1)
 

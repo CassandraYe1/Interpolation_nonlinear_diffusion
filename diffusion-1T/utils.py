@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 
-def set_seed(seed=42):
+def set_seed(seed=0):
     """
     设置所有相关的随机数种子以确保可重复性
     Set all relevant random number seeds for reproducibility
     
     Args:
-        seed: 随机种子值，默认为42
-               Random seed value, default is 42
+        seed: 随机种子值，默认为0
+              Random seed value, default is 0
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -39,7 +39,7 @@ def relative_l2(Eref, Epred):
     Returns:
         float: 相对L2误差值 | Relative L2 error value
     """
-    return ((Eref - Epred)**2).mean() / (Eref**2).mean()
+    return torch.linalg.norm(Eref - Epred) / torch.linalg.norm(Eref)
 
 
 def pde_res(E, D, E_, X, dt):
@@ -71,7 +71,7 @@ def pde_res(E, D, E_, X, dt):
     return res.mean()
 
 
-def plot(E_reg, E_pinn, E_ref, X, Y, data_path, vmax=None):
+def plot(E_reg, E_pinn, E_ref, X, Y, data_path, vmax=None, t=None):
     """
     绘制回归解和PINN解的对比图
     Plot comparison of regression and PINN solutions
@@ -93,7 +93,8 @@ def plot(E_reg, E_pinn, E_ref, X, Y, data_path, vmax=None):
     mpl.rcParams['ytick.labelsize'] = 9
 
     # 创建2x2子图 | Create 2x2 subplots
-    fig, axs = plt.subplots(2, 2, figsize=(8, 7), layout='constrained', 
+    fig, axs = plt.subplots(2, 2, figsize=(8, 7), constrained_layout=True, 
+                            gridspec_kw={'wspace': 0, 'hspace': 0},
                             sharex=True, sharey=True)
     # 设置参考解的颜色范围 | Set color range based on reference solution
     vmin_ref = E_ref.min()
@@ -132,8 +133,7 @@ def plot(E_reg, E_pinn, E_ref, X, Y, data_path, vmax=None):
     axs[1,1].grid(True, linestyle=':', alpha=0.6)
     fig.colorbar(pcm4, ax=axs[1,1], **cbar_kw)
 
-    # 添加总标题和调整布局 | Add overall title and adjust layout
-    fig.suptitle("Comparison of Regression and PINN Solutions", y=1.04, fontsize=15)
-    plt.subplots_adjust(wspace=0.3, hspace=0.3)
+    # 添加总标题 | Add overall title
+    fig.suptitle(f"Comparison of Regression and PINN Solutions at t={t:.3f}", y=1.04, fontsize=15)
 
     plt.savefig(os.path.join(data_path, 'fig.png'), dpi=300, bbox_inches='tight')
