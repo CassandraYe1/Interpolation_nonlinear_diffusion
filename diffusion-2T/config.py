@@ -148,16 +148,14 @@ class Config:
         self.t = self.grid_settings.get('t', 1)
         self.depth = self.network_settings.get('depth', 2)
         self.width = self.network_settings.get('width', 512)
-        self.Nfit_reg = self.training_settings['regression'].get('Nfit', 300)
-        self.lr_E_reg = self.training_settings['regression'].get('lr_E', 1e-2)
-        self.lr_T_reg = self.training_settings['regression'].get('lr_T', 1e-2)
+        self.Nfit_reg = self.training_settings['regression'].get('Nfit', 500)
+        self.lr_E_reg = self.training_settings['regression'].get('lr_E', 1e-1)
+        self.lr_T_reg = self.training_settings['regression'].get('lr_T', 1e-1)
         self.epoch_reg = self.training_settings['regression'].get('epochs', 50)
-        self.Nfit_pde = self.training_settings['pde'].get('Nfit', 200)
-        self.lr_E_pde = self.training_settings['pde'].get('lr_E', 1e-1)
-        self.lr_T_pde = self.training_settings['pde'].get('lr_T', 1e-1)
+        self.Nfit_pde = self.training_settings['pde'].get('Nfit', 500)
+        self.lr_E_pde = self.training_settings['pde'].get('lr_E', 1)
+        self.lr_T_pde = self.training_settings['pde'].get('lr_T', 1)
         self.epoch_pde = self.training_settings['pde'].get('epochs', 10)
-        self.vmax_E = self.visualization.get('vmax_E', 0.25)
-        self.vmax_T = self.visualization.get('vmax_T', 0.25)
 
     def init_config(self):
         """
