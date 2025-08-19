@@ -136,7 +136,6 @@ class Config:
             self.grid_settings = config_data.get('grid_settings', {})
             self.network_settings = config_data.get('network_settings', {})
             self.training_settings = config_data.get('training_settings', {})
-            self.visualization = config_data.get('visualization', {})
 
         # 将配置映射到类属性 | Map configurations to class attributes
         self.model_name = self.model_settings.get('model_name', 'zconst-const')
