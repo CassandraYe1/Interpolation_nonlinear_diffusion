@@ -1,12 +1,12 @@
 # 非线性辐射扩散问题的神经网络超分辨率算法研究
 
-## 超分辨率方法：
+## 背景介绍：
 
 超分辨率技术在科学计算领域展现出突破传统数值方法效率瓶颈的革命性潜力。特别是在涉及多尺度、强非线性特征的物理场重构任务中，传统基于插值或数据驱动的超分辨率方法往往因缺乏物理规律约束，导致重构结果存在非物理解或守恒性破坏等根本缺陷。这一局限性在辐射输运、湍流模拟等对物理一致性有严格要求的领域尤为突出，严重制约了超分辨率技术在实际工程上的应用。
 
 针对这些问题，本项目提出了一种超分辨率神经网络框架，用神经网络直接学习从低分辨率网格到高分辨率网格的映射关系。该网络构建了"粗网格输入→网络预测→物理校正"的架构，在传统数据驱动损失的基础上，引入基于方程的物理约束，确保预测解严格满足物理规律，在保证非线性辐射扩散问题求解精度的同时提升求解效率。
 
-## 非线性辐射扩散问题：
+## 非线性辐射扩散问题描述：
 
 非线性辐射扩散问题是一类典型的多尺度强耦合输运方程，其核心在于描述辐射能量与物质能量通过光子输运产生的非线性能量交换过程。该过程的控制方程可表述为：
 
@@ -84,12 +84,7 @@ $$
 \begin{aligned}
    & L_{\text{reg+pde}} = L_{\text{reg}} + wL_{\text{pde}} \\
    & L_{\text{reg}} = \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} \\
-   & L_{\text{pde}} &= \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 
-\end{aligned}
-$$
-
-$$
-\begin{aligned}
+   & L_{\text{pde}} = \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 \\
    & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
 \end{aligned}
 $$
