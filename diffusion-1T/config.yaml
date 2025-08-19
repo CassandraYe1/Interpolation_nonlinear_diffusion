@@ -28,17 +28,13 @@ training_settings:
   # 基于粗网格参考数据的回归训练
   # Regression training using coarse-grid reference data
   regression:
-    Nfit: 300 # 训练迭代次数 | Number of training iterations
-    lr: 1e-2 # LBFGS优化器的学习率 | Learning rate for LBFGS optimizer
+    Nfit: 500 # 训练迭代次数 | Number of training iterations
+    lr: 1e-1 # LBFGS优化器的学习率 | Learning rate for LBFGS optimizer
     epochs: 50 # 训练轮数 | Training epochs
 
   # 基于粗网格数据和PDE残差的训练
   # Training using coarse-grid data and PDE residuals
   pde:
-    Nfit: 200 # 训练迭代次数 | Number of training iterations
-    lr: 1e-1 # LBFGS优化器的学习率 | Learning rate for LBFGS optimizer
+    Nfit: 500 # 训练迭代次数 | Number of training iterations
+    lr: 1 # LBFGS优化器的学习率 | Learning rate for LBFGS optimizer
     epochs: 50 # 训练轮数 | Training epochs
-
-# 可视化设置 | Visualization Settings
-visualization:
-  vmax: 0.25 # 误差颜色条的最大值 | Maximum value of error colorbar
