@@ -25,7 +25,7 @@ $$
 
 方程初值条件设置为常数初值，即 $g(x,y,0) = 0.01$ 。
 
-边值条件在左边界处设置为线性边值，即 $\beta(x,y,t) = \max\{ 20t,10 \}$ 。
+边值条件在左边界处设置为线性边值，即 $\beta(x,y,t) = \max$ { $20t,10$ }。
 
 ### 双温问题：
 
@@ -51,30 +51,59 @@ $$
 
 结合低分辨率数值解 $E_{\text{coarse}}$ 以及方程本身，本项目设计了针对单一方程的新型神经网络解法。
 
-构建一个全连接神经网络，将目标点的空间坐标值 $(x,y)$ 作为输入数据。该网络是等宽的，隐藏层层数和每个隐藏层的神经元数量可以手动设置（默认设置为2隐藏层、512个神经元），激活函数选用ReLU函数。输出层设置为二维通道，按材料函数 $z$ 在不同目标点的大小设置布尔掩码，从而选择各目标点对应的输出通道。
+以单温问题为例，用向后差分处理方程中的时间偏导项，从而将目标问题在时间上进行离散。同时，参考Picard迭代的格式，提出了一种基于粗网格参考解的显式扩散系数更新方法，对非线性项进行线性化处理，得到如下方程：
 
-为了保证求解效率，我们首先利用低分辨率参考解，构建数据驱动损失函数 $L_{\text{reg}}$ 进行训练。然后，结合目标辐射扩散问题的方程，设计包含物理约束的损失函数 $L_{\text{reg+pde}}$，进一步提升神经网络模型的求解精度。
+$$
+\begin{equation}
+   E^n-E^{n-1}-D^n\nabla\cdot(\nabla E^n)\Delta t = 0
+\end{equation}
+$$
 
-以单温问题为例，我们用向后差分处理方程中的时间偏导，用神经网络分别计算每个时间层的结果，并在网络损失函数 $L_{\text{reg+pde}}$ 的设计部分考虑添加数据驱动损失 $L_{\text{reg}}$和物理信息损失 $L_{\text{pde}}$ 的约束，具体公式如下：
+用同样的方法处理双温问题，得到如下方程：
 
 $$
 \begin{aligned}
-   & L_{\text{reg+pde}} = L_{\text{reg}}+10L_{\text{pde}} \\
-   & L_{\text{reg}} = \Vert E^n-E^n_{\text{coarse}} \Vert \\
-   & L_{\text{pde}} = \Vert E^n-D^n_{\text{coarse}}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{\text{coarse}} \Vert
+   & E^n-E^{n-1}-D^n\nabla\cdot(\nabla E^n)\Delta t-\sigma_{\alpha}(T^4-E)\Delta t = 0 \\
+   & T^n-T^{n-1}-K^n\nabla\cdot(\nabla T^n)\Delta t-\sigma_{\alpha}(E-T^4)\Delta t = 0
 \end{aligned}
 $$
 
-用同样的方法，我们也给出了双温问题的损失函数具体公式：
+该算法的神经网络优化可以分为两个阶段。第一阶段为回归训练，该阶段通过优化基于低分辨率数据构建的损失函数 $L_{\text{reg}}$ ，得到粗略的解函数，确保网络在已知粗网格数据对应网格点处的预测足够准确；第二阶段为PDE训练，该阶段在 $L_{\text{reg}}$ 的基础上引入基于目标方程式构建的包含物理约束的损失函数 $L_{\text{pde}}$ ，从而构建复合损失函数 $L_{\text{reg+pde}}$ ，进一步提升精度，且确保预测结果满足物理规律。单温问题的损失函数如下：
 
 $$
 \begin{aligned}
-   L_{\text{reg+pde}} &= L_{\text{reg}} + 10L_{\text{pde}} \\
-   L_{\text{reg}} &= \Vert E^n - E^n_{\text{coarse}} \Vert + \Vert T^n - T^n_{\text{coarse}} \Vert \\
-   L_{\text{pde}} &= \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert \\
-   & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert
+   & L_{\text{reg+pde}} = L_{\text{reg}}+wL_{\text{pde}} \\
+   & L_{\text{reg}} = \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} \\
+   & L_{\text{pde}} = \Vert E^n-D^n_{\text{coarse}}\nabla\cdot(\nabla E^n)\Delta t-E^{n-1}_{\text{coarse}} \Vert_2^2
 \end{aligned}
 $$
+
+双温问题的损失函数如下：
+
+$$
+\begin{aligned}
+   L_{\text{reg+pde}} &= L_{\text{reg}} + wL_{\text{pde}} \\
+   L_{\text{reg}} &= \frac{\Vert E^n_{\text{coarse}}-E^n \Vert_2}{\Vert E^n_{\text{coarse}} \Vert_2} + \frac{\Vert T^n_{\text{coarse}}-T^n \Vert_2}{\Vert T^n_{\text{coarse}} \Vert_2} \\
+   L_{\text{pde}} &= \Vert E^n - D^n_{\text{coarse}} \nabla \cdot (\nabla E^n) \Delta t - \sigma_{\alpha} (T^4 - E) \Delta t - E^{n-1}_{\text{coarse}} \Vert_2^2 \\
+   & + \Vert T^n - K^n_{\text{coarse}} \nabla \cdot (\nabla T^n) \Delta t - \sigma_{\alpha} (E - T^4) \Delta t - T^{n-1}_{\text{coarse}} \Vert_2^2
+\end{aligned}
+$$
+
+其中 $E^n_{\text{coarse}},T^n_{\text{coarse}}$ 表示当前时间步的已知低分辨率解， $E^{n-1}_{\text{coarse}},T^{n-1}_{\text{coarse}}$ 表示前一时间步的已知低分辨率解， $D^n_{\text{coarse}}$ 表示当前时间步的已知辐射扩散系数， $K^n_{\text{coarse}}$ 表示当前时间步的已知材料导热系数， $w$ 是动态权重系数。使用有限差分法对物理信息损失项 $L_{\text{pde}}$ 进行离散线性化处理。
+
+考虑到材料函数材料交界面处的强梯度效应对神经网络收敛性产生的负面影响，我们在基线模型（即上述算法）的基础上设计了掩码模型。首先根据材料分布属性将计算域分解为互补的几何子区域，随后训练神经网络，以各个子区域的局部解为输出。最终，通过预设的空间掩码函数将各子区域输出整合为全局连续解场。
+
+又考虑到不同介质间交界面以及介质自身几何形状的不规则特征，我们在掩码模型的基础上设计了分块掩码模型。该模型基于空间区域分解，将空间域 $\Omega$ 划分四个部分重叠的子区域 $\Omega_i,i=1,2,3,4$ 。在每个子域 $\Omega_i$ 上独立训练网络分支，分别学习得到局部输出 $E_i$ ，将所有子域预测结果 $E_i$ 进行对应拼接获得最终的预测结果。
+
+针对分块掩码模型中各子域 $\Omega_i$ 内数据驱动损失 $L_{\text{reg}}$ 与物理信息损失 $L_{\text{pde}}$ 的差异，我们设计了一种动态权重调整机制。令权重 $w$ 按以下规则自适应调整
+
+$$
+\begin{equation}
+   w = \alpha\frac{L_{text{reg}}}{10L_{text{pde}}}
+\end{equation}
+$$
+
+其中 $\alpha$ 表示与 $\lg\frac{L_{text{pde}}}{L_{text{reg}}}$ 有关的平滑系数，以捕捉两个损失项之间的数量级差异。
 
 ## 代码介绍
 
