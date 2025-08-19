@@ -154,8 +154,6 @@ Interpolation_nonlinear_diffusion/
 
 ### 参数设置：
 
-#### 全局参数：
-
 ##### 模型参数：
 
 |参数      |说明      |默认值      |
@@ -171,6 +169,7 @@ Interpolation_nonlinear_diffusion/
 |Nx   |x轴细网格点数    |257    |
 |Ny   |y轴细网格点数    |257    |
 |n    |下采样倍数     |2      |
+|t    |目标时刻       |1      |
 
 ##### 网络参数：
 
@@ -181,7 +180,7 @@ Interpolation_nonlinear_diffusion/
 
 #### 训练参数：
 
-##### 第一阶段训练参数：
+##### 回归训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
@@ -190,7 +189,7 @@ Interpolation_nonlinear_diffusion/
 |lr_T_reg   |关于T的LBFGS优化器学习率    |1e-1    |
 |epoch_reg    |训练轮次     |50      |
 
-##### 第二阶段训练参数：
+##### PDE训练参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
