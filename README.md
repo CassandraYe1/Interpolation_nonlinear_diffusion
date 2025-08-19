@@ -79,6 +79,8 @@ $$
 我们的神经网络采用LBFGS优化器。
 
 ### 项目结构：
+
+从[https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42](https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42)访问数据集。根据下述项目结构，将提取的`/diffusion-1T/data`和`/diffusion-2T/data`分别放在根目录中。
    
 ```
 Interpolation_nonlinear_diffusion/
