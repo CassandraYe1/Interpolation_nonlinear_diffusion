@@ -150,12 +150,6 @@ class Config:
             "bottom_left": (257-self.Nx, 257, 0, self.Ny),
             "bottom_right": (257-self.Nx, 257, 257-self.Ny, 257)
         }
-        self.weights = {
-            "top_left": self.weight[0],
-            "top_right": self.weight[1],
-            "bottom_left": self.weight[2],
-            "bottom_right": self.weight[3]
-        }
         
         # 加载数据并计算电离函数 | Load data and compute ionization function
         self.D_ref, self.E_prev, self.E_ref, self.X, self.Y = load_data(self, self.region)
