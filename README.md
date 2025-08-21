@@ -1,12 +1,10 @@
-# 非线性辐射扩散问题的神经网络超分辨率算法研究
+# 非线性辐射扩散问题的神经网络超分辨率算法的构建
 
-## 背景介绍：
+## 研究目标：
 
-超分辨率技术在科学计算领域展现出突破传统数值方法效率瓶颈的革命性潜力。特别是在涉及多尺度、强非线性特征的物理场重构任务中，传统基于插值或数据驱动的超分辨率方法往往因缺乏物理规律约束，导致重构结果存在非物理解或守恒性破坏等根本缺陷。这一局限性在辐射输运、湍流模拟等对物理一致性有严格要求的领域尤为突出，严重制约了超分辨率技术在实际工程上的应用。
+为克服传统数值方法严重依赖于网格、求解高分辨率问题效率低的难题，本项目结合物理信息神经网络（Physics-Informed Neural Network, PINN）和仅采用数据驱动的全连接神经网络两种方法的优势，将物理规律与数据特性有机融合，构建了一种融合方程及数据驱动的神经网络超分辨率求解算法。该算法基于低分辨率数据学习方程的解算子，通过融合数据驱动损失与物理信息约束的损失函数训练神经网络，在多种材料函数和初边值条件设置下预测辐射能量密度 $E$ 和材料温度 $T$ 。
 
-针对这些问题，本项目提出了一种超分辨率神经网络框架，用神经网络直接学习从低分辨率网格到高分辨率网格的映射关系。该网络构建了"粗网格输入→网络预测→物理校正"的架构，在传统数据驱动损失的基础上，引入基于方程的物理约束，确保预测解严格满足物理规律，在保证非线性辐射扩散问题求解精度的同时提升求解效率。
-
-## 非线性辐射扩散问题描述：
+## 问题描述：
 
 非线性辐射扩散问题是一类典型的多尺度强耦合输运方程，其核心在于描述辐射能量与物质能量通过光子输运产生的非线性能量交换过程。该过程的控制方程可表述为：
 
@@ -57,7 +55,7 @@ $$
 
 双方形材料函数：当 $\frac{3}{16}<x<\frac{7}{16}, \frac{9}{16}<y<\frac{13}{16}$ 或 $\frac{9}{16}<x<\frac{13}{16}, \frac{3}{16}<y<\frac{7}{16}$ 时， $z=10$ ；其他时候 $z=1$
 
-## 神经网络超分辨率算法设计：
+## 算法设计：
 
 结合低分辨率数值解 $E_{\text{coarse}}$ 以及方程本身，本项目设计了针对单一方程的新型神经网络解法。
 
@@ -158,16 +156,16 @@ Interpolation_nonlinear_diffusion/
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:--------:|
-|model_name    |目标模型（"材料函数类型_初值函数类型"）    |zconst_const  |
-|device_name   |计算设备（"cuda"或"cpu"）    |"cuda"          |
-|ionization_type   |材料函数类型（"zconst"或"zline"或"zsquare"）    |zconst          |
+|model_name    |目标模型（"材料函数类型_初值函数类型"）    |`zconst_const`  |
+|device_name   |计算设备（`cuda`或`cpu`）    |`cuda`          |
+|ionization_type   |材料函数类型（`zconst`或`zline`或`zsquare`）    |`zconst`          |
 
 ##### 网格参数：
 
 |参数      |说明      |默认值      |
 |:--------:|:--------:|:---------:|
-|Nx   |x轴细网格点数    |257    |
-|Ny   |y轴细网格点数    |257    |
+|Nx   | $x$ 轴细网格点数    |257    |
+|Ny   | $y$ 轴细网格点数    |257    |
 |n    |下采样倍数     |2      |
 |t    |目标时刻       |1      |
 
@@ -198,17 +196,67 @@ Interpolation_nonlinear_diffusion/
 |lr_T_pde   |关于T的LBFGS优化器学习率    |1    |
 |epoch_pde    |训练轮次     |10      |
 
+### 运行环境：
+
+**硬件**：
+
+- GPU：NVIDIA GPU
+
+**软件环境**：
+
+- Python版本: Python 3.12.7
+
+- Shell环境: Bash
+
+**Python依赖项**：
+
+- numpy==2.2.5
+
+- torch==2.7.1
+
+- pyyaml==6.0.1
+
+- matplotlib==3.10.3
+
+### 环境配置：
+
+1. **下载数据集以及结果**：
+   - 从[https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42](https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42)访问数据集和结果
+   - 根据上述项目结构，分别将`diffusion-1T/`和`diffusion-2T/`文件夹中提取的`data/`和`results/`两个文件夹放在对应的根目录中
+  
+2. **验证项目结构**：
+   - 确保项目目录与上述项目结构匹配，包括`requirements.txt`文件
+
+3. **安装依赖项**：
+   - 创建虚拟环境（建议避免冲突）：
+     ```bash
+     python -m venv env
+     source env/bin/activate  # On Windows: env\Scripts\activate
+     ```
+   - 安装`requirements.txt`中列出的依赖项：
+     ```bash
+     pip install -r requirements.txt
+     ```
+
+### 故障排除：
+
+- **GPU错误**：确保CUDA驱动程序与`requirements.txt`中的`torch`版本兼容
+- **依赖缺失**：若出现错误，请确保已安装`requirements.txt`中列出的所有依赖包
+- **文件结构问题**：确认`data/`、`results/`和`requirements.txt`文件路径正确
+
 ## 数值实验：
+
+在回归训练阶段，神经网络首先用Adam优化器进行预处理，然后用LBFGS优化器继续优化；PDE训练阶段直接使用LBFGS优化器进行优化。
 
 ### 数据集：
 
-参考解由FreeFem++的有限元求解器生成，具体设置如下：对于单温及双温问题，在上取个节点的四边形网格，时间离散采用隐式向后欧拉。时间步长设置为，时间域从计算至，共1000步。每一时间步都使用Picard迭代求解非线性系统，更新解直至两次迭代间的残差降低至0.001或迭代次数达到100次。低分辨率数据由参考解经过下采样得到。
+参考解由FreeFem++的有限元求解器生成，具体设置如下：对于单温及双温问题，在上取个节点的四边形网格，时间离散采用隐式向后欧拉。时间步长设置为，时间域从计算至，共1000步。每一时间步都使用Picard迭代求解非线性系统，更新解直至两次迭代间的残差降低至0.001或迭代次数达到100次。
 
-从[https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42](https://pan.baidu.com/s/1yS07Ebv-AE2ta2DWwui3GQ?pwd=9j42)访问数据集。根据上述项目结构，将提取的`/diffusion-1T/data`和`/diffusion-2T/data`分别放在根目录中。
+低分辨率数据由参考解经过下采样得到。
 
 ### 单温问题：
 
-#### (1) zconst_const
+**zconst_const**
 
 常数材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
@@ -223,7 +271,7 @@ python ./diffusion-1T/main.py --model_name "zconst_const" --ionization_type "zco
 |第一次训练   | $1.30\times10^{-4}$ |
 |第二次训练   | $1.02\times10^{-4}$ |
 
-#### (2) zline_const
+**zline_const**
 
 间断线性材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
@@ -238,7 +286,7 @@ python ./diffusion-1T/main.py --model_name "zline_const" --ionization_type "zlin
 |第一次训练   | $1.83\times10^{-3}$ |
 |第二次训练   | $1.81\times10^{-3}$ |
 
-#### (3) zsquare_const
+**zsquare_const**
 
 双方形材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
@@ -255,7 +303,7 @@ python ./diffusion-1T/main.py --model_name "zsquare_const" --ionization_type "zs
 
 ### 双温问题：
 
-#### (1) zconst_gauss
+**zconst_gauss**
 
 常数材料函数+高斯初值+零边值的情况下，命令行参数如下：
 
@@ -270,7 +318,7 @@ python ./diffusion-2T/main.py --model_name "zconst_gauss" --ionization_type "zco
 |第一次训练 | $7.80\times10^{-4}$ | $1.65\times10^{-4}$ |
 |第二次训练 | $7.42\times10^{-4}$ | $1.62\times10^{-4}$ |
 
-#### (2) zline_gauss
+**zline_gauss**
 
 间断线性材料函数+高斯初值+零边值的情况下，命令行参数如下：
 
@@ -285,7 +333,7 @@ python ./diffusion-2T/main.py --model_name "zline_gauss" --ionization_type "zlin
 |第一次训练 | $1.51\times10^{-3}$ | $2.86\times10^{-4}$ |
 |第二次训练 | $1.47\times10^{-3}$ | $2.86\times10^{-4}$ |
 
-#### (3) zsquare_gauss
+**zsquare_gauss**
 
 双方形材料函数+高斯初值+零边值的情况下，命令行参数如下：
 
@@ -299,3 +347,8 @@ python ./diffusion-2T/main.py --model_name "zsquare_gauss" --ionization_type "zs
 |:--------:|:-----------:|:-----------:|
 |第一次训练 | $1.12\times10^{-3}$ | $6.07\times10^{-4}$ |
 |第二次训练 | $1.16\times10^{-3}$ | $5.27\times10^{-4}$ |
+
+## 补充说明：
+
+- 实验详细说明及预期输出请参考技术总结报告
+- 进行大规模实验时，请监控系统资源以避免崩溃
