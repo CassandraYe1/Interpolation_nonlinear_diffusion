@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from utils import relative_l2, pde_res
+from utils import *
 from config import Config
 
 
