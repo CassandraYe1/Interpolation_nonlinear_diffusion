@@ -271,7 +271,7 @@ python ./diffusion-1T/main.py --model_name "zconst_const" --ionization_type "zco
 |第一次训练   | $1.30\times10^{-4}$ |
 |第二次训练   | $1.02\times10^{-4}$ |
 
-**zline_const**
+- **zline_const**
 
 间断线性材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
@@ -286,7 +286,7 @@ python ./diffusion-1T/main.py --model_name "zline_const" --ionization_type "zlin
 |第一次训练   | $1.83\times10^{-3}$ |
 |第二次训练   | $1.81\times10^{-3}$ |
 
-**zsquare_const**
+- **zsquare_const**
 
 双方形材料函数+常数初值+线性边值的情况下，命令行参数如下：
 
@@ -303,7 +303,7 @@ python ./diffusion-1T/main.py --model_name "zsquare_const" --ionization_type "zs
 
 ### 双温问题：
 
-**zconst_gauss**
+- **zconst_gauss**
 
 常数材料函数+高斯初值+零边值的情况下，命令行参数如下：
 
@@ -318,7 +318,7 @@ python ./diffusion-2T/main.py --model_name "zconst_gauss" --ionization_type "zco
 |第一次训练 | $7.80\times10^{-4}$ | $1.65\times10^{-4}$ |
 |第二次训练 | $7.42\times10^{-4}$ | $1.62\times10^{-4}$ |
 
-**zline_gauss**
+- **zline_gauss**
 
 间断线性材料函数+高斯初值+零边值的情况下，命令行参数如下：
 
@@ -333,7 +333,7 @@ python ./diffusion-2T/main.py --model_name "zline_gauss" --ionization_type "zlin
 |第一次训练 | $1.51\times10^{-3}$ | $2.86\times10^{-4}$ |
 |第二次训练 | $1.47\times10^{-3}$ | $2.86\times10^{-4}$ |
 
-**zsquare_gauss**
+- **zsquare_gauss**
 
 双方形材料函数+高斯初值+零边值的情况下，命令行参数如下：
 
