@@ -37,4 +37,4 @@ training_settings:
   pde:
     Nfit: 500 # 训练迭代次数 | Number of training iterations
     lr: 1 # LBFGS优化器的学习率 | Learning rate for LBFGS optimizer
-    epochs: 50 # 训练轮数 | Training epochs
+    epochs: 10 # 训练轮数 | Training epochs
