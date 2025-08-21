@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-from utils import relative_l2
+from utils import *
 from config import Config
 
 
