@@ -39,4 +39,4 @@ training_settings:
     Nfit: 500 # 训练迭代次数 | Number of training iterations
     lr_E: 1 # 关于E的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of E
     lr_T: 1 # 关于T的LBFGS优化器的学习率 | Learning rate for LBFGS optimizer of T
-    epochs: 50 # 训练轮数 | Training epochs
+    epochs: 10 # 训练轮数 | Training epochs
