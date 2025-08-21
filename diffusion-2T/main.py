@@ -7,9 +7,9 @@ import copy
 import time
 from model import DeepNN
 from config import Config
-from utils import set_seed, relative_l2, plot_E, plot_T
-from train_reg import train_model_reg
-from train_pde import train_model_pde
+from utils import *
+from train_reg import *
+from train_pde import *
 
 
 def parse_args():
